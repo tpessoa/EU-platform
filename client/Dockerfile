@@ -1,7 +1,13 @@
 FROM node:15-slim
-WORKDIR /app
-COPY package.json /app
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
 RUN npm install
 
-COPY . /app
+COPY . .
+
+EXPOSE 3000
+
 CMD [ "npm", "start"]

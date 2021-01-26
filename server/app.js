@@ -17,7 +17,7 @@ mongoose
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.log(err));
 
-app.get('/', (req, res) => res.send('hell tiago'));
+app.get('/', (req, res) => res.send('helloo tiago'));
 
 const port = 3000;
 app.listen(port, () => {

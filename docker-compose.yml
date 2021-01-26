@@ -6,9 +6,13 @@ services:
     container_name: web-service
     restart: always
     build: ./server/
+    environment:
+     CHOKIDAR_USEPOLLING: "true"
     ports:
       - '8080:3000'
     links:
+      - db
+    depends_on: 
       - db
   
   db:
@@ -16,6 +20,29 @@ services:
     image: mongo:4.2
     ports:
       - '27017:27017' 
-    
+    volumes: 
+      - ./server/mongo-volume:/data/db
 
-
+  react: 
+    container_name: react-ui
+    build: ./client
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    volumes: 
+      - /usr/src/app/node_modules
+      - ./client:/usr/src/app
+    ports: 
+      - "3000:3000"
+    stdin_open: true
+    depends_on: 
+      - node
+   
+  games:
+    container_name: games-web-service
+    build: ./games/
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./games:/usr/local/apache2/htdocs/
+    ports:
+      - '80:80'
