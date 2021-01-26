@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  
+  node:
+    container_name: web-service
+    restart: always
+    build: ./server/
+    ports:
+      - '8080:3000'
+    links:
+      - db
+  
+  db:
+    container_name: mongodb
+    image: mongo:4.2
+    ports:
+      - '27017:27017' 
+    
+
+
