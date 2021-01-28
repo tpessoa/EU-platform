@@ -32,8 +32,10 @@ mongoose
 app.get('/', (req, res) => res.status(200).send('helloo tiago'));
 
 const usersRouter = require('./routes/users');
+const adminRouter = require('./routes/admin');
 
 app.use('/users', usersRouter);
+app.use('/admin', adminRouter);
 
 // Listener
 app.listen(port, () => {
