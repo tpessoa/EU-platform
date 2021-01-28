@@ -1,25 +1,41 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
+require('dotenv').config();
+
+
+// App Config
 const app = express();
+const port = process.env.PORT || 3000;
+const connection_url = "mongodb://db:27017/eu-platform-db";
 
-app.use(bodyParser.urlencoded({ extended: false }));
 
-// connect to MongoDB
+// Middlewares
+//app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
+app.use(express.json());
+
+// DB config
 mongoose
-    .connect(
-        'mongodb://db:27017/eu-platform-db',
+    .connect(connection_url,
         {   useNewUrlParser: true,
+            createIndex: true,
             useUnifiedTopology: true
         }
     )
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.log(err));
 
-app.get('/', (req, res) => res.send('helloo tiago'));
+// API Endpoints
+app.get('/', (req, res) => res.status(200).send('helloo tiago'));
 
-const port = 3000;
+const usersRouter = require('./routes/users');
+
+app.use('/users', usersRouter);
+
+// Listener
 app.listen(port, () => {
     console.log('Server running on port ' + port);
 })
