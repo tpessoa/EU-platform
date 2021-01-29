@@ -7,8 +7,16 @@ router.route('/').get((req, res) => {
         .catch(err => res.status(400).json('Error ' + err));
 });
 
-router.route('/ping').get((req, res) => {
-    res.send("Esta é a resposta do servidor :)");
+router.route('/ping/:imgName').get((req, res) => {
+    var imgName = req.params.imgName;
+ 
+    res.send(`
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <h1>Hey :)</h1>
+    <img
+    src="/images/${imgName}"
+    style="height:300px;"/>
+    <p>sf</p>`);
 });
 
 router.route('/add').post((req, res) => {

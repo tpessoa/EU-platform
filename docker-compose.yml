@@ -8,6 +8,7 @@ services:
       CHOKIDAR_USEPOLLING: "true"
     volumes: 
       - ./client:/usr/src/app
+      - /client/node_modules
     ports: 
       - "3000:3000"
     stdin_open: true
@@ -22,6 +23,7 @@ services:
      CHOKIDAR_USEPOLLING: "true"
     volumes: 
       - ./server:/usr/src/app
+      - /server/node_modules
     ports:
       - '8080:3000'
     links:

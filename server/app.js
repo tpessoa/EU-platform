@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+var path=require('path');
 
 require('dotenv').config();
 
@@ -16,6 +17,7 @@ const connection_url = "mongodb://db:27017/eu-platform-db";
 //app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // DB config
 mongoose
