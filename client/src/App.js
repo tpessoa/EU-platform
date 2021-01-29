@@ -11,7 +11,7 @@ class App extends Component {
     file: "",
   }
 
-  send = (event) => {
+  send = () => {
     console.log("hereee");
     const data = new FormData();
     data.append("name", this.state.name);
