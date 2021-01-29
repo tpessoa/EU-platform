@@ -11,6 +11,12 @@ class App extends Component {
     file: "",
   }
 
+  getResp = () => {
+    Axios.get("http://localhost:8080/users/ping")
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
+  }
+
   send = () => {
     console.log("hereee");
     const data = new FormData();

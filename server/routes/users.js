@@ -7,6 +7,10 @@ router.route('/').get((req, res) => {
         .catch(err => res.status(400).json('Error ' + err));
 });
 
+router.route('/ping').get((req, res) => {
+    res.send("Esta é a resposta do servidor :)");
+});
+
 router.route('/add').post((req, res) => {
     const username = req.body.username;
     console.log(username);
