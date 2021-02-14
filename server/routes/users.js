@@ -7,6 +7,12 @@ router.route('/').get((req, res) => {
         .catch(err => res.status(400).json('Error ' + err));
 });
 
+router.route('/ping').get((req, res) => {
+    
+ 
+    res.sendFile('/simple-game.html');
+});
+
 router.route('/ping/:imgName').get((req, res) => {
     var imgName = req.params.imgName;
  
