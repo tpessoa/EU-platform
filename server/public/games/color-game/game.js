@@ -86,6 +86,10 @@ class playGame extends Phaser.Scene {
         super("PlayGame");
     }
 
+    init() {
+        console.log(window.location.href);
+    }
+
     async preload() {
         this.load.svg('redo', '/games/color-game/assets/images/redo-solid.svg', { width: 50, height: 50 });
         this.load.svg('close', '/games/color-game/assets/images/times-circle-regular.svg', { width: 50, height: 50 });
