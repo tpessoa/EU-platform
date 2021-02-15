@@ -33,11 +33,13 @@ mongoose
 // API Endpoints
 app.get('/', (req, res) => res.status(200).send('helloo tiago'));
 
-const usersRouter = require('./routes/users');
 const adminRouter = require('./routes/admin');
+const usersRouter = require('./routes/users');
+const gamesRouter = require('./routes/games');
 
-app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
+app.use('/users', usersRouter);
+app.use('/games', gamesRouter);
 
 // Listener
 app.listen(port, () => {

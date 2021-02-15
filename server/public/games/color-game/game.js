@@ -16,8 +16,8 @@ window.onload = function () {
         },
         fps: {
             target: 40,
-                min: 30,
-                    forceSetTimeOut: true
+            min: 30,
+            forceSetTimeOut: true
         },
         scene: playGame
     }
@@ -32,29 +32,14 @@ var s_width, s_height;
 const spaceBetweenIcons = 10;
 const biggerCircleRadius = 50;
 const smallerCircleRadius = 35;
-const numColors = 7;
-const colors = {
-    red: "0xd11141",
-    green: "0x00b159",
-    blue: "0x00aedb",
-    orange: "0xf37735",
-    yellow: "0xffc425",
-    pink: "0xD130FF",
-    cyan: "0x61ffff",
-    brown: "0x733F00",
-    grey: "0x696969"
-}
-var colors_arr = ['red', 'green', 'blue', 'orange', 'yellow', 'pink', 'cyan', 'brown', 'grey'];
+var numColors = 7; // colors shown in the screen, 5 visible and 2 invisible
 var init_color_pos = 0, final_color_pos = numColors - 1;
-var arr_middle = colors_arr[Math.floor((colors_arr.length - 1) / 2) - 1];
-var CURRENT_COLOR = colors[arr_middle];
 var colorsCirclesObjs = [];
 var SELECTEDCIRCLE;
 
 // FLOOD FILL 
 var data_arr, texture, ctx;
-var WIDTH = 640;
-var HEIGHT = 960;
+var WIDTH, HEIGHT;
 var NEW_COLOR_ARR = [200, 0, 0];
 const lineLimitColor = 200;
 
@@ -71,31 +56,79 @@ var BACKUP_ARR_OBJ = [];
 var FLAG_MODAL = false;
 var MODAL_CREATED = false;
 
-var imgStr = 'colorImg';
-var imgName = 'Bandeira da França';
-
 var painting_sound;
 var rotating_sound;
 var btnClick_sound;
+
+// DB 
+// init in case of not loading properly so the game doesnt break
+var DB_all_colors = {
+        red: "0xd11141",
+        green: "0x00b159",
+        blue: "0x00aedb",
+        orange: "0xf37735",
+        yellow: "0xffc425",
+        pink: "0xD130FF",
+        cyan: "0x61ffff",
+        brown: "0x733F00",
+        grey: "0x696969"
+    };
+var DB_src_original = '/games/color-game/assets/images/coloring-image-2.png';
+var DB_src_painting = '/games/color-game/assets/images/coloring-image-2-2.png';
+var DB_title = 'Gatinho';
+var DB_image_ref = 'colorImg';
+var DB_image_ref_original = 'colorImg';
+var DB_game_colors = ['red', 'green', 'blue', 'orange', 'yellow', 'pink', 'cyan', 'brown', 'grey'];
+
 
 class playGame extends Phaser.Scene {
     constructor() {
         super("PlayGame");
     }
-    preload() {
+
+    async preload() {
         this.load.svg('redo', '/games/color-game/assets/images/redo-solid.svg', { width: 50, height: 50 });
         this.load.svg('close', '/games/color-game/assets/images/times-circle-regular.svg', { width: 50, height: 50 });
         this.load.svg('carret', '/games/color-game/assets/images/caret-left-solid.svg', { width: 150, height: 150 });
         this.load.svg('circleImg', '/games/color-game/assets/images/circle-solid.svg', { scale: 0.15 });
-        
-        this.load.image('colorImg', '/games/color-game/assets/images/coloring-image-2-2.png');
+        //this.load.image('colorImg', '/games/color-game/assets/images/coloring-image-2-2.png');
+        // this.load.image('colorImg', '/games/color-game/assets/images/flag-france.png');
 
         this.load.audio('btnclick', '/games/color-game/assets/sounds/btn_click_1.mp3');
         this.load.audio('painting1stroke', '/games/color-game/assets/sounds/painting_1_stroke.mp3');
         this.load.audio('rotation', '/games/color-game/assets/sounds/rotation.mp3');
-    } 
 
-    create() {
+        await axios.get('http://localhost:8080/games/color-game/')
+            .then((response) => this.loadFromDB(response))
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
+
+    }
+
+    loadFromDB(response) {
+        DB_all_colors = response.data.config.colors[0];
+        DB_game_colors = response.data.game.colors;
+        DB_src_original = response.data.game.src_original;
+        DB_src_painting = response.data.game.src_painting;
+        DB_title = response.data.game.title;
+        DB_image_ref = response.data.game.image_ref;
+
+        this.load.on('complete', () => this.createCostum());
+        DB_image_ref_original = DB_image_ref+'-original';
+        this.load.image(DB_image_ref_original, DB_src_original);
+        this.load.image(DB_image_ref, DB_src_painting);
+        this.load.start();
+    }
+
+    createCostum() {
+        console.log('create costum');
+        
+        // this.load.once('complete', this.subLoadCompleted, this);
         s_width = game.scale.width;
         s_height = game.scale.height;
         var middle = game.scale.width / 2;
@@ -117,11 +150,11 @@ class playGame extends Phaser.Scene {
         var container_top_bar = this.add.container(0, 0);
         container_top_bar.add(redo);
 
-    /** 
-         * 
-         * MIDDLE
-         * 
-         * */
+        /** 
+             * 
+             * MIDDLE
+             * 
+             * */
         this.add.rectangle(0, bar_size, s_width, main_draw, 0x4b86b4)
             .setOrigin(0, 0)
             .setStrokeStyle(1.5, 0xffc425);
@@ -135,7 +168,7 @@ class playGame extends Phaser.Scene {
 
 
 
-        var imgRef = this.add.image(0, 0, imgStr).setOrigin(0, 0)
+        var imgRef = this.add.image(0, 0, DB_image_ref).setOrigin(0, 0)
             .setVisible(false);
 
         console.log(imgRef.width);
@@ -183,7 +216,7 @@ class playGame extends Phaser.Scene {
         // WIDTH = imgToColor.width;
         // HEIGHT = imgToColor.height;
         texture = this.textures.createCanvas('colorCanvas', WIDTH, HEIGHT);
-        texture.drawFrame(imgStr, 0, 0);
+        texture.drawFrame(DB_image_ref, 0, 0);
         texture.refresh();
         var img = this.add.image(0, 0, 'colorCanvas');
         const imgOffsetX = s_width / 2 - WIDTH / 2;
@@ -215,7 +248,7 @@ class playGame extends Phaser.Scene {
             .setScale(1.15);
 
         for (let circle_pos = 0; circle_pos < numColors; circle_pos++) {
-            this.createCircle(circle_pos, color_bar_y, colors[colors_arr[circle_pos]]);
+            this.createCircle(circle_pos, color_bar_y, DB_all_colors[DB_game_colors[circle_pos]]);
         }
 
         // ARROWS
@@ -234,7 +267,7 @@ class playGame extends Phaser.Scene {
         arrow_right.on('pointerdown', (pointer) => this.getSwipedArr(pointer, 'left'));
 
         // MODAL
-        var originalImg = this.add.image(0, 0, imgStr).setInteractive({ pixelPerfect: true });
+        var originalImg = this.add.image(0, 0, DB_image_ref_original).setInteractive({ pixelPerfect: true });
         originalImg = this.scaleImageToFitFrame(1000, bar_size * (1 / 2), originalImg);
         originalImg.setPosition(s_width - originalImg.width / 2 - spaceBetweenIcons * 2, bar_size / 2);
         // click on original image to show the MODAL
@@ -270,7 +303,7 @@ class playGame extends Phaser.Scene {
         var name = this.make.text({
             x: (s_width - side_gap * 2) / 2,
             y: spaceBetweenIcons,
-            text: imgName,
+            text: DB_title,
             origin: { x: 0.5, y: 0 },
             style: {
                 fontFamily: 'Arial',
@@ -280,7 +313,7 @@ class playGame extends Phaser.Scene {
             }
         });
 
-        var originalImgModal = this.add.image(0, 0, imgStr);
+        var originalImgModal = this.add.image(0, 0, DB_image_ref_original);
         originalImgModal = this.scaleImageToFitFrame(s_width - side_gap * 4, 10000, originalImgModal);
         originalImgModal.setPosition((s_width - side_gap * 2) / 2, name.getBottomRight().y + side_gap + originalImgModal.height / 2);
         container_top_bar.add(originalImg);
@@ -457,7 +490,7 @@ class playGame extends Phaser.Scene {
             }
         }
 
-        
+
     }
 
     allAnimationsCompletedHandler(tweenRef, direction) {
@@ -510,7 +543,7 @@ class playGame extends Phaser.Scene {
 
     getWindowColors(direction) {
         // convert to module
-        const m = colors_arr.length;
+        const m = DB_game_colors.length;
 
         if (direction === 'right') {
             init_color_pos -= 1;
@@ -518,7 +551,7 @@ class playGame extends Phaser.Scene {
 
             // get next color in array for the FIRST circle
             let mod_init = ((init_color_pos % m) + m) % m;
-            let newFirstCircleColor = colors[colors_arr[mod_init]];
+            let newFirstCircleColor = DB_all_colors[DB_game_colors[mod_init]];
             colorsCirclesObjs[0]
                 .setData('color', newFirstCircleColor)
                 .setTintFill(newFirstCircleColor);
@@ -529,7 +562,7 @@ class playGame extends Phaser.Scene {
 
             // get anterior color in array for the LAST circle
             let mod_final = ((final_color_pos % m) + m) % m;
-            let newLastCircleColor = colors[colors_arr[mod_final]];
+            let newLastCircleColor = DB_all_colors[DB_game_colors[mod_final]];
             colorsCirclesObjs[colorsCirclesObjs.length - 1]
                 .setData('color', newLastCircleColor)
                 .setTintFill(newLastCircleColor);
@@ -558,7 +591,7 @@ class playGame extends Phaser.Scene {
 
     clickHandler(imgObj, pointer, imgOffsetX, imgOffsetY) {
         if (FLAG_MODAL) return;
-        
+
         // Discard mouse right button
         if (pointer.rightButtonDown()) {
             return
