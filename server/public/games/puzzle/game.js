@@ -79,19 +79,20 @@ class Puzzle extends Phaser.Scene {
         // tirar isto depois
         if (GAME_REF == null) {
             this.loadFromDB(null);
-            return;
+            
+        } else {
+            const get_game_str = 'http://localhost:8080/games/puzzle/' + GAME_REF;
+            await axios.get(get_game_str)
+                .then((response) => this.loadFromDB(response))
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+                .then(function () {
+                    // always executed
+                });
         }
 
-        const get_game_str = 'http://localhost:8080/games/puzzle/' + GAME_REF;
-        await axios.get(get_game_str)
-            .then((response) => this.loadFromDB(response))
-            .catch(function (error) {
-                // handle error
-                console.log(error);
-            })
-            .then(function () {
-                // always executed
-            });
     }
 
     loadFromDB(response) {
