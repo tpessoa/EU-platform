@@ -76,6 +76,12 @@ class Puzzle extends Phaser.Scene {
         this.load.audio('right_place', '/games/puzzle/assets/sounds/right_place.mp3');
         this.load.audio('complete_puzzle', '/games/puzzle/assets/sounds/complete.mp3');
 
+        // tirar isto depois
+        if (GAME_REF == null) {
+            this.loadFromDB(null);
+            return;
+        }
+
         const get_game_str = 'http://localhost:8080/games/puzzle/' + GAME_REF;
         await axios.get(get_game_str)
             .then((response) => this.loadFromDB(response))
