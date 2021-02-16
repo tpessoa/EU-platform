@@ -29,7 +29,7 @@ router.get('/colorGame/:ref', async (req, res) => {
             game: result
         }
         res.send(newObj);
-    } 
+    }
     catch (e) {
         res.status(500).send({ message: e.message });
     }
@@ -43,6 +43,16 @@ router.get('/allPuzzles', async (req, res) => {
     try {
         let puzzles = await Puzzle.find({});
         res.send(puzzles);
+    }
+    catch (e) {
+        res.status(500).send({ message: e.message });
+    }
+});
+
+router.get('/puzzle/:ref', async (req, res) => {
+    try {
+        let puzzle = await Puzzle.findOne({ image_ref: req.params.ref });
+        res.send(puzzle);
     }
     catch (e) {
         res.status(500).send({ message: e.message });

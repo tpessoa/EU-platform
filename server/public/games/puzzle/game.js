@@ -32,7 +32,6 @@ var HORIZONTAL_PIECES, VERTICAL_PIECES;
 var TOLERANCE_LOCK_OFFSET = 15;
 var IMG_SCALE_VALUE;
 // PIECES
-var SIZE_PIECES = 100;
 var PIECE_W, PIECE_H, RADIUS_PIECE;
 var ARR_G_PIECES = [];
 var ARR_G_PIECES_LINE = [];
@@ -42,12 +41,19 @@ var ARR_MOVE_PIECES = [];
 
 var DEPTH_COUNTER = 0;
 var TOTAL_PIECES = 0, CURRENT_PIECES = 0;
-var PIECES_TEXT='';
+var PIECES_TEXT = '';
+
+// Sound
+var select_sound;
+var drop_sound;
+var right_sound;
+var complete_sound;
 
 // DB
 var DB_src = '/games/puzzle/assets/images/test_image_1.jpg';
 var DB_size_pieces = 100;
-var DB_image_ref = 'puzzleImg'
+var DB_image_ref = 'puzzleImg';
+var GAME_REF;
 
 class Puzzle extends Phaser.Scene {
 
@@ -55,11 +61,46 @@ class Puzzle extends Phaser.Scene {
         super('Game');
     }
 
-    preload() {
-        this.load.image('puzzleImg', DB_src);
+    init() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        GAME_REF = urlParams.get('ref');
     }
 
-    create() {
+    async preload() {
+        this.load.image(DB_image_ref, DB_src);
+
+        this.load.audio('select', '/games/puzzle/assets/sounds/select.mp3');
+        this.load.audio('drop_piece', '/games/puzzle/assets/sounds/drop.mp3');
+        this.load.audio('right_place', '/games/puzzle/assets/sounds/right_place.mp3');
+        this.load.audio('complete_puzzle', '/games/puzzle/assets/sounds/complete.mp3');
+
+        const get_game_str = 'http://localhost:8080/games/puzzle/' + GAME_REF;
+        await axios.get(get_game_str)
+            .then((response) => this.loadFromDB(response))
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
+    }
+
+    loadFromDB(response) {
+        console.log(response.data);
+        if (response.data) {
+            DB_src = response.data.src;
+            DB_size_pieces = response.data.piece_size;
+            DB_image_ref = response.data.image_ref;
+        }
+        this.load.on('complete', () => this.createCostum());
+        this.load.image(DB_image_ref, DB_src);
+        this.load.start();
+
+    }
+
+    createCostum() {
 
         let s_width = game.scale.width;
         let s_height = game.scale.height;
@@ -86,14 +127,14 @@ class Puzzle extends Phaser.Scene {
         //     .setPosition(s_width - see_puzzle_btn.width - DISTANCE_BETWEEN_ICONS, 5)
         //     .setInteractive();
 
-        var puzzleImg = this.add.image(0, bar_size_height, 'puzzleImg').setInteractive();
+        var puzzleImg = this.add.image(0, bar_size_height, DB_image_ref).setInteractive();
         puzzleImg = this.scaleImageToFitFrame(puzzle_width - SIDE_GAP * 2, main_puzzle_height - 2 * SIDE_GAP, puzzleImg);
         puzzleImg
             .setPosition(puzzle_width / 2, bar_size_height + (main_puzzle_height / 2))
             .setAlpha(0.2);
 
-        const puzzle_max_width_pieces = Math.floor((puzzle_width - SIDE_GAP * 2) / SIZE_PIECES);
-        const puzzle_max_height_pieces = Math.floor((main_puzzle_height - 2 * SIDE_GAP) / SIZE_PIECES);
+        const puzzle_max_width_pieces = Math.floor((puzzle_width - SIDE_GAP * 2) / DB_size_pieces);
+        const puzzle_max_height_pieces = Math.floor((main_puzzle_height - 2 * SIDE_GAP) / DB_size_pieces);
         console.log('MAX. horizontal pieces? ' + puzzle_max_width_pieces);
         console.log('MAX. vertical pieces? ' + puzzle_max_height_pieces);
         HORIZONTAL_PIECES = puzzle_max_width_pieces;
@@ -115,7 +156,7 @@ class Puzzle extends Phaser.Scene {
         this.generateBoard(puzzleImg);
 
 
-        var puzzleImg_aux = this.add.image(0, 0, 'puzzleImg')
+        var puzzleImg_aux = this.add.image(0, 0, DB_image_ref)
         puzzleImg_aux = this.scaleImageToFitFrame(puzzle_width - SIDE_GAP * 2, main_puzzle_height - 2 * SIDE_GAP, puzzleImg_aux);
         puzzleImg_aux.setOrigin(0).setVisible(false);
 
@@ -238,19 +279,27 @@ class Puzzle extends Phaser.Scene {
 * TEXT
 * 
 */
-        var gameName = this.add.text(SIDE_GAP / 2, bar_size_height/2, "Puzzle", { fontFamily: "Arial Black", fontSize: 52, color: "#4b86b4" });
+        var gameName = this.add.text(SIDE_GAP / 2, bar_size_height / 2, "Puzzle", { fontFamily: "Arial Black", fontSize: 52, color: "#4b86b4" });
         gameName.setStroke('#ffcc5c', 10);
         //  Apply the shadow to the Stroke and the Fill (this is the default)
         gameName.setShadow(2, 2, "#333333", 2, true, true);
-        gameName.setOrigin(0,0.5);
+        gameName.setOrigin(0, 0.5);
 
         var pieces_str = CURRENT_PIECES + '/' + TOTAL_PIECES;
-        PIECES_TEXT = this.add.text(s_width / 2, bar_size_height/2, pieces_str, { fontFamily: "Arial Black", fontSize: 40, color: "#4b86b4" });
+        PIECES_TEXT = this.add.text(s_width / 2, bar_size_height / 2, pieces_str, { fontFamily: "Arial Black", fontSize: 40, color: "#4b86b4" });
         PIECES_TEXT.setStroke('#ffcc5c', 10);
         //  Apply the shadow to the Stroke and the Fill (this is the default)
         PIECES_TEXT.setShadow(2, 2, "#333333", 2, true, true);
         PIECES_TEXT.setOrigin(0.5);
 
+        /**
+         * SOUND
+         * 
+         */
+        select_sound = this.sound.add('select');
+        drop_sound = this.sound.add('drop_piece');
+        right_sound = this.sound.add('right_place');
+        complete_sound = this.sound.add('complete_puzzle');
 
         /**
          * DRAG PIECES
@@ -258,6 +307,7 @@ class Puzzle extends Phaser.Scene {
          */
         this.input.on('dragstart', function (pointer, gameObject) {
             gameObject.setDepth(++DEPTH_COUNTER);
+            select_sound.play();
         });
 
         this.input.on('drag', (pointer, gameObject, dragX, dragY) => this.dragHandler(gameObject, dragX, dragY));
@@ -268,6 +318,9 @@ class Puzzle extends Phaser.Scene {
         //     console.log(pointer.x, pointer.y);
         //     console.log(gameObject);
         // });
+
+
+        
     }
 
     dragEndHandler(gameObject) {
@@ -285,6 +338,18 @@ class Puzzle extends Phaser.Scene {
             // count piece
             CURRENT_PIECES++;
             PIECES_TEXT.setText(CURRENT_PIECES + '/' + TOTAL_PIECES);
+            
+
+            // VERIFY END OF PUZZLE
+            if (CURRENT_PIECES == TOTAL_PIECES) {
+                complete_sound.play();
+            }
+            else {
+                right_sound.play();
+            }
+        }
+        else {
+            drop_sound.play();
         }
     }
 
