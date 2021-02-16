@@ -101,7 +101,7 @@ class playGame extends Phaser.Scene {
         this.load.svg('close', '/games/color-game/assets/images/times-circle-regular.svg', { width: 50, height: 50 });
         this.load.svg('carret', '/games/color-game/assets/images/caret-left-solid.svg', { width: 150, height: 150 });
         this.load.svg('circleImg', '/games/color-game/assets/images/circle-solid.svg', { scale: 0.15 });
-        //this.load.image('colorImg', '/games/color-game/assets/images/coloring-image-2-2.png');
+        this.load.image(DB_image_ref, DB_src_original);
         // this.load.image('colorImg', '/games/color-game/assets/images/flag-france.png');
 
         this.load.audio('btnclick', '/games/color-game/assets/sounds/btn_click_1.mp3');
