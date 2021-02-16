@@ -68,6 +68,7 @@ class Puzzle extends Phaser.Scene {
     }
 
     async preload() {
+        this.load.crossOrigin = true;
         this.load.image(DB_image_ref, DB_src);
 
         this.load.audio('select', '/games/puzzle/assets/sounds/select.mp3');
@@ -339,7 +340,6 @@ class Puzzle extends Phaser.Scene {
             CURRENT_PIECES++;
             PIECES_TEXT.setText(CURRENT_PIECES + '/' + TOTAL_PIECES);
             
-
             // VERIFY END OF PUZZLE
             if (CURRENT_PIECES == TOTAL_PIECES) {
                 complete_sound.play();
