@@ -102,22 +102,23 @@ class playGame extends Phaser.Scene {
         this.load.svg('carret', '/games/color-game/assets/images/caret-left-solid.svg', { width: 150, height: 150 });
         this.load.svg('circleImg', '/games/color-game/assets/images/circle-solid.svg', { scale: 0.15 });
         this.load.image(DB_image_ref, DB_src_original);
+        this.load.image(DB_image_ref_original, DB_src_original);
         // this.load.image('colorImg', '/games/color-game/assets/images/flag-france.png');
 
         this.load.audio('btnclick', '/games/color-game/assets/sounds/btn_click_1.mp3');
         this.load.audio('painting1stroke', '/games/color-game/assets/sounds/painting_1_stroke.mp3');
         this.load.audio('rotation', '/games/color-game/assets/sounds/rotation.mp3');
 
-        const get_game_str = 'http://localhost:8080/games/colorGame/' + GAME_REF;
-        await axios.get(get_game_str)
-            .then((response) => this.loadFromDB(response))
-            .catch(function (error) {
-                // handle error
-                console.log(error);
-            })
-            .then(function () {
-                // always executed
-            });
+        // const get_game_str = 'http://localhost:8080/games/colorGame/' + GAME_REF;
+        // await axios.get(get_game_str)
+        //     .then((response) => this.loadFromDB(response))
+        //     .catch(function (error) {
+        //         // handle error
+        //         console.log(error);
+        //     })
+        //     .then(function () {
+        //         // always executed
+        //     });
     }
 
     loadFromDB(response) {
@@ -138,7 +139,7 @@ class playGame extends Phaser.Scene {
 
     }
 
-    createCostum() {
+    create() {
         s_width = game.scale.width;
         s_height = game.scale.height;
         var middle = game.scale.width / 2;
