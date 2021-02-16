@@ -37,7 +37,7 @@ class App extends Component {
   }
 
   getDataTest = () => {
-    axios.get('http://localhost:8080/')
+    axios.get('http://node:3000/')
       .then(res => console.log(res.data))
       .catch(err => console.log(err));
   }

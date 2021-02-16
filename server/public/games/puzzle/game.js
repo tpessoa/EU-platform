@@ -15,7 +15,8 @@ window.onload = function () {
             disableWebAudio: true
         },
         fps: {
-            target: 60,
+            max: 30,
+            target: 25,
             min: 20,
             forceSetTimeOut: true
         },
@@ -44,7 +45,9 @@ var TOTAL_PIECES = 0, CURRENT_PIECES = 0;
 var PIECES_TEXT='';
 
 // DB
-var DB_src_ = '/games/puzzle/assets/images/test_image_1.jpg';
+var DB_src = '/games/puzzle/assets/images/test_image_1.jpg';
+var DB_size_pieces = 100;
+var DB_image_ref = 'puzzleImg'
 
 class Puzzle extends Phaser.Scene {
 
@@ -53,8 +56,7 @@ class Puzzle extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('puzzleImg', DB_src_);
-        //this.load.image('piece1', piece1);
+        this.load.image('puzzleImg', DB_src);
     }
 
     create() {
@@ -196,7 +198,7 @@ class Puzzle extends Phaser.Scene {
                     )
                     .setDepth(-1);
 
-                //pieceImg_aux.mask = new Phaser.Display.Masks.BitmapMask(this, pieceGraphic_aux);
+                // pieceImg_aux.mask = new Phaser.Display.Masks.BitmapMask(this, pieceGraphic_aux);
                 pieceImg_aux.setMask(pieceGraphic_aux.createGeometryMask());
 
                 offset_piece_to_img_X = pieceGraphic_aux.x - pieceImg_aux.x;

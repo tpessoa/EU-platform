@@ -1,11 +1,15 @@
 const router = require('express').Router();
-let ColorGame = require('../models/color_game.model');
 let ConfigGames = require('../models/config_games.model');
+let ColorGame = require('../models/color_game.model');
+let Puzzle = require('../models/puzzle.model');
 
 router.route('/').get((req, res) => {
     res.send('JOGOS');
 });
 
+/**
+ * COLOR GAME
+ */
 router.get('/allColorGames', async (req, res) => {
     try {
         let color_games = await ColorGame.find({});
@@ -31,22 +35,19 @@ router.get('/colorGame/:ref', async (req, res) => {
     }
 });
 
-router.get('/colorGame/', async (req, res) => {
+
+/**
+ * PUZZLE
+ */
+router.get('/allPuzzles', async (req, res) => {
     try {
-        let all_colors = await ConfigGames.findOne({ name: 'color_game' });
-        // find the right color game #TODO
-        let result = await ColorGame.find({});
-        // let result2 = await ColorGame.findById({ image_ref: 'flagFR' });
-        // console.log(result2);
-        const newObj = {
-            config: all_colors,
-            game: result[0]
-        }
-        res.send(newObj);
+        let puzzles = await Puzzle.find({});
+        res.send(puzzles);
     }
     catch (e) {
         res.status(500).send({ message: e.message });
     }
 });
+
 
 module.exports = router;
