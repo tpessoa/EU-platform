@@ -1,5 +1,6 @@
 version: "3"
 
+
 services:
   react: 
     container_name: react-ui
@@ -13,6 +14,10 @@ services:
       - "3000:3000"
     stdin_open: true
     depends_on: 
+      - node
+    networks:
+      - back
+    links: 
       - node
 
   node:
@@ -30,6 +35,8 @@ services:
       - db
     depends_on: 
       - db
+    networks:
+      - back
   
   db:
     container_name: mongodb
@@ -38,3 +45,8 @@ services:
       - '27017:27017' 
     volumes: 
       - ./server/mongo-volume:/data/db
+    networks:
+      - back
+
+networks:
+  back:

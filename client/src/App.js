@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import "./App.css"
 
-import Axios from 'axios';
+import axios from 'axios';
 import {
   Route,
   Link,
@@ -9,7 +9,6 @@ import {
   Redirect
 } from 'react-router-dom';
 
-import Game from './containers/Game/Game';
 import Games from './containers/Games/Games';
 import NoMatch from './components/NoMatch/NoMatch';
 
@@ -21,7 +20,7 @@ class App extends Component {
   }
 
   getResp = () => {
-    Axios.get("http://localhost:8080/users/ping")
+    axios.get("http://localhost:8080/users/ping")
       .then(res => console.log(res))
       .catch(err => console.log(err));
   }
@@ -32,8 +31,14 @@ class App extends Component {
     data.append("name", this.state.name);
     data.append("file", this.state.file);
 
-    Axios.post("http://localhost:8080/admin/upload", data)
+    axios.post("http://localhost:8080/admin/upload", data)
       .then(res => console.log(res))
+      .catch(err => console.log(err));
+  }
+
+  getDataTest = () => {
+    axios.get('http://localhost:8080/')
+      .then(res => console.log(res.data))
       .catch(err => console.log(err));
   }
 
@@ -68,6 +73,7 @@ class App extends Component {
           <button onClick={() => this.send()}>Send</button>
         </div>
         */}
+        <button onClick={() => this.getDataTest()}>Test</button>
         <nav>
           <ul style={{ listStyle: 'none', margin: 'auto', padding: '0' }}></ul>
           <li style={{ margin: '10px', display: 'inline-block' }}></li>

@@ -41,7 +41,9 @@ var SELECTEDCIRCLE;
 var data_arr, texture, ctx;
 var WIDTH, HEIGHT;
 var NEW_COLOR_ARR = [200, 0, 0];
+const lineLimitColorUser = 50;
 const lineLimitColor = 200;
+// const lineLimitColor = 50;
 
 // ANIMATION
 var ANIMATIONS_COUNTER = 0;
@@ -63,23 +65,25 @@ var btnClick_sound;
 // DB 
 // init in case of not loading properly so the game doesnt break
 var DB_all_colors = {
-        red: "0xd11141",
-        green: "0x00b159",
-        blue: "0x00aedb",
-        orange: "0xf37735",
-        yellow: "0xffc425",
-        pink: "0xD130FF",
-        cyan: "0x61ffff",
-        brown: "0x733F00",
-        grey: "0x696969"
-    };
+    red: "0xd11141",
+    green: "0x00b159",
+    blue: "0x00aedb",
+    orange: "0xf37735",
+    yellow: "0xffc425",
+    pink: "0xD130FF",
+    cyan: "0x61ffff",
+    brown: "0x733F00",
+    grey: "0x696969"
+};
 var DB_src_original = '/games/color-game/assets/images/coloring-image-2.png';
 var DB_src_painting = '/games/color-game/assets/images/coloring-image-2-2.png';
+// var DB_src_painting = '/games/color-game/assets/images/coloring-image-2.png';
 var DB_title = 'Gatinho';
 var DB_image_ref = 'colorImg';
 var DB_image_ref_original = 'colorImg';
 var DB_game_colors = ['red', 'green', 'blue', 'orange', 'yellow', 'pink', 'cyan', 'brown', 'grey'];
 
+var GAME_REF;
 
 class playGame extends Phaser.Scene {
     constructor() {
@@ -87,7 +91,9 @@ class playGame extends Phaser.Scene {
     }
 
     init() {
-        console.log(window.location.href);
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        GAME_REF = urlParams.get('ref');
     }
 
     async preload() {
@@ -102,7 +108,8 @@ class playGame extends Phaser.Scene {
         this.load.audio('painting1stroke', '/games/color-game/assets/sounds/painting_1_stroke.mp3');
         this.load.audio('rotation', '/games/color-game/assets/sounds/rotation.mp3');
 
-        await axios.get('http://localhost:8080/games/color-game/')
+        const get_game_str = 'http://localhost:8080/games/colorGame/' + GAME_REF;
+        await axios.get(get_game_str)
             .then((response) => this.loadFromDB(response))
             .catch(function (error) {
                 // handle error
@@ -111,28 +118,27 @@ class playGame extends Phaser.Scene {
             .then(function () {
                 // always executed
             });
-
     }
 
     loadFromDB(response) {
-        DB_all_colors = response.data.config.colors[0];
-        DB_game_colors = response.data.game.colors;
-        DB_src_original = response.data.game.src_original;
-        DB_src_painting = response.data.game.src_painting;
-        DB_title = response.data.game.title;
-        DB_image_ref = response.data.game.image_ref;
-
+        // console.log(response);
+        if (response.data.game) {
+            DB_all_colors = response.data.config.colors[0];
+            DB_game_colors = response.data.game.colors;
+            DB_src_original = response.data.game.src_original;
+            DB_src_painting = response.data.game.src_painting;
+            DB_title = response.data.game.title;
+            DB_image_ref = response.data.game.image_ref;
+        }
         this.load.on('complete', () => this.createCostum());
-        DB_image_ref_original = DB_image_ref+'-original';
+        DB_image_ref_original = DB_image_ref + '-original';
         this.load.image(DB_image_ref_original, DB_src_original);
         this.load.image(DB_image_ref, DB_src_painting);
         this.load.start();
+
     }
 
     createCostum() {
-        console.log('create costum');
-        
-        // this.load.once('complete', this.subLoadCompleted, this);
         s_width = game.scale.width;
         s_height = game.scale.height;
         var middle = game.scale.width / 2;
@@ -163,6 +169,14 @@ class playGame extends Phaser.Scene {
             .setOrigin(0, 0)
             .setStrokeStyle(1.5, 0xffc425);
 
+        var imgRef = this.add.image(0, 0, DB_image_ref).setOrigin(0, 0)
+            .setVisible(false);
+
+        console.log(imgRef.width);
+        console.log(imgRef.height);
+
+
+
         var imgToColor = this.add.image(0, 0, 'colorImg').setOrigin(0, 0)
             .setVisible(false);
 
@@ -170,17 +184,22 @@ class playGame extends Phaser.Scene {
         const main_draw_max_width = s_width - main_draw_min_gap * 2;
         const main_draw_max_height = main_draw - main_draw_min_gap * 2;
 
-
-
-        var imgRef = this.add.image(0, 0, DB_image_ref).setOrigin(0, 0)
-            .setVisible(false);
-
-        console.log(imgRef.width);
-        console.log(imgRef.height);
-
+        imgToColor = this.scaleImageToFitFrame(main_draw_max_width, main_draw_max_height, imgToColor);
+        var scaledImg = this.make.renderTexture(
+            {
+                x: imgToColor.getTopLeft().x,
+                y: imgToColor.getTopLeft().y,
+                width: imgToColor.getBottomRight().x - imgToColor.getTopLeft().x,
+                height: imgToColor.getBottomRight().y - imgToColor.getTopLeft().y
+            }, false);
+        scaledImg
+            .draw(imgToColor, 0, 0)
+            .saveTexture('scaledImg')
+        console.log(this.textures.list)
         // flagFranceImg = this.scaleImageToFitFrame(main_draw_max_width, main_draw_max_height, flagFranceImg);
 
         /*       
+        
                 // PARTE DE MODELAR UMA IMAGEM PARA O TAMANHO PRETENDIDO #TODO
         
                  const main_draw_min_gap = 100;
@@ -217,19 +236,22 @@ class playGame extends Phaser.Scene {
 
         WIDTH = imgRef.width;
         HEIGHT = imgRef.height;
-        // WIDTH = imgToColor.width;
-        // HEIGHT = imgToColor.height;
+        var grass = this.textures.get(DB_image_ref).getSourceImage();
+        // console.log(this.textures.get(DB_image_ref));
+        // console.log(this.textures.get('scaledImg').getSourceImage());
+
         texture = this.textures.createCanvas('colorCanvas', WIDTH, HEIGHT);
-        texture.drawFrame(DB_image_ref, 0, 0);
+        texture.draw(0, 0, grass);
         texture.refresh();
         var img = this.add.image(0, 0, 'colorCanvas');
-        const imgOffsetX = s_width / 2 - WIDTH / 2;
-        const imgOffsetY = bar_size + main_draw / 2 - HEIGHT / 2;
+        var imgOffsetX = s_width / 2 - WIDTH / 2;
+        var imgOffsetY = bar_size + main_draw / 2 - HEIGHT / 2;
+
         img
             .setOrigin(0)
             .setPosition(imgOffsetX, imgOffsetY)
-            .setInteractive({ cursor: 'url(../assets/color-game/pen.cur, pointer' });
-
+            .setInteractive();
+        texture.refresh();
         data_arr = texture.getData(0, 0, WIDTH, HEIGHT);
         ctx = texture.getContext();
         //console.log(data_arr);
@@ -617,13 +639,13 @@ class playGame extends Phaser.Scene {
             console.log('Pixel color (%d, %d, %d)', startPixelData.r, startPixelData.g, startPixelData.b);
 
             // VER MELHOR ESTE ELSE IF?
-
-            // // see if the user clicks on the line
-            // if (startPixelData.r < lineLimitColor
-            //     && startPixelData.g < lineLimitColor
-            //     && startPixelData.b < lineLimitColor) {
-            //     console.log('Line');
-            // }
+            // see if the user clicks on the line
+            if (startPixelData.r < lineLimitColorUser
+                && startPixelData.g < lineLimitColorUser
+                && startPixelData.b < lineLimitColorUser) {
+                console.log('Line');
+                return;
+            }
             // check if already painted
             if (startPixelData.r == NEW_COLOR_ARR[0] && startPixelData.g == NEW_COLOR_ARR[1] && startPixelData.b == NEW_COLOR_ARR[2]) {
                 console.log('section already painted in this color');
@@ -735,12 +757,10 @@ class playGame extends Phaser.Scene {
         if (r == NEW_COLOR_ARR[0] && g == NEW_COLOR_ARR[1] && b == NEW_COLOR_ARR[2]) {
             return false;
         }
-        // define the limit where it cant pain, i.e, where it stops
+        // define the limit where it cant pain
         if (r > lineLimitColor && g > lineLimitColor && b > lineLimitColor) {
             return true;
         }
-
-
         return false;
     }
 
