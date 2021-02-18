@@ -20,7 +20,7 @@ class App extends Component {
   }
 
   getResp = () => {
-    axios.get("http://localhost:8080/users/ping")
+    axios.get("http://localhost/api/users/ping")
       .then(res => console.log(res))
       .catch(err => console.log(err));
   }
@@ -37,7 +37,9 @@ class App extends Component {
   }
 
   getDataTest = () => {
-    axios.get('http://node:3000/')
+    console.log(process.env.API_URL);
+    
+    axios.get('http://localhost/api/')
       .then(res => console.log(res.data))
       .catch(err => console.log(err));
   }

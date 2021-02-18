@@ -10,7 +10,7 @@ router.route('/').get((req, res) => {
 router.route('/ping').get((req, res) => {
     
  
-    res.sendFile('/simple-game.html');
+    res.send('ollaaaaa');
 });
 
 router.route('/ping/:imgName').get((req, res) => {

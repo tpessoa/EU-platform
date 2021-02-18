@@ -68,7 +68,6 @@ class Puzzle extends Phaser.Scene {
     }
 
     async preload() {
-        this.load.crossOrigin = true;
         this.load.image(DB_image_ref, DB_src);
 
         this.load.audio('select', '/games/puzzle/assets/sounds/select.mp3');
@@ -76,16 +75,16 @@ class Puzzle extends Phaser.Scene {
         this.load.audio('right_place', '/games/puzzle/assets/sounds/right_place.mp3');
         this.load.audio('complete_puzzle', '/games/puzzle/assets/sounds/complete.mp3');
 
-        // const get_game_str = 'http://localhost:8080/games/puzzle/' + GAME_REF;
-        // await axios.get(get_game_str)
-        //     .then((response) => this.loadFromDB(response))
-        //     .catch(function (error) {
-        //         // handle error
-        //         console.log(error);
-        //     })
-        //     .then(function () {
-        //         // always executed
-        //     });
+        const get_game_str = 'http://localhost/api/games/puzzle/' + GAME_REF;
+        await axios.get(get_game_str)
+            .then((response) => this.loadFromDB(response))
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
     }
 
     loadFromDB(response) {
@@ -101,7 +100,7 @@ class Puzzle extends Phaser.Scene {
 
     }
 
-    create() {
+    createCostum() {
 
         let s_width = game.scale.width;
         let s_height = game.scale.height;

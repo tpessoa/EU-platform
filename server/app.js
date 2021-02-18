@@ -31,7 +31,7 @@ mongoose
     .catch(err => console.log(err));
 
 // API Endpoints
-app.get('/', (req, res) => res.status(200).send('helloo tiago'));
+app.get('/', (req, res) => res.status(200).send('helloo Tiago'));
 
 const adminRouter = require('./routes/admin');
 const usersRouter = require('./routes/users');
