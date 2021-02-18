@@ -34,7 +34,7 @@ class Game extends Component {
 
 
     render() {
-        let gameLink = `http://localhost/api/${this.state.gameTypeRef}/game.html?ref=${this.state.gameRef}`;
+        let gameLink = `/api/${this.state.gameTypeRef}/game.html?ref=${this.state.gameRef}`;
         let iframe; 
         if (this.state.gameTypeRef != '' && this.state.gameTypeRef == '/games/color-game') {
             iframe = (

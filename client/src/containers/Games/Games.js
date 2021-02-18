@@ -19,7 +19,7 @@ class Games extends Component {
         let puzzles = [];
         let game = {};
         let obj;
-        await axios.get('http://localhost/api/games/allColorGames')
+        await axios.get('/api/games/allColorGames')
             .then(res => {
                 for (let i in res.data) {
                     obj = res.data[i];
@@ -32,7 +32,7 @@ class Games extends Component {
                     game = {};
                 }
             });
-        await axios.get('http://localhost/api/games/allPuzzles')
+        await axios.get('api/games/allPuzzles')
             .then(res => {
                 for (let i in res.data) {
                     obj = res.data[i];
