@@ -36,10 +36,8 @@ class App extends Component {
       .catch(err => console.log(err));
   }
 
-  getDataTest = () => {
-    console.log(process.env.API_URL);
-    
-    axios.get('http://localhost/api/')
+  getDataTest = () => {   
+    axios.get('/api/')
       .then(res => console.log(res.data))
       .catch(err => console.log(err));
   }

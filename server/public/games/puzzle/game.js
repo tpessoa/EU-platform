@@ -50,7 +50,7 @@ var right_sound;
 var complete_sound;
 
 // DB
-var DB_src = '/games/puzzle/assets/images/test_image_1.jpg';
+var DB_src = '/api/games/puzzle/assets/images/test_image_1.jpg';
 var DB_size_pieces = 100;
 var DB_image_ref = 'puzzleImg';
 var GAME_REF;
@@ -70,12 +70,12 @@ class Puzzle extends Phaser.Scene {
     async preload() {
         this.load.image(DB_image_ref, DB_src);
 
-        this.load.audio('select', '/games/puzzle/assets/sounds/select.mp3');
-        this.load.audio('drop_piece', '/games/puzzle/assets/sounds/drop.mp3');
-        this.load.audio('right_place', '/games/puzzle/assets/sounds/right_place.mp3');
-        this.load.audio('complete_puzzle', '/games/puzzle/assets/sounds/complete.mp3');
+        this.load.audio('select', '/api/games/puzzle/assets/sounds/select.mp3');
+        this.load.audio('drop_piece', '/api/games/puzzle/assets/sounds/drop.mp3');
+        this.load.audio('right_place', '/api/games/puzzle/assets/sounds/right_place.mp3');
+        this.load.audio('complete_puzzle', '/api/games/puzzle/assets/sounds/complete.mp3');
 
-        const get_game_str = 'http://localhost/api/games/puzzle/' + GAME_REF;
+        const get_game_str = '/api/games/puzzle/' + GAME_REF;
         await axios.get(get_game_str)
             .then((response) => this.loadFromDB(response))
             .catch(function (error) {
