@@ -2,6 +2,8 @@ const router = require('express').Router();
 let ConfigGames = require('../models/config_games.model');
 let ColorGame = require('../models/color_game.model');
 let Puzzle = require('../models/puzzle.model');
+let Quiz = require('../models/quiz.model');
+let WordSearch = require('../models/word_search.model');
 
 router.route('/').get((req, res) => {
     res.send('JOGOS');
@@ -58,6 +60,33 @@ router.get('/puzzle/:ref', async (req, res) => {
         res.status(500).send({ message: e.message });
     }
 });
+
+/**
+ * QUIZ
+ */
+router.get('/allQuizzes', async (req, res) => {
+    try {
+        let quizzes = await Quiz.find({});
+        res.send(quizzes);
+    }
+    catch (e) {
+        res.status(500).send({ message: e.message });
+    }
+});
+
+router.get('/quiz/:ref', async (req, res) => {
+    try {
+        let quiz = await Quiz.findOne({ ref: req.params.ref });
+        res.send(quiz);
+    }
+    catch (e) {
+        res.status(500).send({ message: e.message });
+    }
+});
+
+ /**
+ * SOPA DE LETRAS
+ */
 
 
 module.exports = router;

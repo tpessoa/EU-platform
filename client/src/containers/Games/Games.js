@@ -11,12 +11,15 @@ class Games extends Component {
         color_games: null,
         puzzles: [
             { id: 1, title: 'Puzzle de Teste', ref: 'testPuzzle' }
-        ]
+        ],
+        quizzes: null
     }
 
     async componentDidMount() {
         let color_games = [];
         let puzzles = [];
+        let quizzes = [];
+
         let game = {};
         let obj;
         await axios.get('/api/games/allColorGames')
@@ -45,9 +48,23 @@ class Games extends Component {
                     game = {};
                 }
             });
+        await axios.get('api/games/allQuizzes')
+            .then(res => {
+                for (let i in res.data) {
+                    obj = res.data[i];
+                    // console.log(obj);
+                    game.id = i;
+                    game.title = obj.title;
+                    game.ref = obj.ref;
+
+                    quizzes.push(game);
+                    game = {};
+                }
+            });
         this.setState({
             color_games: color_games,
-            puzzles: puzzles
+            puzzles: puzzles,
+            quizzes: quizzes
         })
     }
 
@@ -67,6 +84,12 @@ class Games extends Component {
                         gameType={"Puzzles"}
                         gameTypeRef={"puzzle"}
                         gameInfo={this.state.puzzles}
+                        pageURL={this.props.match.url}
+                    />
+                    <ListGames
+                        gameType={"Quizzes"}
+                        gameTypeRef={"quiz"}
+                        gameInfo={this.state.quizzes}
                         pageURL={this.props.match.url}
                     />
                 </div>
