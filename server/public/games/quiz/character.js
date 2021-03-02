@@ -15,6 +15,7 @@ export default class Character extends Phaser.Scene {
         this.q_container_dimensions = data.q_container_dimensions;
         this.q_container = data.q_container;
         this.btn_next = data.btn_next;
+        this.justification = data.justification;
     }
 
     preload() {
@@ -43,7 +44,7 @@ export default class Character extends Phaser.Scene {
             .setScale(0.6)
             .setPosition(-2 * this.char_left_space, this.q_container_dimensions.height);
 
-        this.playCharacterAnimation(CHARACTER, false);
+        this.playCharacterAnimation(CHARACTER);
         // this.playCharacterAnimation(this.qObj.user_right, CHARACTER, false);
         this.events.on('destroyScene', this.destroySceneHandler, this);
     }
@@ -67,10 +68,10 @@ export default class Character extends Phaser.Scene {
                 x: this.s_width + this.char_left_space,
                 ease: 'Linear',
                 duration: 1500,
-                onComplete: () => this.showJustification(img_obj, flag_end)
+                onComplete: () => this.showJustification(img_obj)
             },
             {
-                x: this.q_container_dimensions.BR.x + char_offset_x,
+                x: this.q_container_dimensions.BR.x + 1.3*char_offset_x,
                 ease: 'Power2',
                 duration: 1500,
                 onComplete: () => this.nextQuestion()
@@ -101,13 +102,11 @@ export default class Character extends Phaser.Scene {
         return img_obj;
     }
 
-    showJustification(img_obj, flag) {
+    showJustification(img_obj) {
         var sceneGame = this.scene.get('Game');
-        sceneGame.setQuestion(this.q_container, 'Justificação:\n asasdas');
+        sceneGame.setPlayJustificationFlag(true);
+        sceneGame.setQuestion(this.q_container, this.justification);
 
-        if (flag) {
-            console.log('acabar');
-        }
         img_obj = this.flipCharacter(img_obj);
     }
 

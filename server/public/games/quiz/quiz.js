@@ -44,6 +44,7 @@ var INFO = {
             {
                 question: ['Pergunta 1'],
                 answers: ['Resposta 1', 'Resposta 2', 'Resposta 3 sdfsdfsd sdfsdf sdsdffewe2 ew fwef ef 2 f F S FD', 'Resposta 4'],
+                justification: "justificação",
                 right_answer: 2,
                 user_right: null,
                 user_guess: null,
@@ -61,6 +62,9 @@ var mili = 1000;
 // workaround, need to be global to be used by the timer event if the game has timer
 var answers_container;
 var GAME_REF;
+var PLAY_JUSTIFICATION = false;
+
+var right_a_sound, wrong_a_sound;
 
 class Quiz extends Phaser.Scene {
 
@@ -82,6 +86,8 @@ class Quiz extends Phaser.Scene {
         this.load.image('correct', "./assets/images/correct.png");
         this.load.image('wrong', "./assets/images/wrong.png");
         this.load.image('listening', "./assets/images/listening.png");
+        this.load.audio('right_answer', "./assets/sounds/right_answer.mp3");
+        this.load.audio('wrong_answer', "./assets/sounds/wrong_answer.mp3");
 
         const get_game_str = '/api/games/quiz/' + GAME_REF;
         await axios.get(get_game_str)
@@ -108,6 +114,12 @@ class Quiz extends Phaser.Scene {
             INFO.has_audio = obj.has_audio;
         }
         this.load.on('complete', () => this.createCostum());
+
+        // load sound answers
+
+        // load sound justifications
+
+        
         // this.load.image(DB_image_ref, DB_src);
         this.load.start();
     }
@@ -162,6 +174,9 @@ class Quiz extends Phaser.Scene {
         // LISTENERS
         btn_next.on('pointerdown', () => this.nextQuestion(s_width, s_height, btn_next, question_container, answers_container, ending_container));
         this.events.on('activateBtnNext', this.setBtnNextHandler, this);
+
+        right_a_sound = this.sound.add('right_answer');
+        wrong_a_sound = this.sound.add('wrong_answer');
     }
 
     endingInfoHandler(s_width, s_height, q_container, a_container, e_container) {
@@ -205,8 +220,9 @@ class Quiz extends Phaser.Scene {
 
         // set disable next question button
         this.setBtnNextHandler(btn_ref, false, 0.5);
-        // enable pointerover and pointerout listeners
 
+        // play question
+        this.setPlayJustificationFlag(false);
 
         // put the next question on question container and answers container
         if (INFO.current_question_num < INFO.input.length - 1) {
@@ -339,13 +355,12 @@ class Quiz extends Phaser.Scene {
             btn_listening = this.scaleImageToFitFrame(40, MAX_VAL, btn_listening);
             btn_listening
                 .setInteractive()
-                .setPosition(questions_w - btn_listening.getData('scaled_w'), text.y + text.height / 3);
+                .setPosition(questions_w - btn_listening.getData('scaled_w')/1.3, text.y + text.height / 3);
 
             btn_listening.on('pointerdown', () => this.playQuestionAudioHandler(btn_listening));
 
             container.add(btn_listening);
         }
-
         return container;
     }
 
@@ -507,13 +522,14 @@ class Quiz extends Phaser.Scene {
        * HANDLERS
       */
     answerHandler(container, gameObject, s_width, s_height, q_container, btn_next) {
-        var answer_selected_pos
+        var answer_selected_pos;
         if (gameObject) {
             answer_selected_pos = gameObject.getData('answer_num');
 
             // pause the timer if game the game has time
             if (INFO.timer) {
                 timedEvent.paused = true;
+
             }
         }
         // case where the time to respond has overtaken
@@ -532,7 +548,7 @@ class Quiz extends Phaser.Scene {
             this.setQuestionColor(q_container, green, 0.8);
 
             // play answer right sound
-
+            right_a_sound.play();
         }
         // if its the wrong
         else {
@@ -540,7 +556,7 @@ class Quiz extends Phaser.Scene {
             question_obj.user_right = false;
 
             // play answer wrong sound
-
+            wrong_a_sound.play();
         }
         // set the user selected answer
         question_obj.user_guess = answer_selected_pos;
@@ -560,9 +576,9 @@ class Quiz extends Phaser.Scene {
             char_left_space: SPACE_BETWEEN_ANSWERS,
             q_container_dimensions: q_container.dimensions,
             q_container: q_container,
-            btn_next: btn_next
+            btn_next: btn_next,
+            justification: INFO.input[current_question_num].justification
         });
-
     }
 
     imgPointerOverHandler(ref_img, flag) {
@@ -577,11 +593,24 @@ class Quiz extends Phaser.Scene {
     playQuestionAudioHandler(btn_ref) {
         console.log('play audio');
         btn_ref.setAlpha(0.5);
+
+        // see the current question
+        // see if its to play the question or justification 
+        if (PLAY_JUSTIFICATION) {
+            console.log('just')
+        }
+        else {
+            console.log('not just')
+        }
     }
 
     /**
      * UTILS
      */
+
+    setPlayJustificationFlag(flag) {
+        PLAY_JUSTIFICATION = flag;
+    }
 
     setBlurAndColorFromAnswers(container, color, alpha, flag, a_selected_pos, a_selected_color) {
         var list_obj;

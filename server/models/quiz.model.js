@@ -7,7 +7,7 @@ const quizSchema = new Schema(
         input: Array,
         timer: Boolean,
         time_to_resp_question: Number,
-        has_audio: Boolean
+        has_audio: Boolean,
     },
     { collection: 'quiz' }
 );
