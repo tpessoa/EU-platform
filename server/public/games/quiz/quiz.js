@@ -61,8 +61,8 @@ var timer_text, timedEvent;
 var mili = 1000;
 // workaround, need to be global to be used by the timer event if the game has timer
 var answers_container;
-var GAME_REF;
 var PLAY_JUSTIFICATION = false;
+var GAME_REF;
 
 var right_a_sound, wrong_a_sound;
 

@@ -12,13 +12,15 @@ class Games extends Component {
         puzzles: [
             { id: 1, title: 'Puzzle de Teste', ref: 'testPuzzle' }
         ],
-        quizzes: null
+        quizzes: null,
+        wordSearchs: null,
     }
 
     async componentDidMount() {
         let color_games = [];
         let puzzles = [];
         let quizzes = [];
+        let wordSearchs = [];
 
         let game = {};
         let obj;
@@ -61,10 +63,25 @@ class Games extends Component {
                     game = {};
                 }
             });
+
+        await axios.get('api/games/allWordSearchs')
+            .then(res => {
+                for (let i in res.data) {
+                    obj = res.data[i];
+                    // console.log(obj);
+                    game.id = i;
+                    game.title = obj.title;
+                    game.ref = obj.ref;
+
+                    wordSearchs.push(game);
+                    game = {};
+                }
+            });
         this.setState({
             color_games: color_games,
             puzzles: puzzles,
-            quizzes: quizzes
+            quizzes: quizzes,
+            wordSearchs: wordSearchs
         })
     }
 
@@ -92,9 +109,14 @@ class Games extends Component {
                         gameInfo={this.state.quizzes}
                         pageURL={this.props.match.url}
                     />
+                     <ListGames
+                        gameType={"Sopa de Letras"}
+                        gameTypeRef={"wordSearch"}
+                        gameInfo={this.state.wordSearchs}
+                        pageURL={this.props.match.url}
+                    />
                 </div>
             )
-
         }
         return (
             <div>

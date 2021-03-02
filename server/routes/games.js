@@ -88,5 +88,26 @@ router.get('/quiz/:ref', async (req, res) => {
  * SOPA DE LETRAS
  */
 
+router.get('/allWordSearchs', async (req, res) => {
+    try {
+        let wordSearchs = await WordSearch.find({});
+        res.send(wordSearchs);
+    }
+    catch (e) {
+        res.status(500).send({ message: e.message });
+    }
+});
+
+router.get('/wordSearch/:ref', async (req, res) => {
+    console.log('d');
+    try {
+        let wordSearch = await WordSearch.findOne({ ref: req.params.ref });
+        res.send(wordSearch);
+    }
+    catch (e) {
+        res.status(500).send({ message: e.message });
+    }
+});
+
 
 module.exports = router;
