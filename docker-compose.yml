@@ -42,6 +42,7 @@ services:
       - '27017:27017' 
     volumes: 
       - ./server/mongo-volume:/data/db
+      - ./.backups/mongodb/:/backups
     networks: 
       - my-net
   
