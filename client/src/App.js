@@ -1,93 +1,26 @@
-import React, { Component } from 'react';
-import "./App.css"
+import React from "react";
+import GlobalStyle from "./globalStyles";
+import ScrollToTop from "./components/scrollToTop";
 
-import axios from 'axios';
-import {
-  Route,
-  Link,
-  Switch,
-  Redirect
-} from 'react-router-dom';
+import Home from "./components/pages/Home/Home";
+import Games from "./components/pages/Games/Games";
 
-import Games from './containers/Games/Games';
-import NoMatch from './components/NoMatch/NoMatch';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Footer, Navbar } from "./components";
 
-class App extends Component {
-
-  state = {
-    name: "",
-    file: "",
-  }
-
-  getResp = () => {
-    axios.get("http://localhost/api/users/ping")
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
-  }
-
-  send = () => {
-    console.log("hereee");
-    const data = new FormData();
-    data.append("name", this.state.name);
-    data.append("file", this.state.file);
-
-    axios.post("http://localhost:8080/admin/upload", data)
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
-  }
-
-  getDataTest = () => {   
-    axios.get('/api/')
-      .then(res => console.log(res.data))
-      .catch(err => console.log(err));
-  }
-
-  render() {
-    return (
-      <div className="App">
-        {/*
-        <div>
-          <form action="#">
-            <div className="flex">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                id="name"
-                onChange={event => {
-                  this.setState({ name: event.target.value })
-                }}
-              />
-            </div>
-            <div className="flex">
-              <label htmlFor="file">File</label>
-              <input
-                type="file"
-                id="file"
-                accept=".jpg"
-                onChange={event => {
-                  this.setState({ file: event.target.files[0] })
-                }}
-              />
-            </div>
-          </form>
-          <button onClick={() => this.send()}>Send</button>
-        </div>
-        */}
-        <button onClick={() => this.getDataTest()}>Test</button>
-        <nav>
-          <ul style={{ listStyle: 'none', margin: 'auto', padding: '0' }}></ul>
-          <li style={{ margin: '10px', display: 'inline-block' }}></li>
-          <Link to='/games'>Jogos</Link>
-        </nav>
-        <Switch>
-          <Route path='/games' component={Games} />
-
-          <Redirect from='/all-games' to='/games' />
-          <Route component={NoMatch} />
-        </Switch>
-      </div>
-    );
-  }
+function App() {
+  return (
+    <Router>
+      <GlobalStyle />
+      <ScrollToTop />
+      <Navbar />
+      <Switch>
+        <Route path="/" exact component={Home} />
+        <Route path="/games" component={Games} />
+      </Switch>
+      <Footer />
+    </Router>
+  );
 }
 
 export default App;
