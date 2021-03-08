@@ -43,7 +43,7 @@ const TypeOfGames = () => {
             </GameIcon>
             <GameName>Sopa de Letras</GameName>
           </GameItem>
-          <GameItem to={"/games/allQuizes"}>
+          <GameItem to={"/games/allQuizzes"}>
             <GameIcon>
               <FaQuestion />
             </GameIcon>

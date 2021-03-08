@@ -10,14 +10,20 @@ export const CardContainer = styled(Link)`
   box-shadow: 0px 0px 15px -5px;
   transition: all 0.3s ease-in;
   text-decoration: none;
-  /* &:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 0px 15px 0px;
-  } */
+  &:hover {
+    /* transform: scale(1.05); */
+    color: #fff;
+    /* color: #ffcc00; */
+    box-shadow: 0px 0px 5px 0px;
+  }
 `;
 
 export const ImgWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 5px;
+  padding: 5px;
   overflow: hidden;
 `;
 

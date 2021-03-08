@@ -1,5 +1,4 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 
 import {
   CardContainer,
@@ -7,25 +6,25 @@ import {
   Img,
   ContentWrapper,
   Title,
-  Description,
+  // Description,
 } from "./Card.elements";
 
-const Card = ({ title, description, img, imgAlt, cardRef }) => {
-  const history = useHistory();
-  console.log(history);
-  const handleClick = () => {
-    history.push("/" + cardRef);
-  };
-
+const Card = (props) => {
+  const { name, title, img, imgAlt, cardsType, cardRef } = props.gameInfo;
   return (
     <>
-      <CardContainer onClick={handleClick}>
+      <CardContainer
+        to={{
+          pathname: `/games/${cardsType}/${name}`,
+          search: `?id=${cardRef}`,
+        }}
+      >
         <ImgWrapper>
           <Img src={img} alt={imgAlt} />
         </ImgWrapper>
         <ContentWrapper>
           <Title>{title}</Title>
-          <Description>{description}</Description>
+          {/* <Description>{description}</Description> */}
         </ContentWrapper>
       </CardContainer>
     </>
