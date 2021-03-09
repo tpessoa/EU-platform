@@ -15,8 +15,8 @@ window.onload = function () {
       disableWebAudio: true,
     },
     fps: {
-      max: 30,
-      target: 25,
+      max: 60,
+      target: 50,
       min: 20,
       forceSetTimeOut: true,
     },

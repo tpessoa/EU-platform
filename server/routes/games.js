@@ -28,7 +28,6 @@ router.get("/allColorGames", async (req, res) => {
 
 router.get("/colorGame/:id", async (req, res) => {
   try {
-    console.log(req.params.id);
     let all_colors = await ConfigGames.findOne({ name: "color_game" });
     let result = await ColorGame.findOne({ ref: req.params.id });
     const newObj = {
@@ -112,7 +111,6 @@ router.get("/allWordSearchs", async (req, res) => {
 });
 
 router.get("/wordSearch/:id", async (req, res) => {
-  console.log("d");
   try {
     let wordSearch = await WordSearch.findOne({ ref: req.params.id });
     res.send(wordSearch);

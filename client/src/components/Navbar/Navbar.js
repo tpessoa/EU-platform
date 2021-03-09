@@ -43,9 +43,9 @@ const Navbar = () => {
               <NavLink to="/polling">Trabalhos</NavLink>
             </NavItem>
           </NavMenu>
-          <NavBtn>
+          {/* <NavBtn>
             <NavBtnLink>Sign In</NavBtnLink>
-          </NavBtn>
+          </NavBtn> */}
         </NavbarContainer>
       </Nav>
     </>

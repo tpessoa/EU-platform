@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export const Nav = styled.nav`
   background: #000;
-  height: 80px;
+  min-height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,28 +12,28 @@ export const Nav = styled.nav`
   position: sticky;
   top: 0;
   z-index: 10;
-
-  @media screen and (max-width: 960px) {
-    transition: 0.8 all ease;
-  }
 `;
 
 export const NavbarContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  height: 80px;
-  z-index: 2;
-  width: 100%;
+  /* display: flex;
+  justify-content: center;
+  */
+  min-height: 80px;
   max-width: 1100px;
+  width: 100%;
+  z-index: 2;
   padding: 0 24px;
+
+  display: grid;
+  grid-template-columns: 2fr 3fr 2fr;
 `;
 
 export const NavLogo = styled(Link)`
   color: #fff;
-  justify-self: flex-start;
-  cursor: pointer;
   display: flex;
+  justify-self: flex-start;
   align-items: center;
+  cursor: pointer;
   /* margin-left: 24px; */
   font-size: 1.5rem;
   font-weight: bold;
@@ -58,6 +58,7 @@ export const MobileIcon = styled.div`
 export const NavMenu = styled.ul`
   display: flex;
   align-items: center;
+  justify-self: center;
   text-align: center;
   list-style: none;
   /* margin-right: -22px; */
@@ -70,7 +71,6 @@ export const NavMenu = styled.ul`
     position: absolute;
     top: 80px;
     left: ${({ click }) => (click ? 0 : "-100%")};
-    opacity: 1;
     transition: all 0.5 ease;
     background: #101522;
     /* opacity: 0.9; */
@@ -97,6 +97,7 @@ export const NavLink = styled(Link)`
 
 export const NavBtn = styled.nav`
   display: flex;
+  justify-self: flex-end;
   align-items: center;
 
   @media screen and (max-width: 768px) {
@@ -106,7 +107,7 @@ export const NavBtn = styled.nav`
 
 export const NavBtnLink = styled(Link)`
   border-radius: 50px;
-  background: #01bf71;
+  background: #ffcc00;
   white-space: nowrap;
   padding: 10px 22px;
   color: #010606;

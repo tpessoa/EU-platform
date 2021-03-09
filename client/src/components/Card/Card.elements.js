@@ -43,7 +43,7 @@ export const Img = styled.img`
     /* transform: scale(1.2); */
 
     filter: brightness(100%);
-    transform: scale(1.3);
+    transform: scale(1.1);
   }
 `;
 
