@@ -1,9 +1,9 @@
 import React from "react";
-import Cards from "../../Cards/Cards";
-import GameIFrame from "../../GameIFrame/GameIFrame";
-import TypeOfGames from "../../TypeOfGames/TypeOfGames";
-import { gameObjOne } from "./Data";
 import { Route } from "react-router-dom";
+import TypeOfGames from "../../components/TypeOfGames";
+import Cards from "../../components/Cards";
+import GameIFrame from "../../components/GameIFrame";
+
 const Games = () => {
   return (
     <>

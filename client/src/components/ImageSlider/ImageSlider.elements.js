@@ -1,45 +1,48 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  position: relative;
-  height: 80vh;
+  max-width: 500px;
+  min-height: 300px;
+  padding: 50px 0;
+  margin: auto;
+`;
+
+export const SliderWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-rows: 250px;
+`;
+
+export const SliderArrows = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 2.5rem;
+  color: #000;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+
+  @media screen and (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+`;
+
+export const ArrowLeft = styled.div`
+  justify-content: flex-start;
+`;
+export const ArrowRight = styled.div`
+  justify-content: flex-end;
+`;
+
+export const SlideWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-export const Img = styled.img`
-  /* width: 80%;
-  height: 80%; */
-
-  width: 800px;
-  height: 600px;
-  border-radius: 10px;
-`;
-
-export const SliderArrows = styled.div`
-  font-size: 3rem;
-  color: #000;
-  z-index: 10;
-  cursor: pointer;
-  user-select: none;
-`;
-
-export const ArrowLeft = styled.div`
-  position: absolute;
-  left: 32px;
-`;
-export const ArrowRight = styled.div`
-  position: absolute;
-  right: 32px;
-`;
-
-const handleSlide = (index, current) => {
-  console.log(index == current);
-  return index == current;
-};
-
-export const SlideWrapper = styled.div`
+export const Slide = styled.div`
   ${(props) => {
     if (props.active) {
       return `
@@ -54,8 +57,16 @@ export const SlideWrapper = styled.div`
       `;
     }
   }}
+
+  &:hover {
+    opacity: 0.5;
+  }
 `;
 
-export const ActiveImg = styled.div``;
-
-export const DesactiveImg = styled.div``;
+export const Img = styled.img`
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+  margin: auto;
+  display: block;
+`;

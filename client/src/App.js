@@ -1,19 +1,18 @@
 import React from "react";
 import GlobalStyle from "./globalStyles";
-import ScrollToTop from "./components/scrollToTop";
-
-import Home from "./components/pages/Home/Home";
-import Games from "./components/pages/Games/Games";
-import Videos from "./components/pages/Videos/Videos";
+// import ScrollToTop from "./components/scrollToTop";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Footer, Navbar } from "./components";
+import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import Games from "./pages/Games";
+import Videos from "./pages/Videos";
 
 function App() {
   return (
     <Router>
       <GlobalStyle />
-      <ScrollToTop />
       <Navbar />
       <Switch>
         <Route path="/" exact component={Home} />

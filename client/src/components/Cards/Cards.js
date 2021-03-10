@@ -1,8 +1,8 @@
 import React from "react";
-import Card from "../Card/Card";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
+import Card from "../Card";
 import { CardsSection, CardsWrapper, CardsHeading } from "./Cards.elements";
 
 const gameObjOne = {

@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from "react-icons/fa";
 import {
   Container,
+  SliderWrapper,
   Img,
   SliderArrows,
   ArrowLeft,
   ArrowRight,
   SlideWrapper,
+  Slide,
 } from "./ImageSlider.elements";
 
 const ImageSlider = ({ slides }) => {
@@ -24,27 +26,32 @@ const ImageSlider = ({ slides }) => {
   if (!Array.isArray(slides) || slides.length <= 0) {
     return null;
   }
-  console.log(current);
 
   return (
     <Container>
-      <SliderArrows>
-        <ArrowLeft>
-          <FaArrowAltCircleLeft onClick={prevSlide} />
-        </ArrowLeft>
-        <ArrowRight>
-          <FaArrowAltCircleRight onClick={nextSlide} />
-        </ArrowRight>
-      </SliderArrows>
-      {slides.map((slide, index) => {
-        return (
-          <SlideWrapper active={index === current}>
-            {index === current && (
-              <Img src={slide.image} alt={"image " + index} />
-            )}
-          </SlideWrapper>
-        );
-      })}
+      <SliderWrapper>
+        <SliderArrows>
+          <ArrowLeft>
+            <FaArrowAltCircleLeft onClick={prevSlide} />
+          </ArrowLeft>
+        </SliderArrows>
+        <SlideWrapper>
+          {slides.map((slide, index) => {
+            return (
+              <Slide active={index === current}>
+                {index === current && (
+                  <Img src={slide.image} alt={"image " + index} />
+                )}
+              </Slide>
+            );
+          })}
+        </SlideWrapper>
+        <SliderArrows>
+          <ArrowRight>
+            <FaArrowAltCircleRight onClick={nextSlide} />
+          </ArrowRight>
+        </SliderArrows>
+      </SliderWrapper>
     </Container>
   );
 };

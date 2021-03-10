@@ -7,7 +7,7 @@ import {
   HeroH1,
   HeroP,
 } from "./HeroSection.elements";
-import video from "../../videos/eu-flag-video.mp4";
+import video from "../../hero-video/eu-flag-video.mp4";
 
 const HeroSection = ({ header, description }) => {
   return (

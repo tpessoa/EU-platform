@@ -4,10 +4,6 @@ import { GiMagnifyingGlass } from "react-icons/gi";
 import { IoColorPaletteSharp } from "react-icons/io5";
 import { BsPuzzleFill } from "react-icons/bs";
 import { FaBrain, FaQuestion } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
-import { Route } from "react-router-dom";
-
-import Cards from "../Cards/Cards";
 
 import {
   Container,
