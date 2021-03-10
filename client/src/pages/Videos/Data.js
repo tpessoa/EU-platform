@@ -17,4 +17,38 @@ export const SliderData = [
   },
 ];
 
-export const Categories = ["Riczao"];
+export const CategoryData = [
+  {
+    title: "História",
+    img: require("../../images/videosPage/history.svg").default,
+    videos: [
+      "https://www.youtube.com/embed/4VCYHTGjr-U",
+      "https://www.youtube.com/embed/XgnXwrsMBUs",
+      "https://www.youtube.com/embed/xRwZyDTdCAc",
+      "https://www.youtube.com/embed/O37yJBFRrfg",
+      "https://www.youtube.com/embed/eX-byB8iXKo",
+    ],
+    reverse: false,
+  },
+  {
+    title: "Países",
+    img: require("../../images/videosPage/coronavirus.svg").default,
+    videos: [
+      "https://www.youtube.com/embed/QObA0FH3mLM",
+      "https://www.youtube.com/embed/4VCYHTGjr-U",
+      "https://www.youtube.com/embed/ATrhvt8cW98",
+      "https://www.youtube.com/embed/MAImriRP5O0",
+    ],
+    reverse: true,
+  },
+  {
+    title: "União Europeia",
+    img: require("../../images/videosPage/european-union.svg").default,
+    videos: [
+      "https://www.youtube.com/embed/XxutY7ss1v4",
+      "https://www.youtube.com/embed/9eufLQ3sew0",
+      "https://www.youtube.com/embed/rjbevw8FMuc",
+    ],
+    reverse: false,
+  },
+];

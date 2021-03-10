@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 export const Nav = styled.nav`
   background: #000;
+
   min-height: 80px;
   display: flex;
   justify-content: center;

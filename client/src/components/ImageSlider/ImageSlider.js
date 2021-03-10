@@ -38,7 +38,7 @@ const ImageSlider = ({ slides }) => {
         <SlideWrapper>
           {slides.map((slide, index) => {
             return (
-              <Slide active={index === current}>
+              <Slide active={index === current} key={index}>
                 {index === current && (
                   <Img src={slide.image} alt={"image " + index} />
                 )}

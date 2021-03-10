@@ -1,23 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import VideoCard from "../VideoCard";
-import { Container, VideosWrapper, Title } from "./VideosList.elements";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  Container,
+  VideosWrapper,
+  InfoWrapper,
+  Title,
+  ImgWrapper,
+  Img,
+  Slide,
+  ShowMore,
+} from "./VideosList.elements";
 
-const VideosList = ({ title, lightBg }) => {
-  console.log(title);
+const VideosList = ({ title, img, reverse, videos }) => {
+  const [left, setLeft] = useState(0);
+
+  const handleClick = () => {
+    let temp = left;
+    temp -= 20;
+    setLeft(temp);
+  };
+
   return (
     <>
-      <Container lightBg={lightBg}>
-        <Title>
-          <h1>{title[0]}</h1>
-        </Title>
+      <Container lightBg={reverse} reverse={reverse}>
+        <InfoWrapper>
+          <Title>
+            <h1>{title}</h1>
+          </Title>
+          <ImgWrapper>
+            <Img src={img} alt={"image_" + title}></Img>
+          </ImgWrapper>
+        </InfoWrapper>
         <VideosWrapper>
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
-          <VideoCard />
+          {/* <Slide>
+            <FaChevronLeft onClick={handleClick} />
+          </Slide> */}
+          {videos.map((video, index) => {
+            return <VideoCard src={video} key={index} left={left} />;
+          })}
+          {/* <FaChevronRight /> */}
         </VideosWrapper>
+        <ShowMore>Ver Todos</ShowMore>
       </Container>
     </>
   );

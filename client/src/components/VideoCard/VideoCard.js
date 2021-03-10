@@ -1,19 +1,35 @@
 import React from "react";
 
-import { Container, VideoWrapper } from "./VideoCard.elements";
+import { FaYoutube } from "react-icons/fa";
+import {
+  Container,
+  VideoWrapper,
+  ImgWrapper,
+  YoutubeIcon,
+  Img,
+} from "./VideoCard.elements";
 
-const VideoCard = () => {
+const VideoCard = ({ src, left }) => {
+  const video_id = src.split("/")[4];
+  const video_thumbnail_url = `https://img.youtube.com/vi/${video_id}/0.jpg`;
+  console.log(left);
   return (
     <>
-      <Container>
-        <VideoWrapper
+      <Container left={left}>
+        <YoutubeIcon>
+          <FaYoutube />
+        </YoutubeIcon>
+        <ImgWrapper>
+          <Img src={video_thumbnail_url} />
+        </ImgWrapper>
+        {/* <VideoWrapper
           width="560"
           height="315"
-          src="https://www.youtube.com/embed/KLEZMuguanQ"
+          src={src}
           frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        />
+          allowfullscreen="true"
+          referrerpolicy="same-origin"
+        /> */}
       </Container>
     </>
   );
