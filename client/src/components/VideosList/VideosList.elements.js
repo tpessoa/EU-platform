@@ -18,12 +18,19 @@ export const Container = styled.div`
   }} */
 
   display: grid;
-  grid-template-columns: 1fr 3fr;
-  grid-template-rows: 1fr;
 
   direction: ${({ reverse }) => (reverse ? "rtl" : "ltr")};
   margin: 30px 0;
   padding: 100px 50px;
+
+  @media screen and (min-width: 960px) {
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 1fr;
+  }
+
+  @media screen and (max-width: 960px) {
+    grid-template-rows: 1fr 1fr 1fr;
+  }
 `;
 
 export const InfoWrapper = styled.div`
@@ -80,4 +87,34 @@ export const ShowMore = styled.button`
 
   text-decoration: none;
   text-align: center;
+`;
+
+export const VideoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+`;
+
+export const PlayVideo = styled.iframe`
+  margin: 20px;
+  border: none;
+  min-width: 885px;
+  min-height: 500px;
+
+  @media screen and (max-width: 960px) {
+    min-width: 560px;
+    min-height: 315px;
+  }
+
+  @media screen and (max-width: 640px) {
+    min-width: 318px;
+    min-height: 180px;
+  }
+`;
+
+export const BtnWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

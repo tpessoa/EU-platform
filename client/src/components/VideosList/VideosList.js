@@ -9,11 +9,15 @@ import {
   ImgWrapper,
   Img,
   Slide,
+  BtnWrapper,
   ShowMore,
+  VideoWrapper,
+  PlayVideo,
 } from "./VideosList.elements";
 
 const VideosList = ({ title, img, reverse, videos }) => {
   const [left, setLeft] = useState(0);
+  const [video, setVideo] = useState(null);
 
   const handleClick = () => {
     let temp = left;
@@ -37,12 +41,31 @@ const VideosList = ({ title, img, reverse, videos }) => {
             <FaChevronLeft onClick={handleClick} />
           </Slide> */}
           {videos.map((video, index) => {
-            return <VideoCard src={video} key={index} left={left} />;
+            return (
+              <VideoCard
+                src={video}
+                key={index}
+                left={left}
+                setVideo={setVideo}
+              />
+            );
           })}
           {/* <FaChevronRight /> */}
         </VideosWrapper>
-        <ShowMore>Ver Todos</ShowMore>
+        <BtnWrapper>
+          <ShowMore>Ver Todos</ShowMore>
+        </BtnWrapper>
       </Container>
+      {video && (
+        <VideoWrapper>
+          <PlayVideo
+            src={video + "?autoplay=1"}
+            frameborder="0"
+            allowfullscreen="true"
+            referrerpolicy="same-origin"
+          />
+        </VideoWrapper>
+      )}
     </>
   );
 };
