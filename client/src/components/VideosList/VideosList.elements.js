@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const Container = styled.div`
   background: ${({ lightBg }) => (lightBg ? "#3d49c7" : "#1e3c72")};
@@ -18,10 +19,9 @@ export const Container = styled.div`
   }} */
 
   display: grid;
-
-  direction: ${({ reverse }) => (reverse ? "rtl" : "ltr")};
   margin: 30px 0;
   padding: 100px 50px;
+  direction: ${({ reverse }) => (reverse ? "rtl" : "ltr")};
 
   @media screen and (min-width: 960px) {
     grid-template-columns: 1fr 3fr;
@@ -65,7 +65,6 @@ export const VideosWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-
   overflow: hidden;
 `;
 
@@ -74,7 +73,7 @@ export const Slide = styled.div`
   z-index: 10;
 `;
 //#ffcc00
-export const ShowMore = styled.button`
+export const ShowMore = styled(Link)`
   box-sizing: border-box;
   border: 2px solid $red;
   cursor: pointer;
@@ -94,23 +93,6 @@ export const VideoWrapper = styled.div`
   align-items: center;
   justify-content: center;
   max-width: 100%;
-`;
-
-export const PlayVideo = styled.iframe`
-  margin: 20px;
-  border: none;
-  min-width: 885px;
-  min-height: 500px;
-
-  @media screen and (max-width: 960px) {
-    min-width: 560px;
-    min-height: 315px;
-  }
-
-  @media screen and (max-width: 640px) {
-    min-width: 318px;
-    min-height: 180px;
-  }
 `;
 
 export const BtnWrapper = styled.div`

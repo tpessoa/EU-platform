@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Games from "./pages/Games";
 import Videos from "./pages/Videos";
+import VideoGallery from "./components/VideoGallery";
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/games" component={Games} />
-        <Route path="/videos" component={Videos} />
+        <Route exact path="/videos" component={Videos} />
+        <Route exact path="/videos/category" component={VideoGallery} />
       </Switch>
       <Footer />
     </Router>

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import VideoCard from "../VideoCard";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
+import VideoCard from "../VideoCard";
+import PlayVideo from "../PlayVideo";
+
 import {
   Container,
   VideosWrapper,
@@ -12,10 +15,9 @@ import {
   BtnWrapper,
   ShowMore,
   VideoWrapper,
-  PlayVideo,
 } from "./VideosList.elements";
 
-const VideosList = ({ title, img, reverse, videos }) => {
+const VideosList = ({ id, title, img, reverse, videos }) => {
   const [left, setLeft] = useState(0);
   const [video, setVideo] = useState(null);
 
@@ -23,6 +25,10 @@ const VideosList = ({ title, img, reverse, videos }) => {
     let temp = left;
     temp -= 20;
     setLeft(temp);
+  };
+
+  const showMoreVideos = () => {
+    console.log("More videos");
   };
 
   return (
@@ -53,17 +59,19 @@ const VideosList = ({ title, img, reverse, videos }) => {
           {/* <FaChevronRight /> */}
         </VideosWrapper>
         <BtnWrapper>
-          <ShowMore>Ver Todos</ShowMore>
+          <ShowMore
+            to={{
+              pathname: `/videos/category`,
+              search: `?id=${id}`,
+            }}
+          >
+            Ver Todos
+          </ShowMore>
         </BtnWrapper>
       </Container>
       {video && (
         <VideoWrapper>
-          <PlayVideo
-            src={video + "?autoplay=1"}
-            frameborder="0"
-            allowfullscreen="true"
-            referrerpolicy="same-origin"
-          />
+          <PlayVideo video_url={video} />
         </VideoWrapper>
       )}
     </>

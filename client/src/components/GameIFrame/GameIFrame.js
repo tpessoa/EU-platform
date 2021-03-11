@@ -26,8 +26,6 @@ const GameIFrame = () => {
    */
 
   const fullscreenHandler = () => {
-    console.log("sdf");
-
     document
       .getElementById("game")
       .requestFullscreen()

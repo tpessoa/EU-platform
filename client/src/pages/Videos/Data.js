@@ -19,6 +19,7 @@ export const SliderData = [
 
 export const CategoryData = [
   {
+    id: 1,
     title: "História",
     img: require("../../images/videosPage/history.svg").default,
     videos: [
@@ -31,6 +32,7 @@ export const CategoryData = [
     reverse: false,
   },
   {
+    id: 2,
     title: "Países",
     img: require("../../images/videosPage/coronavirus.svg").default,
     videos: [
@@ -42,6 +44,7 @@ export const CategoryData = [
     reverse: true,
   },
   {
+    id: 3,
     title: "União Europeia",
     img: require("../../images/videosPage/european-union.svg").default,
     videos: [

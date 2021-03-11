@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 
 import { FaYoutube } from "react-icons/fa";
-import { VideosWrapper } from "../VideosList/VideosList.elements";
-import {
-  Container,
-  VideoWrapper,
-  ImgWrapper,
-  YoutubeIcon,
-  Img,
-} from "./VideoCard.elements";
+import { Container, ImgWrapper, YoutubeIcon, Img } from "./VideoCard.elements";
 
 const VideoCard = ({ src, left, setVideo }) => {
   const video_id = src.split("/")[4];
@@ -22,7 +15,6 @@ const VideoCard = ({ src, left, setVideo }) => {
   };
 
   const playVideo = () => {
-    console.log("play video");
     setVideo(src);
   };
 
