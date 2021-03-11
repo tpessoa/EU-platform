@@ -23,7 +23,6 @@ export const CategoryData = [
     title: "História",
     img: require("../../images/videosPage/history.svg").default,
     videos: [
-      "https://www.youtube.com/embed/4VCYHTGjr-U",
       "https://www.youtube.com/embed/XgnXwrsMBUs",
       "https://www.youtube.com/embed/xRwZyDTdCAc",
       "https://www.youtube.com/embed/O37yJBFRrfg",

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const Container = styled.div`
   display: grid;
@@ -9,7 +10,7 @@ export const ImgWrapper = styled.div`
   grid-area: 1/ 1/ 4/ 4;
 `;
 
-export const YoutubeIcon = styled.div`
+export const YoutubeIcon = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;

@@ -5,11 +5,13 @@ import { Player } from "./PlayVideo.elements";
 const PlayVideo = ({ video_url }) => {
   return (
     <>
-      <Player
-        src={video_url + "?autoplay=1"}
-        frameborder="0"
-        allowFullScreen="allowFullScreen"
-      />
+      {video_url && (
+        <Player
+          src={video_url + "?autoplay=1"}
+          frameborder="0"
+          allowFullScreen="allowFullScreen"
+        />
+      )}
     </>
   );
 };

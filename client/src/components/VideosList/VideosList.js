@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 import VideoCard from "../VideoCard";
+import VideosListPlayer from "../VideosListPlayer/";
 import PlayVideo from "../PlayVideo";
 
 import {
@@ -12,12 +14,13 @@ import {
   ImgWrapper,
   Img,
   Slide,
+  VideoWrapper,
   BtnWrapper,
   ShowMore,
-  VideoWrapper,
 } from "./VideosList.elements";
 
 const VideosList = ({ id, title, img, reverse, videos }) => {
+  const location = useLocation();
   const [left, setLeft] = useState(0);
   const [video, setVideo] = useState(null);
 
@@ -27,9 +30,15 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
     setLeft(temp);
   };
 
-  const showMoreVideos = () => {
-    console.log("More videos");
-  };
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    let videoId = null;
+    videoId = urlParams.get("video");
+    const video_url = videos.find((element) => element.includes(videoId));
+    if (video_url) {
+      setVideo(video_url);
+    }
+  }, []);
 
   return (
     <>
@@ -53,6 +62,8 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
                 key={index}
                 left={left}
                 setVideo={setVideo}
+                category={id}
+                gallery={false}
               />
             );
           })}
@@ -70,6 +81,8 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
         </BtnWrapper>
       </Container>
       {video && (
+        // TO DO (when F5 display the video that is in Query)
+        // <Route exact path="/videos/:videoId" component={VideosListPlayer} />
         <VideoWrapper>
           <PlayVideo video_url={video} />
         </VideoWrapper>
