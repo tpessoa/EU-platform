@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 export const Container = styled.div`
   display: grid;
   margin: 20px;
+  position: relative;
+  left: ${(props) => `${props.left}px`};
+  transition: 0.8s ease;
 `;
 
 export const ImgWrapper = styled.div`

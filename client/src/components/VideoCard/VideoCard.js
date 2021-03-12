@@ -6,7 +6,6 @@ import { Container, ImgWrapper, YoutubeIcon, Img } from "./VideoCard.elements";
 const VideoCard = ({ src, left, setVideo, category, gallery }) => {
   const video_id = src.split("/")[4];
   const video_thumbnail_url = `https://img.youtube.com/vi/${video_id}/0.jpg`;
-  // console.log(left);
 
   const [hover, setHover] = useState(false);
 

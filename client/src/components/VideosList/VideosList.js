@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 import VideoCard from "../VideoCard";
-import VideosListPlayer from "../VideosListPlayer/";
 import PlayVideo from "../PlayVideo";
 
 import {
@@ -13,6 +12,8 @@ import {
   Title,
   ImgWrapper,
   Img,
+  ScrollContainer,
+  DisableArrow,
   Slide,
   VideoWrapper,
   BtnWrapper,
@@ -20,14 +21,42 @@ import {
 } from "./VideosList.elements";
 
 const VideosList = ({ id, title, img, reverse, videos }) => {
+  const dir_r = -1,
+    dir_l = 1;
   const location = useLocation();
-  const [left, setLeft] = useState(0);
+  const [left, setLeft] = useState(-20);
   const [video, setVideo] = useState(null);
+  const [scrollCounter, setScrollCounter] = useState(0);
 
-  const handleClick = () => {
-    let temp = left;
-    temp -= 20;
-    setLeft(temp);
+  const [disableArrowLeft, setDisableArrowLeft] = useState(false);
+  const [disableArrowRight, setDisableArrowRight] = useState(false);
+
+  const handleClick = (direction) => {
+    let flagAllowScroll = false;
+
+    if (direction == 1) {
+      if (Math.abs(scrollCounter) > 0) {
+        flagAllowScroll = true;
+        setDisableArrowLeft(false);
+      } else {
+        setDisableArrowLeft(true);
+      }
+      setDisableArrowRight(false);
+    } else {
+      if (Math.abs(scrollCounter) < videos.length) {
+        flagAllowScroll = true;
+        setDisableArrowRight(false);
+      } else {
+        setDisableArrowRight(true);
+      }
+      setDisableArrowLeft(false);
+    }
+    if (flagAllowScroll) {
+      setScrollCounter(scrollCounter + direction);
+      let temp = left;
+      temp = temp + direction * 200;
+      setLeft(temp);
+    }
   };
 
   useEffect(() => {
@@ -39,7 +68,6 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
       setVideo(video_url);
     }
   }, []);
-
   return (
     <>
       <Container lightBg={reverse} reverse={reverse}>
@@ -51,24 +79,44 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
             <Img src={img} alt={"image_" + title}></Img>
           </ImgWrapper>
         </InfoWrapper>
-        <VideosWrapper>
-          {/* <Slide>
-            <FaChevronLeft onClick={handleClick} />
-          </Slide> */}
-          {videos.map((video, index) => {
-            return (
-              <VideoCard
-                src={video}
-                key={index}
-                left={left}
-                setVideo={setVideo}
-                category={id}
-                gallery={false}
-              />
-            );
-          })}
-          {/* <FaChevronRight /> */}
-        </VideosWrapper>
+        <ScrollContainer>
+          <Slide>
+            {reverse ? (
+              <DisableArrow disableArrow={disableArrowRight}>
+                <FaChevronRight onClick={() => handleClick(dir_r)} />
+              </DisableArrow>
+            ) : (
+              <DisableArrow disableArrow={disableArrowLeft}>
+                <FaChevronLeft onClick={() => handleClick(dir_l)} />
+              </DisableArrow>
+            )}
+          </Slide>
+          <VideosWrapper reverse={reverse}>
+            {videos.map((video, index) => {
+              return (
+                <VideoCard
+                  src={video}
+                  key={index}
+                  left={left}
+                  setVideo={setVideo}
+                  category={id}
+                  gallery={false}
+                />
+              );
+            })}
+          </VideosWrapper>
+          <Slide>
+            {reverse ? (
+              <DisableArrow disableArrow={disableArrowLeft}>
+                <FaChevronLeft onClick={() => handleClick(dir_l)} />
+              </DisableArrow>
+            ) : (
+              <DisableArrow disableArrow={disableArrowRight}>
+                <FaChevronRight onClick={() => handleClick(dir_r)} />
+              </DisableArrow>
+            )}
+          </Slide>
+        </ScrollContainer>
         <BtnWrapper>
           <ShowMore
             to={{
@@ -81,8 +129,6 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
         </BtnWrapper>
       </Container>
       {video && (
-        // TO DO (when F5 display the video that is in Query)
-        // <Route exact path="/videos/:videoId" component={VideosListPlayer} />
         <VideoWrapper>
           <PlayVideo video_url={video} />
         </VideoWrapper>
