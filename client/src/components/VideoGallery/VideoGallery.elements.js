@@ -27,8 +27,13 @@ export const CategoryImg = styled.img`
   height: 100%;
 `;
 
-export const VideosWrapper = styled.div`
+export const VideosContainer = styled.div`
   background: #1e3c72;
+  min-height: 500px;
+  justify-content: center;
+`;
+
+export const VideosWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, max-content));
   justify-content: center;

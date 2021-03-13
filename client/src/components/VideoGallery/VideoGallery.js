@@ -11,6 +11,7 @@ import {
   Title,
   ImgWrapper,
   CategoryImg,
+  VideosContainer,
   VideosWrapper,
 } from "./VideoGallery.elements";
 
@@ -54,21 +55,23 @@ const VideoGallery = ({ location }) => {
     <>
       <Container>
         {body}
-        <VideosWrapper>
-          {catData &&
-            catData.videos.map((video, index) => {
-              return (
-                <VideoCard
-                  src={video}
-                  key={index}
-                  left={false}
-                  setVideo={setVideo}
-                  category={catData.id}
-                  gallery={true}
-                />
-              );
-            })}
-        </VideosWrapper>
+        <VideosContainer>
+          <VideosWrapper>
+            {catData &&
+              catData.videos.map((video, index) => {
+                return (
+                  <VideoCard
+                    src={video}
+                    key={index}
+                    left={false}
+                    setVideo={setVideo}
+                    category={catData.id}
+                    gallery={true}
+                  />
+                );
+              })}
+          </VideosWrapper>
+        </VideosContainer>
         {video && (
           <Route exact path="/videos/category" component={VideoGalleryPlayer} />
         )}
