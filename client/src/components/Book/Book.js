@@ -32,28 +32,28 @@ const convertBookContent = (obj) => {
 const Book = ({ book }) => {
   const mobileScreenWidth = 960;
   const [screenMobile, setScreenMobile] = useState(null);
+  const [screenDesktop, setScreenDesktop] = useState(null);
   const [bookMobile, setbookMobile] = useState(null);
   const [bookDesktop, setbookDesktop] = useState(null);
-  const [desktop, setDesktop] = useState(null);
 
   useEffect(() => {
     setbookDesktop(book);
     setbookMobile(convertBookContent(book));
 
     if (window.innerWidth < mobileScreenWidth) {
-      setDesktop(false);
+      setScreenDesktop(false);
     } else {
-      setDesktop(true);
+      setScreenDesktop(true);
     }
   }, []);
 
   useEffect(() => {
     if (screenMobile) {
       console.log("converting to mobile");
-      setDesktop(false);
+      setScreenDesktop(false);
     } else {
       console.log("converting to desktop");
-      setDesktop(true);
+      setScreenDesktop(true);
     }
   }, [screenMobile]);
 
@@ -96,7 +96,7 @@ const Book = ({ book }) => {
         <BookWrapper>
           <FlipPage
             orientation="horizontal"
-            animationDuration={1000}
+            animationDuration={300}
             responsive={true}
             pageBackground="blue"
             // showSwipeHint={true}
@@ -105,7 +105,7 @@ const Book = ({ book }) => {
             flipOnTouch={true}
             showTouchHint={true}
           >
-            {desktop != null && desktop
+            {screenDesktop != null && screenDesktop
               ? displayDesktopBook
               : displayMobileBook}
           </FlipPage>

@@ -22,20 +22,29 @@ export const Description = styled.h3`
 `;
 
 export const BookWrapper = styled.div`
-  margin: 50px auto;
+  margin: 30px 0;
 
-  width: 70%;
-  height: 70%;
+  width: 75%;
+  height: 90%;
+  overflow: hidden;
+  object-fit: contain;
 
   @media screen and (max-width: 960px) {
-    width: 500px;
-    height: 300px;
+    width: 80%;
+    margin: 15px 0;
+  }
+
+  @media screen and (max-width: 600px) {
+    width: 90%;
+    margin: 10px 0;
   }
 
   box-shadow: 10px 10px #888888;
   border: 1px solid;
-  overflow: hidden;
-  object-fit: contain;
 `;
 
 export const UtilsWrapper = styled.div``;
+
+export const Page = styled.div`
+  background: blue;
+`;
