@@ -9,6 +9,7 @@
     "axios": "^0.21.1",
     "page-flip": "^2.0.5",
     "react": "^17.0.1",
+    "react-audio-player": "^0.14.0",
     "react-dom": "^17.0.1",
     "react-flip-page": "^1.6.4",
     "react-icons": "^4.2.0",

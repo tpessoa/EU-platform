@@ -5,6 +5,8 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  overflow: hidden;
 `;
 
 export const InfoWrapper = styled.div`
@@ -21,13 +23,10 @@ export const Description = styled.h3`
   text-align: center;
 `;
 
-export const BookWrapper = styled.div`
-  margin: 30px 0;
-
+export const BookContainer = styled.div`
   width: 75%;
   height: 90%;
-  overflow: hidden;
-  object-fit: contain;
+  margin: 30px 0;
 
   @media screen and (max-width: 960px) {
     width: 80%;
@@ -38,13 +37,41 @@ export const BookWrapper = styled.div`
     width: 90%;
     margin: 10px 0;
   }
+`;
 
-  box-shadow: 10px 10px #888888;
+export const BookWrapper = styled.div`
+  overflow: hidden;
+  /* object-fit: contain; */
+
   border: 1px solid;
+  padding: 0 2px 0 2px;
+  background: #c0c0c0;
+
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.8);
+
+  @media screen and (max-width: 960px) {
+    box-shadow: 5px 5px #888888;
+  }
+
+  @media screen and (max-width: 600px) {
+    box-shadow: 2px 2px #888888;
+  }
 `;
 
 export const UtilsWrapper = styled.div``;
 
 export const Page = styled.div`
-  background: blue;
+  background: #c0c0c0;
+  /* opacity: 0.2 */
+  overflow: hidden;
+`;
+
+export const Img = styled.img`
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+`;
+
+export const PageCounter = styled.p`
+  margin-top: 20px;
 `;
