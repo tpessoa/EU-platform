@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Games from "./pages/Games";
 import Videos from "./pages/Videos";
 import Book from "./pages/Book";
+import Poll from "./pages/Poll";
 import VideoGallery from "./components/VideoGallery";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route exact path="/videos" component={Videos} />
         <Route exact path="/videos/category" component={VideoGallery} />
         <Route path="/book" component={Book} />
+        <Route path="/poll" component={Poll} />
       </Switch>
       <Footer />
     </Router>

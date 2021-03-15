@@ -40,6 +40,12 @@ const FilpBook = ({ book, soundClips }) => {
         <Description>descrição</Description>
       </InfoWrapper>
       <BookContainer>
+        <BookUtils
+          bookChangePage={bookWindowChange}
+          cPag={currentPage}
+          tPag={totalPages}
+          pageReading={soundClips[0]}
+        />
         <BookWrapper>
           <HTMLFlipBook
             width={400}
@@ -62,12 +68,6 @@ const FilpBook = ({ book, soundClips }) => {
             })}
           </HTMLFlipBook>
         </BookWrapper>
-        <BookUtils
-          bookChangePage={bookWindowChange}
-          cPag={currentPage}
-          tPag={totalPages}
-          pageReading={soundClips[0]}
-        />
       </BookContainer>
     </Container>
   );

@@ -40,7 +40,7 @@ const Navbar = () => {
               <NavLink to="/book">Livro</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to="/polling">Trabalhos</NavLink>
+              <NavLink to="/poll">Trabalhos</NavLink>
             </NavItem>
           </NavMenu>
           {/* <NavBtn>
