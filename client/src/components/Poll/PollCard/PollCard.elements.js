@@ -29,9 +29,9 @@ export const Card = styled.img`
 export const CardTopInfo = styled.div`
   border-radius: 0px 0px 10px 10px;
   position: absolute;
-  top: -2.5rem;
+  top: -3rem;
   left: 0;
-  height: 2.5rem;
+  height: 3rem;
   width: 100%;
 
   display: flex;
@@ -64,8 +64,8 @@ export const CardWrapper = styled.div`
   width: 330px;
   height: 330px;
   overflow: hidden;
-  background-color: #000;
   border-radius: 5px;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);
 
   display: flex;
   flex-direction: column;

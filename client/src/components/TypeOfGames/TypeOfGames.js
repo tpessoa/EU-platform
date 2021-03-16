@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useState } from "react";
 import { GiMagnifyingGlass } from "react-icons/gi";
 import { IoColorPaletteSharp } from "react-icons/io5";
 import { BsPuzzleFill } from "react-icons/bs";
@@ -13,53 +12,59 @@ import {
   GameName,
 } from "./TypeOfGames.elements";
 
+const gamesList = [
+  {
+    url: "/games/allPuzzles",
+    icon: <BsPuzzleFill />,
+    name: "Puzzle",
+  },
+  {
+    url: "/games/allColorGames",
+    icon: <IoColorPaletteSharp />,
+    name: "Colorir",
+  },
+  {
+    url: "/games/allWordSearchs",
+    icon: <GiMagnifyingGlass />,
+    name: "Sopa de Letras",
+  },
+  {
+    url: "/games/allQuizzes",
+    icon: <FaQuestion />,
+    name: "Quiz",
+  },
+  // {
+  //   url: "/games/allMemoryGames",
+  //   icon: <FaBrain />,
+  //   name: "Memória",
+  // },
+];
+
 const TypeOfGames = () => {
-  // const location = useLocation();
-  // console.log(location.pathname);
-  // const str_loc_pathname = location.pathname;
+  const [activeBtn, setActiveBtn] = useState(-1);
+
+  const handleClick = (index) => {
+    setActiveBtn(index);
+  };
+
   return (
-    <>
-      <Container>
-        <GamesItemsWrapper>
-          <GameItem to={"/games/allPuzzles"}>
-            <GameIcon>
-              <BsPuzzleFill />
-            </GameIcon>
-            <GameName>Puzzle</GameName>
-          </GameItem>
-          <GameItem to={"/games/allColorGames"}>
-            <GameIcon>
-              <IoColorPaletteSharp />
-            </GameIcon>
-            <GameName>Colorir</GameName>
-          </GameItem>
-          <GameItem to={"/games/allWordSearchs"}>
-            <GameIcon>
-              <GiMagnifyingGlass />
-            </GameIcon>
-            <GameName>Sopa de Letras</GameName>
-          </GameItem>
-          <GameItem to={"/games/allQuizzes"}>
-            <GameIcon>
-              <FaQuestion />
-            </GameIcon>
-            <GameName>Quiz</GameName>
-          </GameItem>
-          <GameItem to={"/games/allMemoryGames"}>
-            <GameIcon>
-              <FaBrain />
-            </GameIcon>
-            <GameName>Memória</GameName>
-          </GameItem>
-          {/* <GameItem>
-            <GameIcon>
-              <GiMagnifyingGlass />
-            </GameIcon>
-            <GameName>Sopa de Letras</GameName>
-          </GameItem> */}
-        </GamesItemsWrapper>
-      </Container>
-    </>
+    <Container>
+      <GamesItemsWrapper>
+        {gamesList.map((game, index) => {
+          return (
+            <GameItem
+              to={game.url}
+              key={index}
+              onClick={() => handleClick(index)}
+              highlight={index == activeBtn ? "#ffcc00" : "transparent"}
+            >
+              <GameIcon>{game.icon}</GameIcon>
+              <GameName>{game.name}</GameName>
+            </GameItem>
+          );
+        })}
+      </GamesItemsWrapper>
+    </Container>
   );
 };
 

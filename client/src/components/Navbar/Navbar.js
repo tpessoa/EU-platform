@@ -31,7 +31,7 @@ const Navbar = () => {
           </MobileIcon>
           <NavMenu onClick={handleClick} click={click}>
             <NavItem>
-              <NavLink to="/games">Jogos</NavLink>
+              <NavLink to="/games/allPuzzles">Jogos</NavLink>
             </NavItem>
             <NavItem>
               <NavLink to="/videos">Vídeos</NavLink>
