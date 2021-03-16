@@ -1,19 +1,25 @@
 import React from "react";
 
+import { FaPlay } from "react-icons/fa";
+
 import {
-  CardContainer,
+  Container,
+  Card,
   ImgWrapper,
   Img,
   ContentWrapper,
+  ContentTop,
+  ContentBottom,
+  Icon,
   Title,
   // Description,
-} from "./Card.elements";
+} from "./GameCard.elements";
 
-const Card = (props) => {
+const GameCard = (props) => {
   const { name, title, img, imgAlt, cardsType, cardRef } = props.gameInfo;
   return (
-    <>
-      <CardContainer
+    <Container>
+      <Card
         to={{
           pathname: `/games/${cardsType}/${name}`,
           search: `?id=${cardRef}`,
@@ -23,12 +29,17 @@ const Card = (props) => {
           <Img src={img} alt={imgAlt} />
         </ImgWrapper>
         <ContentWrapper>
-          <Title>{title}</Title>
-          {/* <Description>{description}</Description> */}
+          <ContentTop>
+            <Title>{title}</Title>
+          </ContentTop>
+          <Icon>
+            <FaPlay />
+          </Icon>
+          {/* <ContentBottom>Info</ContentBottom> */}
         </ContentWrapper>
-      </CardContainer>
-    </>
+      </Card>
+    </Container>
   );
 };
 
-export default Card;
+export default GameCard;

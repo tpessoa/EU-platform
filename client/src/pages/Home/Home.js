@@ -5,7 +5,7 @@ import { homePageObjOne } from "./Data";
 const Home = () => {
   return (
     <>
-      <HeroSection {...homePageObjOne} />
+      <HeroSection hero={homePageObjOne} />
     </>
   );
 };

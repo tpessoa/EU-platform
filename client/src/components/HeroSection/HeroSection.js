@@ -7,17 +7,16 @@ import {
   HeroH1,
   HeroP,
 } from "./HeroSection.elements";
-import video from "../../hero-video/eu-flag-video.mp4";
 
-const HeroSection = ({ header, description }) => {
+const HeroSection = ({ hero }) => {
   return (
     <HeroContainer>
       <HeroBg>
-        <VideoBg autoPlay loop muted src={video} type="video/mp4" />
+        <VideoBg autoPlay loop muted src={hero.src} type="video/mp4" />
       </HeroBg>
       <HeroContent>
-        <HeroH1>{header}</HeroH1>
-        <HeroP>{description}</HeroP>
+        <HeroH1>{hero.header}</HeroH1>
+        <HeroP>{hero.description}</HeroP>
       </HeroContent>
     </HeroContainer>
   );

@@ -1,7 +1,6 @@
 import React from "react";
 
-import FilpBook from "../../components/FilpBook";
-import FlipPage from "../../components/Book";
+import FilpBook from "../../components/Book/FilpBook";
 
 import { bookObjOne, bookObjTwo } from "./Data";
 
