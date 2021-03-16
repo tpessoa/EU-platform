@@ -64,7 +64,7 @@ export const ContentBottom = styled.div`
 export const Icon = styled.div`
   position: absolute;
   bottom: -30%;
-  left: 8px;
+  left: 4px;
   width: 100%;
   height: 3rem;
 

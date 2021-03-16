@@ -24,7 +24,6 @@ single page
 */
 
 const FilpBook = ({ book, soundClips }) => {
-  console.log(soundClips);
   const bookWindowChange = 500;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(book.length);

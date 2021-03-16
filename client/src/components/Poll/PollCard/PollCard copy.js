@@ -7,21 +7,26 @@ import {
   Card,
   CardTopInfo,
   CardBottomInfo,
+  Title,
   Author,
   Votes,
   VoteIcon,
+  VoteBtn,
 } from "./PollCard.elements";
 
 const PollCard = ({ card }) => {
-  const voteHandler = () => {
-    console.log("vote");
+  const voteBtnHandler = () => {
+    console.log("voting");
   };
 
   return (
     <Container>
-      <CardWrapper onClick={voteHandler}>
+      <CardWrapper>
         <Card src={card.img} />
-        <CardTopInfo>{card.title}</CardTopInfo>
+        <CardTopInfo>
+          <Title>{card.title}</Title>
+          <VoteBtn onClick={voteBtnHandler}>Votar</VoteBtn>
+        </CardTopInfo>
         <CardBottomInfo>
           <Author>{card.author}</Author>
           <Votes>

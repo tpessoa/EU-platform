@@ -82,6 +82,7 @@ export const CardWrapper = styled.div`
     transition: all 0.5s;
     -webkit-transition: all 0.5s;
   }
+
   font-size: 1.4rem;
 `;
 
@@ -90,7 +91,7 @@ export const Author = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-left: 2rem;
+  margin-left: 1rem;
 `;
 
 export const Votes = styled.div`
@@ -98,10 +99,47 @@ export const Votes = styled.div`
   align-items: center;
   justify-content: flex-end;
   width: 30%;
-  margin-right: 2rem;
+  margin-right: 1rem;
 `;
 
 export const VoteIcon = styled.div`
   color: #ffcc00;
   margin-left: 0.5rem;
+`;
+
+export const Title = styled.div`
+  width: 75%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  margin-left: 1rem;
+`;
+
+export const VoteBtn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 25%;
+  height: 1.5rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);
+  background: #fff;
+  text-align: center;
+
+  margin-right: 1rem;
+
+  &:active {
+    background: #fff;
+  }
+
+  &:hover {
+    background: #ffcc00;
+  }
+  &:focus {
+    outline: 0;
+  }
 `;
