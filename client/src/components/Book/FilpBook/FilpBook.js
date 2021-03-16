@@ -47,8 +47,8 @@ const FilpBook = ({ book, soundClips }) => {
         />
         <BookWrapper>
           <HTMLFlipBook
-            width={400}
-            height={500}
+            width={300}
+            height={400}
             minWidth={200}
             minHeight={200}
             maxWidth={1000}

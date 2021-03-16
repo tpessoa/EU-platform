@@ -24,8 +24,8 @@ export const Description = styled.h3`
 `;
 
 export const BookContainer = styled.div`
-  width: 75%;
-  height: 90%;
+  width: 55%;
+  height: 70%;
   margin: 30px 0;
 
   @media screen and (max-width: 960px) {
