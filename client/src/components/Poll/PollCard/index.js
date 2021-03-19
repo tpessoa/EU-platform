@@ -1,1 +1,1 @@
-export { default } from "./PollCard";
+export { default } from "./PollCard.js";

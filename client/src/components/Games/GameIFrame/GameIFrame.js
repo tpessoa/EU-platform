@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
+
+import "./game.css";
 
 import {
   GameContainer,
   GameWrapper,
   Game,
-  FullScreen,
+  FullScreenBtn,
 } from "./GameIFrame.elements";
 
 const GameIFrame = () => {
   const [gameLink, setGameLink] = useState(false);
+  const handle = useFullScreenHandle();
 
   useEffect(() => {
     const search_arr = window.location.search.split("=");
@@ -21,32 +25,21 @@ const GameIFrame = () => {
     }
   }, [window.location.search]);
 
-  /**
-   * FULLSCREEN
-   */
-
-  const fullscreenHandler = () => {
-    document
-      .getElementById("game")
-      .requestFullscreen()
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
   return (
     <>
       <GameContainer>
         <GameWrapper>
-          <Game
-            id="game"
-            title="game"
-            scrolling="no"
-            src={gameLink}
-            allowfullscreen="true"
-          ></Game>
-          <FullScreen onClick={fullscreenHandler}>Ecrã Inteiro</FullScreen>
+          <FullScreen handle={handle} style={{ background: "red" }}>
+            <Game
+              id="game"
+              title="game"
+              scrolling="no"
+              src={gameLink}
+              allowfullscreen="true"
+            ></Game>
+          </FullScreen>
         </GameWrapper>
+        <FullScreenBtn onClick={handle.enter}>Ecrã Inteiro</FullScreenBtn>
       </GameContainer>
     </>
   );

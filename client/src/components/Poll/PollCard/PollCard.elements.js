@@ -17,6 +17,13 @@ export const Card = styled.img`
   filter: brightness(100%);
   transition: all 0.5s;
   -webkit-transition: all 0.5s;
+
+  &:hover {
+    filter: brightness(60%);
+    transform: scale(1.15);
+    transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+  }
 `;
 
 export const CardTopInfo = styled.div`
@@ -64,13 +71,6 @@ export const CardWrapper = styled.div`
   flex-direction: column;
   position: relative;
 
-  &:hover ${Card} {
-    filter: brightness(60%);
-    transform: scale(1.15);
-    transition: all 0.5s;
-    -webkit-transition: all 0.5s;
-  }
-
   &:hover ${CardBottomInfo} {
     bottom: 0;
     transition: all 0.5s;
@@ -92,15 +92,13 @@ export const Author = styled.div`
   justify-content: flex-start;
   margin-left: 2rem;
 `;
-
 export const Votes = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   width: 30%;
-  margin-right: 2rem;
+  margin-right: 1rem;
 `;
-
 export const VoteIcon = styled.div`
   color: #ffcc00;
   margin-left: 0.5rem;

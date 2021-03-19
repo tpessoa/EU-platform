@@ -1,0 +1,61 @@
+.modal {
+  position: relative;
+
+  top: 100px;
+  bottom: 100px;
+  left: 50vh;
+  min-height: 70vh;
+  width: 70%;
+  transform: translate(-25vh, 0);
+  /* background-color: blue; */
+
+  border-radius: 10px;
+  cursor: default;
+}
+
+@media screen and (max-width: 960px) {
+  .modal {
+    left: 25vh;
+    transform: translate(-12.5vh, 0);
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .modal {
+    width: 90%;
+    left: 14vh;
+    /* transform: translate(-2.5vh, 0); */
+  }
+}
+
+.modal:focus {
+  outline: 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  cursor: zoom-out;
+  overflow: auto;
+  backface-visibility: hidden;
+}
+
+.ReactModal__Overlay {
+  opacity: 0;
+  transform: translateY(-100px);
+  transition: all 500ms ease;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+  transform: translateY(-100px);
+}

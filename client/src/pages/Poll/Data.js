@@ -3,7 +3,8 @@ export const pollObjOne = [
     id: 1,
     author: "Manuel",
     title: "Trabalho 1",
-    description: "Pintura pássaros",
+    description:
+      "Pintura pássaros intura páss intura páss vintura páss intura pás tiago sdf sdf sdf sdf pessoas",
     img:
       "https://images.unsplash.com/photo-1579965342575-16428a7c8881?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1299&q=80",
     votes: 10,
