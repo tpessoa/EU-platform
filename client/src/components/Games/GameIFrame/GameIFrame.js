@@ -29,7 +29,7 @@ const GameIFrame = () => {
     <>
       <GameContainer>
         <GameWrapper>
-          <FullScreen handle={handle} style={{ background: "red" }}>
+          <FullScreen handle={handle}>
             <Game
               id="game"
               title="game"

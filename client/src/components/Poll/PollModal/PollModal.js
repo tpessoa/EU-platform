@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "../PollForm";
 import FormSuccess from "../PollFormSuccess";
 
@@ -17,22 +17,28 @@ import Button from "../../UI/Btn1";
 const PollModal = ({ card }) => {
   const [aditionalInfo, setAditionalInfo] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [scrollToForm, setScrollToForm] = useState(false);
 
   const submitForm = () => {
     setIsSubmitted(true);
   };
 
-  const performVoteHandler = () => {
-    // call vote function from parent
+  const scrollHandler = () => {
+    setScrollToForm(true);
   };
 
   const info = (
     <>
       <p>Carrega para votares</p>
-      <Button onClick={performVoteHandler()}>Votar</Button>
+      <button onClick={scrollHandler}>Votar</button>
     </>
   );
 
+  useEffect(() => {
+    if (window.innerWidth < 960) {
+      setAditionalInfo(true);
+    }
+  }, []);
   const showAddInfo = () => {
     if (window.innerWidth < 960) {
       setAditionalInfo(true);
@@ -61,7 +67,11 @@ const PollModal = ({ card }) => {
       </LeftContent>
       <RightContent>
         <ContainerWrapper>
-          {!isSubmitted ? <Form submitForm={submitForm} /> : <FormSuccess />}
+          {!isSubmitted ? (
+            <Form submitForm={submitForm} scroll={scrollToForm} />
+          ) : (
+            <FormSuccess />
+          )}
         </ContainerWrapper>
       </RightContent>
     </Container>

@@ -31,7 +31,9 @@ const PollCard = ({ card }) => {
   const closeModal = () => {
     setIsOpen(false);
   };
-  const afterOpenModal = () => {};
+  const afterOpenModal = () => {
+    console.log("open");
+  };
 
   const voteHandler = () => {
     console.log("vote evaluation");
@@ -65,6 +67,7 @@ const PollCard = ({ card }) => {
         onRequestClose={closeModal}
         className="modal"
         overlayClassName="overlay"
+        id="FORM_MODAL"
       >
         <PollModal card={card} />
       </Modal>

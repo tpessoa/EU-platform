@@ -3,28 +3,26 @@
 
   top: 100px;
   bottom: 100px;
-  left: 50vh;
+  left: 50%;
+  right: 50%;
   min-height: 70vh;
   width: 70%;
-  transform: translate(-25vh, 0);
-  /* background-color: blue; */
+  transform: translate(-50%, 0%);
+  background-color: blue;
 
   border-radius: 10px;
   cursor: default;
 }
 
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 1200px) {
   .modal {
-    left: 25vh;
-    transform: translate(-12.5vh, 0);
+    width: 80%;
   }
 }
 
 @media screen and (max-width: 640px) {
   .modal {
     width: 90%;
-    left: 14vh;
-    /* transform: translate(-2.5vh, 0); */
   }
 }
 
@@ -58,4 +56,10 @@
 .ReactModal__Overlay--before-close {
   opacity: 0;
   transform: translateY(-100px);
+}
+
+.ReactModal__Body--open {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }

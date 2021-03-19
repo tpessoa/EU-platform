@@ -1,6 +1,6 @@
 import React from "react";
 import GlobalStyle from "./globalStyles";
-// import ScrollToTop from "./components/scrollToTop";
+import ScrollToTop from "./components/scrollToTop";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Footer from "./components/Footer";
@@ -15,6 +15,7 @@ import VideoGallery from "./components/VideoGallery";
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <GlobalStyle />
       <Navbar />
       <Switch>

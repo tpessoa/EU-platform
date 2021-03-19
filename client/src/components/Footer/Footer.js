@@ -12,7 +12,7 @@ import {
 
 const Footer = () => {
   return (
-    <FooterContainer>
+    <FooterContainer id="scrollToFooter">
       <FooterWrapper>
         <FooterLinksContainer>
           <FooterLinksWrapper>

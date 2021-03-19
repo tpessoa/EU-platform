@@ -123,6 +123,7 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
               pathname: `/videos/category`,
               search: `?id=${id}`,
             }}
+            id={"scrollToVideoPlayer_" + id}
           >
             Ver Todos
           </ShowMore>

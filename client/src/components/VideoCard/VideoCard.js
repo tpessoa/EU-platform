@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link as LinkScroll } from "react-scroll";
 
 import { FaYoutube } from "react-icons/fa";
 import { Container, ImgWrapper, YoutubeIcon, Img } from "./VideoCard.elements";
@@ -46,16 +47,24 @@ const VideoCard = ({ src, left, setVideo, category, gallery }) => {
 
   return (
     <>
-      <Container
-        left={left}
-        onMouseEnter={hoverActiveHandler}
-        onMouseLeave={hoverActiveHandler}
+      <LinkScroll
+        to={"scrollToVideoPlayer_" + category}
+        smooth={true}
+        delay={500}
+        duration={1000}
+        offset={0}
       >
-        <ImgWrapper>
-          <Img src={video_thumbnail_url} activeFlag={hover} alt={video_id} />
-        </ImgWrapper>
-        {hover && typeOfPage}
-      </Container>
+        <Container
+          left={left}
+          onMouseEnter={hoverActiveHandler}
+          onMouseLeave={hoverActiveHandler}
+        >
+          <ImgWrapper>
+            <Img src={video_thumbnail_url} activeFlag={hover} alt={video_id} />
+          </ImgWrapper>
+          {hover && typeOfPage}
+        </Container>
+      </LinkScroll>
     </>
   );
 };

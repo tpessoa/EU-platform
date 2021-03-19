@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Link as LinkScroll } from "react-scroll";
 import { FaPlay } from "react-icons/fa";
 
 import {
@@ -18,27 +18,37 @@ import {
 const GameCard = (props) => {
   const { name, title, img, imgAlt, cardsType, cardRef } = props.gameInfo;
   return (
-    <Container>
-      <Card
-        to={{
-          pathname: `/games/${cardsType}/${name}`,
-          search: `?id=${cardRef}`,
-        }}
+    <>
+      <LinkScroll
+        to="scrollToFooter"
+        smooth={true}
+        delay={500}
+        duration={1000}
+        offset={-80}
       >
-        <ImgWrapper>
-          <Img src={img} alt={imgAlt} />
-        </ImgWrapper>
-        <ContentWrapper>
-          <ContentTop>
-            <Title>{title}</Title>
-          </ContentTop>
-          <Icon>
-            <FaPlay />
-          </Icon>
-          {/* <ContentBottom>Info</ContentBottom> */}
-        </ContentWrapper>
-      </Card>
-    </Container>
+        <Container>
+          <Card
+            to={{
+              pathname: `/games/${cardsType}/${name}`,
+              search: `?id=${cardRef}`,
+            }}
+          >
+            <ImgWrapper>
+              <Img src={img} alt={imgAlt} />
+            </ImgWrapper>
+            <ContentWrapper>
+              <ContentTop>
+                <Title>{title}</Title>
+              </ContentTop>
+              <Icon>
+                <FaPlay />
+              </Icon>
+              {/* <ContentBottom>Info</ContentBottom> */}
+            </ContentWrapper>
+          </Card>
+        </Container>
+      </LinkScroll>
+    </>
   );
 };
 
