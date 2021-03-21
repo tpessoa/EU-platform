@@ -10,6 +10,36 @@ router.route("/").get((req, res) => {
 });
 
 /**
+ * get all games
+ */
+router.get("/allGames", async (req, res) => {
+  let games = [
+    {
+      name: "Jogo de Colorir",
+      ref: "color-game",
+      refAll: "allColorGames",
+    },
+    {
+      name: "Puzzle",
+      ref: "puzzle",
+      refAll: "allPuzzles",
+    },
+    {
+      name: "Quiz",
+      ref: "quiz",
+      refAll: "allQuizzes",
+    },
+    {
+      name: "Sopa de Letras",
+      ref: "wordSearch",
+      refAll: "allWordSearchs",
+    },
+  ];
+
+  res.send(games);
+});
+
+/**
  * COLOR GAME
  */
 router.get("/allColorGames", async (req, res) => {
