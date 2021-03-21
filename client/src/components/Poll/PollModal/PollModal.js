@@ -68,7 +68,11 @@ const PollModal = ({ card }) => {
       <RightContent>
         <ContainerWrapper>
           {!isSubmitted ? (
-            <Form submitForm={submitForm} scroll={scrollToForm} />
+            <Form
+              submitForm={submitForm}
+              scroll={scrollToForm}
+              setScroll={setScrollToForm}
+            />
           ) : (
             <FormSuccess />
           )}

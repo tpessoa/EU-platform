@@ -52,7 +52,7 @@ const VideoCard = ({ src, left, setVideo, category, gallery }) => {
         smooth={true}
         delay={500}
         duration={1000}
-        offset={0}
+        offset={-280}
       >
         <Container
           left={left}

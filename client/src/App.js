@@ -1,4 +1,5 @@
 import React from "react";
+
 import GlobalStyle from "./globalStyles";
 import ScrollToTop from "./components/scrollToTop";
 
@@ -11,6 +12,7 @@ import Videos from "./pages/Videos";
 import Book from "./pages/Book";
 import Poll from "./pages/Poll";
 import VideoGallery from "./components/VideoGallery";
+import AdminDashboard from "./components/Admin/Dashboard";
 
 function App() {
   return (
@@ -25,6 +27,7 @@ function App() {
         <Route exact path="/videos/category" component={VideoGallery} />
         <Route path="/book" component={Book} />
         <Route path="/poll" component={Poll} />
+        <Route path="/admin" component={AdminDashboard} />
       </Switch>
       <Footer />
     </Router>

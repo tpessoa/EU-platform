@@ -11,7 +11,7 @@ import {
   Vote,
 } from "./PollForm.elements";
 
-const PollForm = ({ submitForm, scroll }) => {
+const PollForm = ({ submitForm, scroll, setScroll }) => {
   const [scrollDiv, setScrollDiv] = useState(null);
   useEffect(() => {
     setScrollDiv(createRef());
@@ -24,6 +24,7 @@ const PollForm = ({ submitForm, scroll }) => {
 
   const scrollSmoothHandler = () => {
     scrollDiv.current.scrollIntoView({ behavior: "smooth" });
+    setScroll(false);
   };
   return (
     <>
