@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useHistory, Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -44,8 +45,6 @@ const ListGames = ({ setGameSelected }) => {
 
   const handleChange = (event) => {
     setGame(event.target.value);
-    // set game in parent component in order to update the table
-    setGameSelected(gamesArr[event.target.value]);
   };
 
   const handleClose = () => {
@@ -75,7 +74,12 @@ const ListGames = ({ setGameSelected }) => {
           {gamesArr &&
             gamesArr.map((game, index) => {
               return (
-                <MenuItem key={index} value={index}>
+                <MenuItem
+                  key={index}
+                  value={index}
+                  component={Link}
+                  to={`/admin/games/${game.ref}`}
+                >
                   {game.name}
                 </MenuItem>
               );
