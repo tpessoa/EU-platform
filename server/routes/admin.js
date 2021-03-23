@@ -1,9 +1,11 @@
 const router = require("express").Router();
 const multer = require("multer");
+const fs = require("fs");
+let ConfigGames = require("../models/config_games.model");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/images/");
+    cb(null, "content/images/");
   },
   filename: function (req, file, cb) {
     cb(null, new Date().toISOString() + file.originalname);
@@ -28,50 +30,53 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-router.post("/uploadImg", upload.single("image"), (req, res, next) => {
-  console.log(req.file);
-  console.log(req.body);
+const removeFile = (path) => {
+  fs.unlink(path, (err) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+  });
+};
 
-  res.send("uploa d");
+router.post("/uploadImg", upload.single("image"), async (req, res, next) => {
+  if (req.file == null) {
+    return res.send("Imagem inválida");
+  }
+
   // store the path to the img
-  // file.path
+  const strPartialURL = "/api/";
+  const newImgPath = strPartialURL + req.file.path;
+
+  if (req.body.game == null) {
+    removeFile(newImgPath);
+    return res.send("jogo não especificado");
+  }
+
+  try {
+    let configGameObj = await ConfigGames.findOne({ game_type: req.body.game });
+    // if null there is no configuration for this game yet -> create one
+    if (configGameObj == null) {
+      const newConfigGame = new ConfigGames({
+        // for puzzle game
+        game_type: req.body.game,
+        img_paths: [newImgPath],
+
+        // for color game
+        // colors object
+      });
+      await newConfigGame.save();
+    } else {
+      configGameObj.img_paths.push(newImgPath);
+      await configGameObj.save();
+    }
+
+    // removeFile(newImgPath);
+    res.send({ imgPath: newImgPath });
+  } catch (e) {
+    removeFile(newImgPath);
+    res.status(500).send({ message: e.message });
+  }
 });
-
-router.get("/uploadImg", (req, res) => {
-  res.send("ola");
-});
-
-router.get("/", (req, res) => {
-  res.send("ola admin");
-});
-
-// const multer = require("multer");
-
-// const fs = require("fs");
-// const { promisify } = require("util");
-// const pipeline = promisify(require("stream").pipeline);
-
-// const upload = multer();
-// router.post("/upload", upload.single("file"), async (req, res, next) => {
-//   const {
-//     file,
-//     body: { name },
-//   } = req;
-//   console.log("sdfsd");
-//   console.log(req.name);
-//   //   console.log(req.file);
-//   console.log("server uploading");
-
-//     if (file.detectedFileExtension != ".jpg")
-//       next(new Error("Invalid file type!"));
-
-//       const fileName = name + file.detectedFileExtension;
-//       await pipeline(
-//         file.stream,
-//         fs.createWriteStream(`${__dirname}/../public/images/${fileName}`)
-//       );
-
-//     res.send("File uploaded as " + fileName);
-// });
 
 module.exports = router;

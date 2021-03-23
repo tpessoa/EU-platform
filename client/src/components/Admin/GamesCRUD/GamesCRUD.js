@@ -60,7 +60,16 @@ const TextFieldCustom = styled(TextField)`
   }
 `;
 
-const PuzzleImg = styled.img`
+const ImgContainer = styled.div`
+  display: flex;
+  align-items: center;
+
+  flex-direction: column;
+  width: 100%;
+  min-height: 300px;
+`;
+
+const ImgWrapper = styled.img`
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -71,8 +80,7 @@ const UtilsWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 2rem;
-  margin: 3rem;
+  margin: 1.5rem;
 `;
 
 const GamesCRUD = ({ gamesInfo }) => {
@@ -84,6 +92,7 @@ const GamesCRUD = ({ gamesInfo }) => {
   const idField = query.get("id");
 
   const [gameParams, setGameParms] = useState(null);
+  const [uploadedImg, setUploadedImg] = useState(null);
 
   useEffect(() => {
     axios
@@ -120,12 +129,17 @@ const GamesCRUD = ({ gamesInfo }) => {
               );
             } else if (info.type === "img") {
               return (
-                <div className={classes.root}>
-                  <Paper key={index}>
-                    <PuzzleImg src={gameParams[info.ref]} alt={index} />
-                    <ImageUtils />
-                  </Paper>
-                </div>
+                <ImgContainer>
+                  <div className={classes.root}>
+                    <Paper key={index}>
+                      <ImgWrapper
+                        src={uploadedImg ? uploadedImg : gameParams[info.ref]}
+                        alt={index}
+                      />
+                    </Paper>
+                  </div>
+                  <ImageUtils setUploadedImg={setUploadedImg} />
+                </ImgContainer>
               );
             }
           })}

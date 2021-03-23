@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
@@ -11,14 +11,7 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
-  input: {
-    display: "none",
-  },
   button: {
-    margin: theme.spacing(1),
-  },
-  button_text: {
-    fontSize: "0.7rem",
     margin: theme.spacing(1),
   },
 }));
@@ -27,24 +20,38 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+
+  @media screen and (max-width: 960px) {
+  }
 `;
 
-const ImageUtils = () => {
+const ImageUtils = ({ setUploadedImg }) => {
   const classes = useStyles();
+  const [uploaded, setUploaded] = useState(null);
+  const [uploadComponent, setUploadComponent] = useState(false);
 
-  const uploadHandler = () => {};
+  const uploadHandler = () => {
+    setUploadComponent(true);
+  };
+
+  useEffect(() => {
+    setUploadedImg(uploaded);
+  }, [uploaded]);
 
   return (
     <Container>
-      {/* <div className={classes.root}>
-        <input
-          accept="image/*"
-          className={classes.input}
-          id="contained-button-file"
-          multiple
-          type="file"
-        />
-        <label htmlFor="contained-button-file">
+      {uploadComponent ? (
+        <Upload setUploaded={setUploaded} />
+      ) : (
+        <div className={classes.root}>
+          <Button
+            className={classes.button}
+            variant="contained"
+            color="primary"
+          >
+            Imagem existente
+          </Button>
           <Button
             variant="contained"
             color="primary"
@@ -52,25 +59,10 @@ const ImageUtils = () => {
             startIcon={<CloudUploadIcon />}
             onClick={uploadHandler}
           >
-            Upload
+            Upload de nova Imagem
           </Button>
-        </label>
-        <input
-          accept="image/*"
-          className={classes.input}
-          id="icon-button-file"
-          type="file"
-        />
-      </div>
-      <Button
-        className={classes.button_text}
-        variant="contained"
-        color="primary"
-      >
-        Imagens existentes
-      </Button> */}
-
-      <Upload />
+        </div>
+      )}
     </Container>
   );
 };
