@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useHistory, Link } from "react-router-dom";
+import Table from "../Table";
 
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
+    minWidth: 150,
   },
   root: {
     width: "100%",
@@ -25,9 +25,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ListGames = ({ setGameSelected }) => {
+const ListGames = () => {
   const classes = useStyles();
-  const [game, setGame] = useState("");
+  const [selectedPos, setSelectedPos] = useState(-1);
   const [gamesArr, setGamesArr] = useState(null);
   const [open, setOpen] = useState(false);
 
@@ -44,7 +44,7 @@ const ListGames = ({ setGameSelected }) => {
   }, []);
 
   const handleChange = (event) => {
-    setGame(event.target.value);
+    setSelectedPos(event.target.value);
   };
 
   const handleClose = () => {
@@ -54,38 +54,33 @@ const ListGames = ({ setGameSelected }) => {
   const handleOpen = () => {
     setOpen(true);
   };
-
   return (
     <>
       <Typography variant="h6" gutterBottom>
         Escolher jogo
       </Typography>
       <FormControl className={classes.formControl}>
-        <InputLabel id="demo-controlled-open-select-label">Jogos</InputLabel>
+        <InputLabel id="demo-controlled-open-select-label">Jogo</InputLabel>
         <Select
           labelId="demo-controlled-open-select-label"
           id="demo-controlled-open-select"
           open={open}
           onClose={handleClose}
           onOpen={handleOpen}
-          value={game}
+          value={selectedPos}
           onChange={handleChange}
         >
           {gamesArr &&
             gamesArr.map((game, index) => {
               return (
-                <MenuItem
-                  key={index}
-                  value={index}
-                  component={Link}
-                  to={`/admin/games/${game.ref}`}
-                >
+                <MenuItem key={index} value={index}>
                   {game.name}
                 </MenuItem>
               );
             })}
         </Select>
       </FormControl>
+      {selectedPos != -1 ? <Table gameSelected={gamesArr[selectedPos]} /> : ""}
     </>
   );
 };

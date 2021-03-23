@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 const connection_url = "mongodb://db:27017/eu-platform-db";
 
 // Middlewares
-//app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));

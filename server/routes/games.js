@@ -16,7 +16,7 @@ router.get("/allGames", async (req, res) => {
   let games = [
     {
       name: "Jogo de Colorir",
-      ref: "color-game",
+      ref: "colorGame",
       refAll: "allColorGames",
     },
     {

@@ -11,8 +11,8 @@ import Games from "./pages/Games";
 import Videos from "./pages/Videos";
 import Book from "./pages/Book";
 import Poll from "./pages/Poll";
+import AdminDashboard from "./pages/Admin";
 import VideoGallery from "./components/VideoGallery";
-import AdminDashboard from "./components/Admin/Dashboard";
 
 function App() {
   return (
