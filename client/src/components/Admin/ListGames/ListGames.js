@@ -48,6 +48,11 @@ const ListGames = ({ listType, setSelectedGame, setUploaded }) => {
 
         if (listType === "filterGame") {
           setSelectedPos(0);
+
+          // ver melhor isto!
+          if (response.data.length > 0) {
+            setSelectedGame(response.data[0].ref);
+          }
         }
       })
       .catch(function (error) {
@@ -61,14 +66,14 @@ const ListGames = ({ listType, setSelectedGame, setUploaded }) => {
     if (listType === "filterGame" || listType === "uploadImage") {
       setSelectedGame(gamesArr[event.target.value].ref);
     }
-
-    if (listType === "uploadImage") {
-      setUploaded(false);
-    }
   };
 
   const handleClose = () => {
     setOpen(false);
+
+    if (listType === "uploadImage") {
+      setUploaded(false);
+    }
   };
 
   const handleOpen = () => {

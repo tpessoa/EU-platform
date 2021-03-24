@@ -49,7 +49,7 @@ const Upload = ({ gameRef, setUploaded, setProcessing }) => {
       .post("/api/admin/uploadImg", formData, config)
       .then((res) => {
         if (res.status == 200) {
-          setUploaded(res.data.imgPath);
+          setUploaded(res.data.img);
           setProcessing(false);
         }
       })
@@ -57,7 +57,6 @@ const Upload = ({ gameRef, setUploaded, setProcessing }) => {
   };
   const onChange = (e) => {
     setFile(e.target.files[0]);
-    console.log(e.target);
   };
 
   return (

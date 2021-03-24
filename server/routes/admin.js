@@ -2,6 +2,7 @@ const router = require("express").Router();
 const multer = require("multer");
 const fs = require("fs");
 let ConfigGames = require("../models/config_games.model");
+const { v4: uuidv4 } = require("uuid");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -55,26 +56,51 @@ router.post("/uploadImg", upload.single("image"), async (req, res, next) => {
 
   try {
     let configGameObj = await ConfigGames.findOne({ game_type: req.body.game });
+    const tempObj = {
+      id: uuidv4(),
+      img_path: newImgPath,
+    };
     // if null there is no configuration for this game yet -> create one
     if (configGameObj == null) {
       const newConfigGame = new ConfigGames({
         // for puzzle game
         game_type: req.body.game,
-        img_paths: [newImgPath],
+        img_paths: [tempObj],
 
         // for color game
         // colors object
       });
       await newConfigGame.save();
     } else {
-      configGameObj.img_paths.unshift(newImgPath);
+      configGameObj.img_paths.unshift(tempObj);
       await configGameObj.save();
     }
 
     // removeFile(newImgPath);
-    res.send({ imgPath: newImgPath });
+    res.send({ img: tempObj });
   } catch (e) {
     removeFile(newImgPath);
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.delete("/upload/:game/:img_path", async (req, res) => {
+  const { game, img_path } = req.params;
+
+  try {
+    const gameConfig = await ConfigGames.findOne({
+      game_type: game,
+    });
+
+    // delete this obj and update the DB
+    console.log(gameConfig.img_paths);
+    const obj = gameConfig.img_paths.find((obj) => obj.id === img_path);
+    const objIndex = gameConfig.img_paths.indexOf(obj);
+    gameConfig.img_paths.splice(objIndex, 1);
+    await gameConfig.save();
+
+    res.send({ gameConfig: gameConfig });
+  } catch (e) {
     res.status(500).send({ message: e.message });
   }
 });

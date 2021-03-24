@@ -65,7 +65,11 @@ const AssetsList = ({ refresh }) => {
       axios
         .get("/api/admin/getAllImages/" + selectedFilterGame)
         .then(function (resp) {
-          setArrImgPath(resp.data.gameConfig.img_paths);
+          if (resp.data.gameConfig != null) {
+            setArrImgPath(resp.data.gameConfig.img_paths);
+          } else {
+            setArrImgPath([]);
+          }
         })
         .catch(function (error) {
           console.log(error);
@@ -85,7 +89,13 @@ const AssetsList = ({ refresh }) => {
           setSelectedGame={setSelectedFilterGame}
         />
       </InfoContainer>
-      {arrImgPath && <Grid arr={arrImgPath} />}
+      {arrImgPath && (
+        <Grid
+          arr={arrImgPath}
+          setArr={setArrImgPath}
+          selectedGame={selectedFilterGame}
+        />
+      )}
     </Container>
   );
 };

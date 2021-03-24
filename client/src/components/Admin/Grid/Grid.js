@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import Button from "@material-ui/core/Button";
 
 import styled from "styled-components";
@@ -50,21 +51,29 @@ const ImgCard = styled.div`
   }
 `;
 
-const deleteHandler = () => {
-  console.log("eliminar imagem e se caso o jogo");
-};
+const Grid = ({ arr, setArr, selectedGame }) => {
+  const deleteHandler = (objIndex) => {
+    axios
+      .delete(`/api/admin/upload/${selectedGame}/${objIndex}`)
+      .then(function (res) {
+        console.log(res.data.gameConfig.img_paths);
+        setArr(res.data.gameConfig.img_paths);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
-const Grid = ({ arr }) => {
   return (
     <GridWrapper>
       {arr &&
-        arr.map((imgPath, index) => (
+        arr.map((obj, index) => (
           <ImgCard key={index}>
-            <Img src={imgPath} alt={index} />
+            <Img src={obj.img_path} alt={index} />
             <DeleteButton
               variant="contained"
               color="secondary"
-              onClick={deleteHandler}
+              onClick={() => deleteHandler(obj.id)}
             >
               Eliminar
             </DeleteButton>
