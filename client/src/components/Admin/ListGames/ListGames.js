@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Table from "../Table";
+import AssetsList from "../AssetsList";
+import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -73,14 +75,24 @@ const ListGames = () => {
           {gamesArr &&
             gamesArr.map((game, index) => {
               return (
-                <MenuItem key={index} value={index}>
+                <MenuItem
+                  key={index}
+                  value={index}
+                  component={Link}
+                  to={`/admin/upload/${gamesArr[index].ref}`}
+                >
                   {game.name}
                 </MenuItem>
               );
             })}
         </Select>
       </FormControl>
-      {selectedPos != -1 ? <Table gameSelected={gamesArr[selectedPos]} /> : ""}
+      {/* {selectedPos != -1 ? <Table gameSelected={gamesArr[selectedPos]} /> : ""} */}
+      {/* {selectedPos != -1 ? (
+        <AssetsList gameSelected={gamesArr[selectedPos]} />
+      ) : (
+        ""
+      )} */}
     </>
   );
 };

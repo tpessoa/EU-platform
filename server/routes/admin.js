@@ -79,4 +79,15 @@ router.post("/uploadImg", upload.single("image"), async (req, res, next) => {
   }
 });
 
+router.get("/getAllImages/:game", async (req, res) => {
+  try {
+    const gameConfig = await ConfigGames.findOne({
+      game_type: req.params.game,
+    });
+    res.send({ gameConfig: gameConfig });
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
 module.exports = router;
