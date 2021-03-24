@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import ListGames from "../../components/Admin/ListGames";
 import GamesCRUD from "../../components/Admin/GamesCRUD";
-import Upload from "../../components/Admin/UploadMain";
-import AssetsList from "../../components/Admin/AssetsList";
+import UploadAndViewImages from "../../components/Admin/UploadMain";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ptPT } from "@material-ui/core/locale";
@@ -30,9 +29,7 @@ const Admin = () => {
         path="/admin/games/edit/:game"
         component={() => <GamesCRUD gamesInfo={puzzleCRUD} />}
       />
-
-      <Route path="/admin/upload" component={Upload} />
-      <Route path="/admin/upload/:game" component={AssetsList} />
+      <Route path="/admin/upload" component={UploadAndViewImages} />
     </ThemeProvider>
   );
 };

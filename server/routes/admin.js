@@ -67,7 +67,7 @@ router.post("/uploadImg", upload.single("image"), async (req, res, next) => {
       });
       await newConfigGame.save();
     } else {
-      configGameObj.img_paths.push(newImgPath);
+      configGameObj.img_paths.unshift(newImgPath);
       await configGameObj.save();
     }
 
@@ -85,6 +85,21 @@ router.get("/getAllImages/:game", async (req, res) => {
       game_type: req.params.game,
     });
     res.send({ gameConfig: gameConfig });
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.get("/getAllGamesImages", async (req, res) => {
+  try {
+    const allGamesConfigs = await ConfigGames.find({});
+    const newArr = [];
+    allGamesConfigs.forEach((elem) => {
+      const game_type = elem.game_type;
+      const img_paths = elem.img_paths;
+      newArr.unshift({ game_type, img_paths });
+    });
+    res.send({ allGames: newArr });
   } catch (e) {
     res.status(500).send({ message: e.message });
   }

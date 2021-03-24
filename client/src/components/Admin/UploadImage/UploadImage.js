@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 
 import styled from "styled-components";
 import { makeStyles } from "@material-ui/core/styles";
@@ -31,17 +30,17 @@ const ButtonWrapper = styled.div`
   margin: 0.5rem;
 `;
 
-const Upload = ({ setUploaded }) => {
+const Upload = ({ gameRef, setUploaded, setProcessing }) => {
   const classes = useStyles();
   const [file, setFile] = useState("");
-  const { game } = useParams();
 
   const onFormSubmit = async (e) => {
     e.preventDefault();
+    setProcessing(true);
 
     const formData = new FormData();
     formData.append("image", file);
-    formData.append("game", game);
+    formData.append("game", gameRef);
 
     const config = {
       headers: { "content-Type": "multipart/form-data" },
@@ -51,6 +50,7 @@ const Upload = ({ setUploaded }) => {
       .then((res) => {
         if (res.status == 200) {
           setUploaded(res.data.imgPath);
+          setProcessing(false);
         }
       })
       .catch((err) => console.log(err));

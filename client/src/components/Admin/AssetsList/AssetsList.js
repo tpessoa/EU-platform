@@ -1,120 +1,92 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import Upload from "../Upload";
-
-import { makeStyles } from "@material-ui/core/styles";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
-import Button from "@material-ui/core/Button";
+import Grid from "../Grid";
+import ListGames from "../ListGames";
 
 import styled from "styled-components";
-
-const GridWrapper = styled.div`
+const Container = styled.div`
+  width: 80%;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
-  margin: 50px;
 `;
 
-const GridTitle = styled.div`
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
-const DeleteButton = styled(Button)`
-  position: absolute;
-  top: -20%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
-
-const Img = styled.img`
-  position: absolute;
-  top: 0;
-  left: 0;
-
+const InfoContainer = styled.div`
+  margin: 0 1rem;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
-const ImgWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-
-  &:hover ${DeleteButton} {
-    top: 50%;
-  }
+const Description = styled.div`
+  margin: 0 1rem;
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 `;
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-    overflow: "hidden",
-    backgroundColor: theme.palette.background.paper,
-  },
-  gridList: {
-    width: 500,
-    height: 410,
-  },
-}));
+const Title = styled.div`
+  width: 60%;
+  margin: 0 20px;
+  font-size: 1.2rem;
+`;
 
-const AssetsList = () => {
-  const classes = useStyles();
-  const { game } = useParams();
+const Filter = styled.div`
+  width: 40%;
+  margin: 0 20px;
+  font-size: 1rem;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const AssetsList = ({ refresh }) => {
   const [arrImgPath, setArrImgPath] = useState(null);
   const [uploaded, setUploaded] = useState("");
+  const [selectedFilterGame, setSelectedFilterGame] = useState(null);
 
   useEffect(() => {
-    // get all the games
-    axios
-      .get("/api/admin/getAllImages/" + game)
-      .then(function (resp) {
-        setArrImgPath(resp.data.gameConfig.img_paths);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, [game, uploaded]);
-
-  console.log(arrImgPath);
-  const deleteHandler = () => {
-    console.log("eliminar imagem e se caso o jogo");
-  };
+    if (selectedFilterGame == null || selectedFilterGame === "all") {
+      axios
+        .get("/api/admin/getAllGamesImages")
+        .then(function (resp) {
+          const tempArr = [];
+          resp.data.allGames.forEach((gameConfig) =>
+            gameConfig.img_paths.forEach((path) => tempArr.push(path))
+          );
+          setArrImgPath(tempArr);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else {
+      axios
+        .get("/api/admin/getAllImages/" + selectedFilterGame)
+        .then(function (resp) {
+          setArrImgPath(resp.data.gameConfig.img_paths);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  }, [selectedFilterGame, refresh]);
 
   return (
-    <>
-      <Upload setUploaded={setUploaded} />
-      <div className={classes.root}>
-        <GridWrapper>
-          <GridTitle>
-            <h1>Imagens disponíveis</h1>
-          </GridTitle>
-          <GridList cellHeight={200} className={classes.gridList} cols={3}>
-            {arrImgPath &&
-              arrImgPath.map((imgPath, index) => (
-                <GridListTile key={index}>
-                  <ImgWrapper>
-                    <Img src={imgPath} alt={index} />
-                    <DeleteButton
-                      variant="contained"
-                      color="secondary"
-                      onClick={deleteHandler}
-                    >
-                      Eliminar
-                    </DeleteButton>
-                  </ImgWrapper>
-                </GridListTile>
-              ))}
-          </GridList>
-        </GridWrapper>
-      </div>
-    </>
+    <Container>
+      <InfoContainer>
+        <Description>
+          <Title>{"Imagens disponíveis"}</Title>
+          <Filter>{"Filtrar por"}</Filter>
+        </Description>
+        <ListGames
+          listType={"filterGame"}
+          setSelectedGame={setSelectedFilterGame}
+        />
+      </InfoContainer>
+      {arrImgPath && <Grid arr={arrImgPath} />}
+    </Container>
   );
 };
 

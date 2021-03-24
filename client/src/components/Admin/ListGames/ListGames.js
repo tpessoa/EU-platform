@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Table from "../Table";
-import AssetsList from "../AssetsList";
+import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,8 +8,14 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
+
+import styled from "styled-components";
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: ${({ align }) =>
+    align === "filterGame" ? "flex-end" : "flex-start"};
+`;
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -27,8 +32,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ListGames = () => {
+const ListGames = ({ listType, setSelectedGame, setUploaded }) => {
   const classes = useStyles();
+  const { game } = useParams();
   const [selectedPos, setSelectedPos] = useState(-1);
   const [gamesArr, setGamesArr] = useState(null);
   const [open, setOpen] = useState(false);
@@ -39,6 +45,10 @@ const ListGames = () => {
       .get("/api/games/allGames")
       .then(function (response) {
         setGamesArr(response.data);
+
+        if (listType === "filterGame") {
+          setSelectedPos(0);
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -47,6 +57,14 @@ const ListGames = () => {
 
   const handleChange = (event) => {
     setSelectedPos(event.target.value);
+
+    if (listType === "filterGame" || listType === "uploadImage") {
+      setSelectedGame(gamesArr[event.target.value].ref);
+    }
+
+    if (listType === "uploadImage") {
+      setUploaded(false);
+    }
   };
 
   const handleClose = () => {
@@ -56,11 +74,40 @@ const ListGames = () => {
   const handleOpen = () => {
     setOpen(true);
   };
+
+  let listActions;
+  if (listType === "selectGame" && gamesArr) {
+    listActions = gamesArr.map((game, index) => (
+      <MenuItem
+        key={index}
+        value={index}
+        component={Link}
+        to={`/admin/upload/${gamesArr[index].ref}`}
+      >
+        {game.name}
+      </MenuItem>
+    ));
+  } else if (listType === "filterGame" && gamesArr) {
+    const all = { ref: "all", name: "Todos" };
+    const exists = gamesArr.findIndex((x) => x.ref === "all");
+    if (exists == -1) {
+      gamesArr.unshift(all);
+    }
+    listActions = gamesArr.map((game, index) => (
+      <MenuItem key={index} value={index}>
+        {game.name}
+      </MenuItem>
+    ));
+  } else if (listType === "uploadImage" && gamesArr) {
+    listActions = gamesArr.map((game, index) => (
+      <MenuItem key={index} value={index}>
+        {game.name}
+      </MenuItem>
+    ));
+  }
+
   return (
-    <>
-      <Typography variant="h6" gutterBottom>
-        Escolher jogo
-      </Typography>
+    <Container align={listType}>
       <FormControl className={classes.formControl}>
         <InputLabel id="demo-controlled-open-select-label">Jogo</InputLabel>
         <Select
@@ -72,28 +119,10 @@ const ListGames = () => {
           value={selectedPos}
           onChange={handleChange}
         >
-          {gamesArr &&
-            gamesArr.map((game, index) => {
-              return (
-                <MenuItem
-                  key={index}
-                  value={index}
-                  component={Link}
-                  to={`/admin/upload/${gamesArr[index].ref}`}
-                >
-                  {game.name}
-                </MenuItem>
-              );
-            })}
+          {listActions}
         </Select>
       </FormControl>
-      {/* {selectedPos != -1 ? <Table gameSelected={gamesArr[selectedPos]} /> : ""} */}
-      {/* {selectedPos != -1 ? (
-        <AssetsList gameSelected={gamesArr[selectedPos]} />
-      ) : (
-        ""
-      )} */}
-    </>
+    </Container>
   );
 };
 
