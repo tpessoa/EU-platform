@@ -50,7 +50,7 @@ router.post("/uploadImg", upload.single("image"), async (req, res, next) => {
   const newImgPath = strPartialURL + req.file.path;
 
   if (req.body.game == null) {
-    removeFile(newImgPath);
+    removeFile(eq.file.path);
     return res.send("jogo não especificado");
   }
 
@@ -75,11 +75,10 @@ router.post("/uploadImg", upload.single("image"), async (req, res, next) => {
       configGameObj.img_paths.unshift(tempObj);
       await configGameObj.save();
     }
-
-    // removeFile(newImgPath);
+    // removeFile(req.file.path);
     res.send({ img: tempObj });
   } catch (e) {
-    removeFile(newImgPath);
+    removeFile(eq.file.path);
     res.status(500).send({ message: e.message });
   }
 });
@@ -93,12 +92,17 @@ router.delete("/upload/:game/:img_path", async (req, res) => {
     });
 
     // delete this obj and update the DB
-    console.log(gameConfig.img_paths);
     const obj = gameConfig.img_paths.find((obj) => obj.id === img_path);
+    // remove img from server
+    const temp_arr = obj.img_path.split("/");
+    temp_arr.shift();
+    temp_arr.shift();
+    const working_delete_img_path = temp_arr.join("/");
+    removeFile(working_delete_img_path);
+
     const objIndex = gameConfig.img_paths.indexOf(obj);
     gameConfig.img_paths.splice(objIndex, 1);
     await gameConfig.save();
-
     res.send({ gameConfig: gameConfig });
   } catch (e) {
     res.status(500).send({ message: e.message });
