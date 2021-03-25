@@ -87,7 +87,7 @@ const ListGames = ({ listType, setSelectedGame, setUploaded }) => {
         key={index}
         value={index}
         component={Link}
-        to={`/admin/upload/${gamesArr[index].ref}`}
+        to={`/admin/games/${gamesArr[index].refAll}`}
       >
         {game.name}
       </MenuItem>

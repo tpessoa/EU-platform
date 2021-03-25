@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Route, Switch } from "react-router-dom";
-import ListGames from "../../components/Admin/ListGames";
-import GamesCRUD from "../../components/Admin/GamesCRUD";
+import React from "react";
+import { Route } from "react-router-dom";
 import UploadAndViewImages from "../../components/Admin/UploadMain";
+import EditGame from "../../components/Admin/EditGame";
+import SelectGame from "../../components/Admin/SelectGame";
+import GamesCRUD from "../../components/Admin/GamesCRUD";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ptPT } from "@material-ui/core/locale";
@@ -23,13 +24,13 @@ const theme = createMuiTheme({
 const Admin = () => {
   return (
     <ThemeProvider theme={theme}>
-      <Route exact path="/admin/games" component={ListGames} />
+      <Route path="/admin/games" component={SelectGame} />
       <Route
         exact
-        path="/admin/games/edit/:game"
-        component={() => <GamesCRUD gamesInfo={puzzleCRUD} />}
+        path="/admin/edit/game/:gameRef"
+        component={() => <EditGame gamesInfo={puzzleCRUD} />}
       />
-      <Route path="/admin/upload" component={UploadAndViewImages} />
+      <Route exact path="/admin/upload" component={UploadAndViewImages} />
     </ThemeProvider>
   );
 };

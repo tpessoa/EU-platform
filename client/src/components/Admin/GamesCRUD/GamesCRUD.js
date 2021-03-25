@@ -60,16 +60,22 @@ const TextFieldCustom = styled(TextField)`
   }
 `;
 
-const ImgContainer = styled.div`
+const ChangeImgContainer = styled.div`
   display: flex;
   align-items: center;
-
+  justify-content: center;
   flex-direction: column;
+
   width: 100%;
-  min-height: 300px;
+  margin: 1rem;
 `;
 
-const ImgWrapper = styled.img`
+const ImgContainer = styled.div`
+  width: 250px;
+  height: 250px;
+`;
+
+const Img = styled.img`
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -80,13 +86,14 @@ const UtilsWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin: 1.5rem;
+
+  margin: 2rem 0;
 `;
 
 const GamesCRUD = ({ gamesInfo }) => {
   const classes = useStyles();
+  const { gameRef } = useParams();
   const { search } = useLocation();
-  const { game } = useParams();
 
   const query = new URLSearchParams(search);
   const idField = query.get("id");
@@ -96,14 +103,15 @@ const GamesCRUD = ({ gamesInfo }) => {
 
   useEffect(() => {
     axios
-      .get(`/api/games/${game}/${idField}`)
+      .get(`/api/games/${gameRef}/${idField}`)
       .then(function (response) {
         setGameParms(response.data);
+        console.log(response.data);
       })
       .catch(function (error) {
         console.log(error);
       });
-  }, [game || idField]);
+  }, [gameRef || idField]);
 
   return (
     <Container>
@@ -129,17 +137,20 @@ const GamesCRUD = ({ gamesInfo }) => {
               );
             } else if (info.type === "img") {
               return (
-                <ImgContainer>
-                  <div className={classes.root}>
-                    <Paper key={index}>
-                      <ImgWrapper
-                        src={uploadedImg ? uploadedImg : gameParams[info.ref]}
-                        alt={index}
-                      />
-                    </Paper>
-                  </div>
+                <ChangeImgContainer key={index}>
+                  <p>Imagem do Jogo</p>
+                  <ImgContainer>
+                    <Img
+                      src={
+                        uploadedImg
+                          ? uploadedImg.img_path
+                          : gameParams[info.ref]
+                      }
+                      alt={index}
+                    />
+                  </ImgContainer>
                   <ImageUtils setUploadedImg={setUploadedImg} />
-                </ImgContainer>
+                </ChangeImgContainer>
               );
             }
           })}

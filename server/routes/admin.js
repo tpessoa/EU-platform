@@ -87,6 +87,8 @@ router.delete("/upload/:game/:img_path", async (req, res) => {
   const { game, img_path } = req.params;
 
   try {
+    // TODO CASE "all"
+
     const gameConfig = await ConfigGames.findOne({
       game_type: game,
     });

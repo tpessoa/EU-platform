@@ -56,7 +56,6 @@ const Grid = ({ arr, setArr, selectedGame }) => {
     axios
       .delete(`/api/admin/upload/${selectedGame}/${objIndex}`)
       .then(function (res) {
-        console.log(res.data.gameConfig.img_paths);
         setArr(res.data.gameConfig.img_paths);
       })
       .catch(function (error) {

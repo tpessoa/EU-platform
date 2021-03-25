@@ -44,7 +44,8 @@ const getRows = (db_resp) => {
   return rows_arr;
 };
 
-const ItemsTable = ({ gameSelected }) => {
+const ItemsTable = () => {
+  const { allGameRef } = useParams();
   const [gameData, setGameData] = useState({
     columns: [],
     rows: [],
@@ -56,7 +57,7 @@ const ItemsTable = ({ gameSelected }) => {
 
   useEffect(() => {
     axios
-      .get("/api/games/" + gameSelected.refAll)
+      .get("/api/games/" + allGameRef)
       .then(function (response) {
         setGameData({
           columns: getColumns(response),
@@ -67,7 +68,7 @@ const ItemsTable = ({ gameSelected }) => {
       .catch(function (error) {
         console.log(error);
       });
-  }, [gameSelected]);
+  }, [allGameRef]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -121,7 +122,7 @@ const ItemsTable = ({ gameSelected }) => {
                               color="primary"
                               component={Link}
                               to={{
-                                pathname: `games/edit/${gameData.game_name}`,
+                                pathname: `/admin/edit/game/${gameData.game_name}`,
                                 search: `?id=${row.game_ref}`,
                               }}
                             >
