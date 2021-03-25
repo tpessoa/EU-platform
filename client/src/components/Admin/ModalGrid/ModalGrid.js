@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import Button from "@material-ui/core/Button";
 
 import styled from "styled-components";
@@ -34,7 +33,7 @@ const ImgCard = styled.div`
   &:hover ${Img} {
     opacity: 0.8;
   }
-
+  border-radius: 5px;
   background-color: ${({ highlight }) =>
     highlight == "1" ? "yellow" : "transparent"};
 `;

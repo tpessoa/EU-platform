@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useHistory } from "react-router-dom";
 import ImageUtils from "../ImageUtils";
 
 import TextField from "@material-ui/core/TextField";
@@ -94,6 +94,7 @@ const GamesCRUD = ({ gamesInfo }) => {
   const classes = useStyles();
   const { gameRef } = useParams();
   const { search } = useLocation();
+  const history = useHistory();
 
   const query = new URLSearchParams(search);
   const idField = query.get("id");
@@ -117,7 +118,11 @@ const GamesCRUD = ({ gamesInfo }) => {
     <Container>
       {gameParams && (
         <Wrapper>
-          <Button variant="contained" className={classes.backButton}>
+          <Button
+            variant="contained"
+            className={classes.backButton}
+            onClick={history.goBack}
+          >
             Voltar
           </Button>
           <Typography variant="h6" gutterBottom>
