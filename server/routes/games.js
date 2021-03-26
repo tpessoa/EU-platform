@@ -5,6 +5,8 @@ let Puzzle = require("../models/puzzle.model");
 let Quiz = require("../models/quiz.model");
 let WordSearch = require("../models/word_search.model");
 
+let Games = require("../models/games.model");
+
 router.route("/").get((req, res) => {
   res.send("JOGOS");
 });
@@ -12,7 +14,35 @@ router.route("/").get((req, res) => {
 /**
  * get all games
  */
-router.get("/allGames", async (req, res) => {
+
+router.get("/all", async (req, res) => {
+  try {
+    let games = await Games.find({});
+    res.send(games);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    let games = await Games.find({ game_ref_id: req.params.id });
+    res.send(games);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.get("/game/:id", async (req, res) => {
+  try {
+    let game = await Games.findOne({ _id: req.params.id });
+    res.send(game);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.get("/allGames2", async (req, res) => {
   let games = [
     {
       name: "Jogo de Colorir",

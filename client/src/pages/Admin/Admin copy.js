@@ -1,14 +1,14 @@
 import React from "react";
 import { Route } from "react-router-dom";
-
-import Dashboard from "../../components/Admin/Dashboard";
-import EditGames from "../../components/Admin/EditGames";
+import UploadAndViewImages from "../../components/Admin/UploadMain";
 import EditGame from "../../components/Admin/EditGame";
+import SelectGame from "../../components/Admin/SelectGame";
+import GamesCRUD from "../../components/Admin/GamesCRUD";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ptPT } from "@material-ui/core/locale";
 
-import { gamesIDsRefs, gameEdit } from "./games/Data";
+import { puzzleCRUD } from "./games/Data";
 
 const theme = createMuiTheme({
   palette: {
@@ -24,17 +24,13 @@ const theme = createMuiTheme({
 const Admin = () => {
   return (
     <ThemeProvider theme={theme}>
-      <Route exact path="/admin" component={Dashboard} />
-      <Route
-        exact
-        path="/admin/games"
-        component={() => <EditGames gamesNames={gamesIDsRefs} />}
-      />
+      <Route path="/admin/games" component={SelectGame} />
       <Route
         exact
         path="/admin/edit/game/:gameRef"
-        component={() => <EditGame gameInfo={gameEdit} />}
+        component={() => <EditGame gamesInfo={puzzleCRUD} />}
       />
+      <Route exact path="/admin/upload" component={UploadAndViewImages} />
     </ThemeProvider>
   );
 };

@@ -4,84 +4,131 @@
 
 Game document schema
 
-{
-
-    _id: ObjectId('ABC')
-    game_ref_id: Number
-    game_ref_name: String
-    title: String
-    description: String
-    age: Array
-    difficulty: String
-    assets: {
-      images: {
-        image_1: ObjectId('IMG1')
+    {
+      _id: ObjectId('ABC')
+      game_ref_id: Number
+      game_ref_name: String
+      title: String
+      description: String
+      age: Array
+      difficulty: String
+      assets: {
+        images: {
+          image_1: {
+            id: String
+            path: String
+          }
+          ...
+        },
+        sounds: {
+          sound_1: {
+            id: String
+            path: String
+          }
+          ...
+        }
+      }
+      config: {
         ...
-      },
-      sounds: {
-        sound_1: ObjectId('SOUND1')
+        (each game has its own configuration)
         ...
       }
     }
-    config: {
-      ...
-      (each game has its own configuration)
-      ...
-    }
-
-}
-
-## Images
-
-image document schema
-
-{
-
-      _id: ObjectId('IMG1')
-      image_ref_id: String
-      path: String
-
-}
-
-## Sounds
-
-Sound document schema
-
-{
-
-    _id: ObjectId('SOUND1')
-    sound_ref_id: String
-    path: String
-
-}
 
 ## Categories
 
 Categorie document schema
 
-> videos make sense to be embedded because they won't be utilized in other part of the platform.
-
-{
-
-    _id: ObjectId('VIDEO1')
-    title: String
-    description: String
-    img: ObjectId('IMG_CAT')
-    videos: [
-      {
-        title: String
-        description: String
-        url: String
-      },
-      ...
-    ]
-    reverse: boolean
-
-}
+    {
+      _id: ObjectId('VIDEO1')
+      title: String
+      description: String
+      img: {
+        id: String
+        path: String
+      }
+      videos: [
+        {
+          title: String
+          description: String
+          url: String
+        },
+        ...
+      ]
+      reverse: boolean
+    }
 
 ## Book
 
+    {
+      _id: ObjectId('BOOK')
+      title: String
+      description: String
+      pages: [
+        {
+          image: {
+            id: String
+            path: String
+          }
+          audio: {
+            id: String
+            path: String
+          }
+        },
+        ...
+      ]
+    }
+
 ## Poll
+
+    {
+      _id: ObjectId('CAT')
+      category_ref_id: Number
+      category_ref_name: String
+      title: String
+      description: String
+      works: [
+        {
+          author: String
+          title: String
+          description: String
+          image: {
+            id: String
+            path: String
+          }
+        },
+        ...
+      ]
+    }
+
+### Games ID and name reference
+
+>
+
+    game_ref_id: 1
+    game_ref_name: colorGame
+
+>
+
+    game_ref_id: 2
+    game_ref_name: puzzle
+
+>
+
+    game_ref_id: 3
+    game_ref_name: quiz
+
+>
+
+    game_ref_id: 4
+    game_ref_name: wordSearch
+
+>
+
+    game_ref_id: 5
+    game_ref_name: memory
+
+>
 
 ### Assets and Config description for each game
 
@@ -94,8 +141,14 @@ Categorie document schema
 
     assets: {
       images: {
-        colored_img: ObjectId('IMGX')
-        blank_img: ObjectId('IMGY')
+        colored_img: {
+            id: String
+            path: String
+        }
+        blank_img: {
+            id: String
+            path: String
+        }
       }
     }
     config: {
@@ -113,7 +166,10 @@ Categorie document schema
 
     assets: {
       images: {
-        final_img: ObjectId('IMGX')
+        final_img: {
+            id: String
+            path: String
+          }
       }
     }
     config: {
@@ -137,7 +193,10 @@ Categorie document schema
           ]
           justification: String
           right_answer: 2
-          audio: ObjectId('SOUNDXYZ') || null
+          audio: {
+            id: String
+            path: String
+          } || null
         },
           ...
       ]
