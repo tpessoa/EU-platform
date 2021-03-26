@@ -3,7 +3,8 @@ import { useParams, useLocation, useHistory } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
-import TextField from "@material-ui/core/TextField";
+import FieldType from "../FieldType/FieldType";
+
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -12,15 +13,6 @@ import Button from "@material-ui/core/Button";
 import { green } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-    "& > *": {
-      margin: theme.spacing(1),
-      width: theme.spacing(32),
-      height: theme.spacing(22),
-    },
-  },
   button: {
     margin: theme.spacing(2),
     padding: theme.spacing(1.5),
@@ -50,13 +42,6 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-`;
-
-const TextFieldCustom = styled(TextField)`
-  && {
-    margin: 0.7rem;
-    width: 80%;
-  }
 `;
 
 const ChangeImgContainer = styled.div`
@@ -89,7 +74,12 @@ const UtilsWrapper = styled.div`
   margin: 2rem 0;
 `;
 
+// prevents the component from updating each time the user changes the text field
+// i.e, its not saved at the component state
+var editParams = {};
+
 const EditGame = (props) => {
+  const classes = useStyles();
   const { gameInfo } = props;
   const history = useHistory();
   const { gameRef } = useParams();
@@ -104,27 +94,82 @@ const EditGame = (props) => {
       .get(`/api/games/game/${idField}`)
       .then(function (response) {
         setGameParms(response.data);
+        // do a copy for the user edit the fields
+        // and in the end if the save button is pressed the copy substitutes the original from db
+        editParams = { ...response.data };
       })
       .catch(function (error) {
         console.log(error);
       });
   }, [gameRef || idField]);
 
+  const performSave = () => {
+    // get all updated fields
+    console.log(editParams);
+    // validate the params
+
+    // post them to database
+    // display feedback
+  };
+
+  const textChangeHandler = (ev, ref, updateState) => {
+    editParams[ref] = ev.target.value;
+  };
+
+  const listChangeHandler = (ev, ref) => {
+    editParams[ref] = ev.target.value;
+    setGameParms({ ...editParams });
+  };
+
+  const ageChangeHandler = (ev, ref) => {
+    if (ref === "min") {
+      editParams.age.min = ev.target.value;
+    } else if (ref === "max") {
+      editParams.age.max = ev.target.value;
+    }
+  };
+
   return (
     <Container>
-      {gameParams &&
-        gameInfo.map((field, index) => {
-          return (
-            <TextFieldCustom
-              key={index}
-              required
-              id="outlined-required"
-              label={field}
-              defaultValue={gameParams[field]}
-              variant="outlined"
-            />
-          );
-        })}
+      {gameParams && (
+        <Wrapper>
+          <Button
+            variant="contained"
+            className={classes.backButton}
+            onClick={history.goBack}
+          >
+            Voltar
+          </Button>
+          <Typography variant="h6" gutterBottom>
+            Editar Jogo
+          </Typography>
+          {gameInfo.map((obj, index) => {
+            return (
+              <FieldType
+                key={index}
+                obj={obj}
+                label={obj.ref_name}
+                value={gameParams[obj.ref]}
+                textChange={textChangeHandler}
+                listChange={listChangeHandler}
+                ageChange={ageChangeHandler}
+              />
+            );
+          })}
+          {/* <TextFieldMulti label={"sigurate"} value={"Nada"} /> */}
+          <UtilsWrapper>
+            <Button
+              variant="contained"
+              size="small"
+              className={classes.button}
+              startIcon={<SaveIcon />}
+              onClick={performSave}
+            >
+              Guardar
+            </Button>
+          </UtilsWrapper>
+        </Wrapper>
+      )}
     </Container>
   );
 };

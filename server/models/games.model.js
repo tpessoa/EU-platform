@@ -7,8 +7,8 @@ const gamesSchema = new Schema(
     game_ref_name: { type: String, require: true },
     title: { type: String, require: true },
     description: String,
-    age: { type: Array, require: true },
-    difficulty: { type: String, require: true },
+    age: { type: Object, require: true },
+    difficulty: { type: Number, require: true },
     assets: {
       images: Object,
       sounds: Object,

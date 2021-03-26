@@ -10,7 +10,10 @@ Game document schema
       game_ref_name: String
       title: String
       description: String
-      age: Array
+      age: {
+        min: Number,
+        max: NUmber,
+      }
       difficulty: String
       assets: {
         images: {

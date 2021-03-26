@@ -20,7 +20,37 @@ export const puzzleCRUD = [
   },
 ];
 
-export const gameEdit = ["title", "description", "age", "difficulty"];
+export const gameEdit = [
+  {
+    ref_name: "Título",
+    ref: "title",
+    type: "String",
+  },
+  {
+    ref_name: "Descrição",
+    ref: "description",
+    type: "String",
+    multiline: true,
+  },
+  {
+    ref_name: "Idade",
+    ref: "age",
+    type: "Object",
+    range: {
+      min: 6,
+      max: 12,
+    },
+  },
+  {
+    ref_name: "Dificuldade",
+    ref: "difficulty",
+    type: "Number",
+    limited: {
+      inf: 0,
+      sup: 2,
+    },
+  },
+];
 
 export const gamesIDsRefs = [
   {
