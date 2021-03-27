@@ -16,7 +16,14 @@ const useStyles = makeStyles((theme) => ({
 
 const ListField = (props) => {
   const classes = useStyles();
-  const { arr, field_ref, label, value, parentChangeHandler } = props;
+  const {
+    arr,
+    field_ref,
+    label,
+    value,
+    parentChangeHandler,
+    paramType,
+  } = props;
   return (
     <FormControl className={classes.formControl}>
       <InputLabel id="demo-simple-select-outlined-label">{label}</InputLabel>
@@ -25,7 +32,7 @@ const ListField = (props) => {
         id="demo-simple-select-outlined"
         label={label}
         value={value}
-        onChange={(ev) => parentChangeHandler(ev, field_ref)}
+        onChange={(ev) => parentChangeHandler(ev, field_ref, paramType)}
       >
         {arr.map((item, index) => (
           <MenuItem key={index} value={index}>

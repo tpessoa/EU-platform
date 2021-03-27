@@ -10,10 +10,10 @@ const gamesSchema = new Schema(
     age: { type: Object, require: true },
     difficulty: { type: Number, require: true },
     assets: {
-      images: Object,
-      sounds: Object,
+      images: { type: Object, require: true },
+      sounds: { type: Object, require: true },
     },
-    config: Object,
+    config: { type: Object, require: true },
   },
   { collection: "games" }
 );

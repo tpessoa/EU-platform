@@ -32,12 +32,11 @@ const Container = styled.div`
   min-height: 60vh;
   display: flex;
   align-items: center;
-
-  flex-direction: column;
+  justify-content: center;
 `;
 
 const Wrapper = styled.div`
-  width: 70%;
+  width: 80%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -74,13 +73,20 @@ const UtilsWrapper = styled.div`
   margin: 2rem 0;
 `;
 
+const isEmpty = (obj) => {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) return false;
+  }
+  return true;
+};
+
 // prevents the component from updating each time the user changes the text field
 // i.e, its not saved at the component state
 var editParams = {};
 
 const EditGame = (props) => {
   const classes = useStyles();
-  const { gameInfo } = props;
+  const { gameInfo, puzzleInfo } = props;
   const history = useHistory();
   const { gameRef } = useParams();
   const { search } = useLocation();
@@ -103,30 +109,53 @@ const EditGame = (props) => {
       });
   }, [gameRef || idField]);
 
-  const performSave = () => {
+  const performSave = (ev) => {
+    ev.preventDefault();
     // get all updated fields
     console.log(editParams);
     // validate the params
 
     // post them to database
+    axios
+      .post(`/api/games/${gameRef}/${idField}`, { gameObj: editParams })
+      .then(function (res) {
+        console.log(res.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     // display feedback
   };
 
-  const textChangeHandler = (ev, ref, updateState) => {
-    editParams[ref] = ev.target.value;
+  const textChangeHandler = (ev, ref, paramType) => {
+    if (isEmpty(editParams)) return;
+    if (paramType === "config") {
+      editParams.config[ref] = ev.target.value;
+    } else if (paramType === "assets") {
+      editParams.assets[ref] = ev.target.value;
+    } else {
+      editParams[ref] = ev.target.value;
+    }
   };
 
   const listChangeHandler = (ev, ref) => {
+    if (isEmpty(editParams)) return;
     editParams[ref] = ev.target.value;
     setGameParms({ ...editParams });
   };
 
   const ageChangeHandler = (ev, ref) => {
+    if (isEmpty(editParams)) return;
     if (ref === "min") {
       editParams.age.min = ev.target.value;
     } else if (ref === "max") {
       editParams.age.max = ev.target.value;
     }
+  };
+
+  const imageChangeHandler = (obj, ref) => {
+    if (isEmpty(editParams)) return;
+    editParams.assets.images[ref] = { ...obj };
   };
 
   return (
@@ -148,7 +177,7 @@ const EditGame = (props) => {
               <FieldType
                 key={index}
                 obj={obj}
-                label={obj.ref_name}
+                label={obj.label}
                 value={gameParams[obj.ref]}
                 textChange={textChangeHandler}
                 listChange={listChangeHandler}
@@ -156,7 +185,36 @@ const EditGame = (props) => {
               />
             );
           })}
-          {/* <TextFieldMulti label={"sigurate"} value={"Nada"} /> */}
+          {/* specific */}
+
+          {puzzleInfo.assets.images.map((obj, index) => {
+            return (
+              <FieldType
+                key={index}
+                obj={obj}
+                label={obj.label}
+                value={gameParams.assets.images[obj.ref]}
+                imageChange={imageChangeHandler}
+                type={"assets"}
+              />
+            );
+          })}
+
+          {puzzleInfo.config.map((obj, index) => {
+            return (
+              <FieldType
+                key={index}
+                obj={obj}
+                label={obj.label}
+                value={gameParams.config[obj.ref]}
+                textChange={textChangeHandler}
+                listChange={listChangeHandler}
+                ageChange={ageChangeHandler}
+                type={"config"}
+              />
+            );
+          })}
+
           <UtilsWrapper>
             <Button
               variant="contained"

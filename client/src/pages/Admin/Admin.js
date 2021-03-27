@@ -8,7 +8,7 @@ import EditGame from "../../components/Admin/EditGame";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ptPT } from "@material-ui/core/locale";
 
-import { gamesIDsRefs, gameEdit } from "./games/Data";
+import { gamesIDsRefs, gameEdit, puzzleCRUD } from "./games/Data";
 
 const theme = createMuiTheme({
   palette: {
@@ -33,7 +33,9 @@ const Admin = () => {
       <Route
         exact
         path="/admin/edit/game/:gameRef"
-        component={() => <EditGame gameInfo={gameEdit} />}
+        component={() => (
+          <EditGame gameInfo={gameEdit} puzzleInfo={puzzleCRUD} />
+        )}
       />
     </ThemeProvider>
   );

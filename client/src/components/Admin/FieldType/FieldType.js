@@ -2,8 +2,10 @@ import React from "react";
 
 import TextField from "../../TextInput/TextField";
 import ListField from "../../TextInput/ListField";
+import ImageField from "../ImageField";
 
 import styled from "styled-components";
+
 const AgeContainer = styled.div`
   display: flex;
   align-items: center;
@@ -26,7 +28,20 @@ const generateLimitedNumbers = (inf, sup) => {
 
 const FieldType = (props) => {
   let display = "";
-  const { obj, label, value, textChange, listChange, ageChange } = props;
+  const {
+    obj,
+    label,
+    value,
+
+    textChange,
+    listChange,
+    ageChange,
+    imageChange,
+
+    type,
+    setUploaded,
+  } = props;
+
   if (obj.type === "String") {
     // check if its a multiline string
     let multiline = obj.multiline ? true : false;
@@ -37,6 +52,7 @@ const FieldType = (props) => {
         value={value}
         parentChangeHandler={textChange}
         multi={multiline}
+        paramType={type}
       />
     );
   } else if (obj.type === "Number") {
@@ -49,6 +65,7 @@ const FieldType = (props) => {
           label={label}
           value={value}
           parentChangeHandler={listChange}
+          paramType={type}
         />
       );
     } else {
@@ -58,6 +75,7 @@ const FieldType = (props) => {
           label={label}
           value={value}
           parentChangeHandler={textChange}
+          paramType={type}
         />
       );
     }
@@ -70,6 +88,7 @@ const FieldType = (props) => {
             label={label + " Mínima"}
             value={obj.range.min}
             parentChangeHandler={ageChange}
+            paramType={type}
           />
         </AgeWrapper>
         <AgeWrapper>
@@ -78,9 +97,18 @@ const FieldType = (props) => {
             label={label + " Máxima"}
             value={obj.range.max}
             parentChangeHandler={ageChange}
+            paramType={type}
           />
         </AgeWrapper>
       </AgeContainer>
+    );
+  } else if (obj.type === "Image") {
+    display = (
+      <ImageField
+        field_ref={obj.ref}
+        imageObj={value}
+        parentChangeHandler={imageChange}
+      />
     );
   }
 

@@ -1,39 +1,17 @@
-export const puzzleCRUD = [
-  {
-    ref: "title",
-    name: "Título",
-    info: "Nome do jogo",
-    type: "text",
-  },
-  {
-    ref: "pieces_size",
-    name: "Tamanho das peças",
-    info:
-      "Tamanho das peças do puzzle em pixéis. ex: 100 poucas peças, 70 número considerável de peças, 50 muitas peças",
-    type: "text",
-  },
-  {
-    ref: "src",
-    name: "Imagem do Puzzle",
-    info: "Substituição da imagem atual do puzzle",
-    type: "img",
-  },
-];
-
 export const gameEdit = [
   {
-    ref_name: "Título",
+    label: "Título",
     ref: "title",
     type: "String",
   },
   {
-    ref_name: "Descrição",
+    label: "Descrição",
     ref: "description",
     type: "String",
     multiline: true,
   },
   {
-    ref_name: "Idade",
+    label: "Idade",
     ref: "age",
     type: "Object",
     range: {
@@ -42,7 +20,7 @@ export const gameEdit = [
     },
   },
   {
-    ref_name: "Dificuldade",
+    label: "Dificuldade",
     ref: "difficulty",
     type: "Number",
     limited: {
@@ -51,6 +29,25 @@ export const gameEdit = [
     },
   },
 ];
+
+export const puzzleCRUD = {
+  assets: {
+    images: [
+      {
+        label: "Imagem do puzzle",
+        ref: "final_img",
+        type: "Image",
+      },
+    ],
+  },
+  config: [
+    {
+      label: "Tamanho das peças",
+      ref: "pieces_size",
+      type: "Number",
+    },
+  ],
+};
 
 export const gamesIDsRefs = [
   {

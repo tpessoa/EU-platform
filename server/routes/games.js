@@ -42,6 +42,33 @@ router.get("/game/:id", async (req, res) => {
   }
 });
 
+router.post("/:game/:id", async (req, res) => {
+  try {
+    let game = await Games.findOne({ _id: req.params.id });
+    const {
+      title,
+      description,
+      age,
+      difficulty,
+      config,
+      assets,
+    } = req.body.gameObj;
+
+    game.title = title;
+    game.description = description;
+    game.age = age;
+    game.difficulty = difficulty;
+    game.config = config;
+    game.assets = assets;
+
+    await game.save();
+
+    res.send(game);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
 router.get("/allGames2", async (req, res) => {
   let games = [
     {

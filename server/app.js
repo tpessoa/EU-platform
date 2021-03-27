@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 const connection_url = "mongodb://db:27017/eu-platform-db";
 
 // Middlewares
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
@@ -34,10 +34,12 @@ app.get("/", (req, res) => res.status(200).send("helloo Tiago"));
 const adminRouter = require("./routes/admin");
 const usersRouter = require("./routes/users");
 const gamesRouter = require("./routes/games");
+const uploadRouter = require("./routes/upload");
 
 app.use("/admin", adminRouter);
 app.use("/users", usersRouter);
 app.use("/games", gamesRouter);
+app.use("/upload", uploadRouter);
 
 // Listener
 app.listen(port, () => {
