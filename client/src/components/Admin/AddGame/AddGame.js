@@ -85,14 +85,8 @@ const isEmpty = (obj) => {
 // i.e, its not saved at the component state
 var editParams = {};
 
-const EditGame = (props) => {
-  const {
-    gamesNames,
-    gameInfo,
-    gameInfoDefault,
-    puzzleDefault,
-    puzzleInfo,
-  } = props;
+const AddGame = (props) => {
+  const { gameInfo, puzzleInfo } = props;
   const classes = useStyles();
   const history = useHistory();
   const { gameRef } = useParams();
@@ -102,32 +96,19 @@ const EditGame = (props) => {
 
   const [gameParams, setGameParms] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [createGame, setCreateGame] = useState(null);
 
   useEffect(() => {
-    if (idField === "createNew") {
-      setCreateGame(true);
-
-      gameInfoDefault.assets = { ...puzzleDefault.assets };
-      gameInfoDefault.config = { ...puzzleDefault.config };
-
-      setGameParms(gameInfoDefault);
-      editParams = { ...gameInfoDefault };
-      console.log(editParams);
-    } else {
-      setCreateGame(false);
-      axios
-        .get(`/api/games/game/${idField}`)
-        .then(function (response) {
-          setGameParms(response.data);
-          // do a copy for the user edit the fields
-          // and in the end if the save button is pressed the copy substitutes the original from db
-          editParams = { ...response.data };
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
+    axios
+      .get(`/api/games/game/${idField}`)
+      .then(function (response) {
+        setGameParms(response.data);
+        // do a copy for the user edit the fields
+        // and in the end if the save button is pressed the copy substitutes the original from db
+        editParams = { ...response.data };
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }, [gameRef || idField]);
 
   const performSave = (ev) => {
@@ -136,18 +117,9 @@ const EditGame = (props) => {
     console.log(editParams);
     // validate the params
 
-    let URL_str = "";
-    if (createGame) {
-      const gameObj = gamesNames.find((obj) => obj.game_ref_name === gameRef);
-      console.log(gameObj);
-      URL_str = `/api/games/add/${gameRef}/${gameObj.game_ref_id}`;
-    } else {
-      URL_str = `/api/games/${gameRef}/${idField}`;
-    }
-
     // post them to database
     axios
-      .post(URL_str, { gameObj: editParams })
+      .post(`/api/games/${gameRef}/${idField}`, { gameObj: editParams })
       .then(function (res) {
         console.log(res.data);
       })
@@ -270,4 +242,4 @@ const EditGame = (props) => {
   );
 };
 
-export default EditGame;
+export default AddGame;

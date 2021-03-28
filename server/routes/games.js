@@ -42,18 +42,50 @@ router.get("/game/:id", async (req, res) => {
   }
 });
 
+router.post("/add/:gameName/:gameId", async (req, res) => {
+  const {
+    title,
+    description,
+    age,
+    difficulty,
+    config,
+    assets,
+  } = req.body.gameObj;
+
+  const { gameName, gameId } = req.params;
+
+  try {
+    const newGame = new Games({
+      game_ref_id: gameId,
+      game_ref_name: gameName,
+      title: title,
+      description: description,
+      age: age,
+      difficulty: difficulty,
+      config: config,
+      assets: assets,
+    });
+    console.log(newGame);
+    await newGame.save();
+
+    res.send(newGame);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
 router.post("/:game/:id", async (req, res) => {
+  const {
+    title,
+    description,
+    age,
+    difficulty,
+    config,
+    assets,
+  } = req.body.gameObj;
+
   try {
     let game = await Games.findOne({ _id: req.params.id });
-    const {
-      title,
-      description,
-      age,
-      difficulty,
-      config,
-      assets,
-    } = req.body.gameObj;
-
     game.title = title;
     game.description = description;
     game.age = age;

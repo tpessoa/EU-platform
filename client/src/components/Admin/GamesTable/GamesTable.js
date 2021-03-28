@@ -14,12 +14,6 @@ import Button from "@material-ui/core/Button";
 import styled from "styled-components";
 import { Link, useParams } from "react-router-dom";
 
-const EditButton = styled(Button)`
-  && {
-    font-size: 0.75rem;
-  }
-`;
-
 const useStyles = makeStyles({
   root: {
     width: "100%",
@@ -105,7 +99,7 @@ const GamesTable = (props) => {
   });
 
   return (
-    <Paper className={classes.root}>
+    <>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -155,19 +149,63 @@ const GamesTable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {tableData && (
-        <TablePagination
-          rowsPerPageOptions={[2, 5, 10]}
-          component="div"
-          count={tableData.rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      )}
-    </Paper>
+      <TabeleUtils>
+        <AddGameWrapper>
+          <AddGameButton
+            variant="contained"
+            color="primary"
+            component={Link}
+            to={{
+              pathname: `/admin/edit/game/${selectedGame.game_ref_name}`,
+              search: "?id=createNew",
+            }}
+          >
+            Adicionar Jogo
+          </AddGameButton>
+        </AddGameWrapper>
+        {tableData && (
+          <TablePagination
+            rowsPerPageOptions={[2, 5, 10]}
+            component="div"
+            count={tableData.rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        )}
+      </TabeleUtils>
+    </>
   );
 };
 
 export default GamesTable;
+
+const TabeleUtils = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`;
+
+const AddGameWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 50%;
+  && {
+    justify-content: flex-start;
+  }
+`;
+
+const EditButton = styled(Button)`
+  && {
+    font-size: 0.75rem;
+  }
+`;
+
+const AddGameButton = styled(Button)`
+  && {
+    font-size: 0.75rem;
+    background-color: green;
+  }
+`;

@@ -71,6 +71,8 @@ router.post(
       server_path: req.file.path,
     };
 
+    // save to collection of images with the respective game reference
+
     try {
       let game = await Games.findOne({ _id: req.params.id });
       res.send({ img: tempObj });

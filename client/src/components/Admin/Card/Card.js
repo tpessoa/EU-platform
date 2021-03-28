@@ -15,7 +15,9 @@ const Card = (props) => {
   const { imageObj } = props;
   return (
     <ImgCard>
-      <Img src={imageObj.path + imageObj.server_path} alt={imageObj.id} />
+      {imageObj && (
+        <Img src={imageObj.path + imageObj.server_path} alt={imageObj.id} />
+      )}
     </ImgCard>
   );
 };

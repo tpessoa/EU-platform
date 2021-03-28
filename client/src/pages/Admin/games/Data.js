@@ -1,3 +1,27 @@
+export const defaultGameEdit = {
+  title: "",
+  description: "",
+  age: {},
+  difficulty: 0,
+  assets: { images: [] },
+  config: [],
+};
+
+export const puzzleCreateDefault = {
+  assets: {
+    images: {
+      final_img: {
+        id: "",
+        path: "",
+        server_path: "",
+      },
+    },
+  },
+  config: {
+    pieces_size: 0,
+  },
+};
+
 export const gameEdit = [
   {
     label: "Título",
