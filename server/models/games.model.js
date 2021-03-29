@@ -9,10 +9,7 @@ const gamesSchema = new Schema(
     description: String,
     age: { type: Object, require: true },
     difficulty: { type: Number, require: true },
-    assets: {
-      type: Object,
-      require: true,
-    },
+    assets: { type: Object, require: true },
     config: { type: Object, require: true },
   },
   { collection: "games" }

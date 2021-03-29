@@ -10,10 +10,9 @@ import { ptPT } from "@material-ui/core/locale";
 
 import {
   gamesIDsRefs,
-  defaultGameEdit,
-  gameEdit,
-  puzzleCreateDefault,
-  puzzleCRUD,
+  geralGameEdit,
+  SpecificGameEdit,
+  puzzleDefaultInputs,
 } from "./games/Data";
 
 const theme = createMuiTheme({
@@ -42,10 +41,9 @@ const Admin = () => {
         component={() => (
           <EditGame
             gamesNames={gamesIDsRefs}
-            gameInfo={gameEdit}
-            gameInfoDefault={defaultGameEdit}
-            puzzleInfo={puzzleCRUD}
-            puzzleDefault={puzzleCreateDefault}
+            gameInfo={geralGameEdit}
+            specificGameInfo={SpecificGameEdit}
+            puzzle={puzzleDefaultInputs}
           />
         )}
       />

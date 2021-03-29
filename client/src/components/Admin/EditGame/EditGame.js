@@ -7,10 +7,8 @@ import FieldType from "../FieldType/FieldType";
 
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
-import { green } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -27,72 +25,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Container = styled.div`
-  width: 100%;
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-`;
-
-const Wrapper = styled.div`
-  width: 80%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-`;
-
-const ChangeImgContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-
-  width: 100%;
-  margin: 1rem;
-`;
-
-const ImgContainer = styled.div`
-  width: 250px;
-  height: 250px;
-`;
-
-const Img = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-`;
-
-const UtilsWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-
-  margin: 2rem 0;
-`;
-
-const isEmpty = (obj) => {
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) return false;
-  }
-  return true;
-};
-
-// prevents the component from updating each time the user changes the text field
-// i.e, its not saved at the component state
-var editParams = {};
-
 const EditGame = (props) => {
-  const {
-    gamesNames,
-    gameInfo,
-    gameInfoDefault,
-    puzzleDefault,
-    puzzleInfo,
-  } = props;
+  const { gamesNames, gameInfo, specificGameInfo } = props;
   const classes = useStyles();
   const history = useHistory();
   const { gameRef } = useParams();
@@ -101,6 +35,7 @@ const EditGame = (props) => {
   const idField = query.get("id");
 
   const [gameParams, setGameParms] = useState(null);
+  const [gameType, setGameType] = useState(null);
   const [success, setSuccess] = useState(false);
   const [createGame, setCreateGame] = useState(null);
 
@@ -108,21 +43,17 @@ const EditGame = (props) => {
     if (idField === "createNew") {
       setCreateGame(true);
 
-      gameInfoDefault.assets = { ...puzzleDefault.assets };
-      gameInfoDefault.config = { ...puzzleDefault.config };
-
-      setGameParms(gameInfoDefault);
-      editParams = { ...gameInfoDefault };
-      console.log(editParams);
+      setGameType({ ...specificGameInfo.puzzle.info });
+      setGameParms({ ...specificGameInfo[gameRef].defaultInputs });
     } else {
       setCreateGame(false);
       axios
         .get(`/api/games/game/${idField}`)
-        .then(function (response) {
-          setGameParms(response.data);
-          // do a copy for the user edit the fields
-          // and in the end if the save button is pressed the copy substitutes the original from db
-          editParams = { ...response.data };
+        .then(function (res) {
+          console.log(res.data);
+
+          setGameType({ ...specificGameInfo[gameRef].info });
+          setGameParms({ ...res.data });
         })
         .catch(function (error) {
           console.log(error);
@@ -131,15 +62,15 @@ const EditGame = (props) => {
   }, [gameRef || idField]);
 
   const performSave = (ev) => {
+    console.log("saving");
     ev.preventDefault();
     // get all updated fields
-    console.log(editParams);
+    console.log(gameParams);
     // validate the params
 
     let URL_str = "";
     if (createGame) {
       const gameObj = gamesNames.find((obj) => obj.game_ref_name === gameRef);
-      console.log(gameObj);
       URL_str = `/api/games/add/${gameRef}/${gameObj.game_ref_id}`;
     } else {
       URL_str = `/api/games/${gameRef}/${idField}`;
@@ -147,7 +78,7 @@ const EditGame = (props) => {
 
     // post them to database
     axios
-      .post(URL_str, { gameObj: editParams })
+      .post(URL_str, { gameObj: gameParams })
       .then(function (res) {
         console.log(res.data);
       })
@@ -159,46 +90,57 @@ const EditGame = (props) => {
   };
 
   const textChangeHandler = (ev, ref, paramType) => {
-    if (isEmpty(editParams)) return;
+    if (!gameParams) return;
+    let tempObj = { ...gameParams };
     if (paramType === "config") {
-      editParams.config[ref] = ev.target.value;
+      tempObj.config[ref] = ev.target.value;
     } else if (paramType === "assets") {
-      editParams.assets[ref] = ev.target.value;
+      tempObj.assets[ref] = ev.target.value;
     } else {
-      editParams[ref] = ev.target.value;
+      tempObj[ref] = ev.target.value;
     }
+    setGameParms(tempObj);
   };
 
   const listChangeHandler = (ev, ref) => {
-    if (isEmpty(editParams)) return;
-    editParams[ref] = ev.target.value;
-    setGameParms({ ...editParams });
+    if (!gameParams) return;
+    let tempObj = { ...gameParams };
+    tempObj[ref] = ev.target.value;
+    setGameParms(tempObj);
   };
 
   const ageChangeHandler = (ev, ref) => {
-    if (isEmpty(editParams)) return;
+    if (!gameParams) return;
+    let tempObj = { ...gameParams };
     if (ref === "min") {
-      editParams.age.min = ev.target.value;
+      tempObj.age.min = ev.target.value;
     } else if (ref === "max") {
-      editParams.age.max = ev.target.value;
+      tempObj.age.max = ev.target.value;
     }
+    setGameParms(tempObj);
   };
 
   const imageChangeHandler = (obj, ref) => {
-    if (isEmpty(editParams)) return;
-    editParams.assets.images[ref] = { ...obj };
+    if (!gameParams) return;
+
+    let tempObj = { ...gameParams };
+
+    if (obj != null) {
+      tempObj.assets.images[ref] = { ...obj };
+      setGameParms(tempObj);
+    }
   };
 
   let menu = "";
   if (success) {
     menu = <p>Sucesso</p>;
-  } else if (!success && gameParams) {
+  } else if (!success && gameType && gameParams) {
     menu = (
       <Wrapper>
         <Typography variant="h6" gutterBottom>
           Editar Jogo
         </Typography>
-        {gameInfo.map((obj, index) => {
+        {gameInfo.info.map((obj, index) => {
           return (
             <FieldType
               key={index}
@@ -212,8 +154,7 @@ const EditGame = (props) => {
           );
         })}
 
-        {/* specific */}
-        {puzzleInfo.assets.images.map((obj, index) => {
+        {gameType.assets.images.map((obj, index) => {
           return (
             <FieldType
               key={index}
@@ -226,7 +167,7 @@ const EditGame = (props) => {
           );
         })}
 
-        {puzzleInfo.config.map((obj, index) => {
+        {gameType.config.map((obj, index) => {
           return (
             <FieldType
               key={index}
@@ -256,6 +197,8 @@ const EditGame = (props) => {
     );
   }
 
+  // console.log(gameParams);
+
   return (
     <Container>
       <Button
@@ -271,3 +214,29 @@ const EditGame = (props) => {
 };
 
 export default EditGame;
+
+const Container = styled.div`
+  width: 100%;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const Wrapper = styled.div`
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const UtilsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  margin: 2rem 0;
+`;

@@ -24,10 +24,29 @@ router.get("/all", async (req, res) => {
   }
 });
 
+/**
+ * Get game by ID
+ */
 router.get("/:id", async (req, res) => {
   try {
     let games = await Games.find({ game_ref_id: req.params.id });
     res.send(games);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+/**
+ * Delete game by ID
+ */
+
+router.delete("/:id", async (req, res) => {
+  console.log("hey");
+
+  try {
+    let deletedGame = await Games.deleteOne({ _id: req.params.id });
+    console.log(deletedGame);
+    res.send(deletedGame);
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
@@ -54,16 +73,18 @@ router.post("/add/:gameName/:gameId", async (req, res) => {
 
   const { gameName, gameId } = req.params;
 
+  console.log(assets);
+
   try {
     const newGame = new Games({
       game_ref_id: gameId,
       game_ref_name: gameName,
       title: title,
       description: description,
-      age: age,
+      age: { ...age },
       difficulty: difficulty,
-      config: config,
-      assets: assets,
+      config: { ...config },
+      assets: { ...assets },
     });
     console.log(newGame);
     await newGame.save();

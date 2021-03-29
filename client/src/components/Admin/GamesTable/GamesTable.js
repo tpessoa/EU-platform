@@ -42,7 +42,7 @@ const initTableRows = () => {
 const formatRows = (arr) => {
   let temp_arr = [];
   arr.forEach((obj) => {
-    temp_arr.push({ title: obj.title, actions: "Editar", game_id: obj._id });
+    temp_arr.push({ title: obj.title, game_id: obj._id });
   });
   return temp_arr;
 };
@@ -61,7 +61,6 @@ const GamesTable = (props) => {
     axios
       .get("/api/games/" + selectedGame.game_ref_id)
       .then(function (res) {
-        console.log(res.data);
         if (res.data.length > 0) {
           setTableData({
             columns: initTableColumns(),
@@ -98,6 +97,31 @@ const GamesTable = (props) => {
     });
   });
 
+  const deleteGame = (gameId) => {
+    // delete request
+    axios
+      .delete(`/api/games/${gameId}`)
+      .then(function (res) {
+        // verify success, if the deletedCount is 1 the document was successfully deleted
+        if (res.data.deletedCount != 1) return;
+
+        // copy the old rows
+        const tempObj = { ...tableData };
+        const rowObjIndex = tempObj.rows.findIndex(
+          (obj) => obj.game_id === gameId
+        );
+        tempObj.rows.splice(rowObjIndex, 1);
+
+        // TODO delete image in server!!
+
+        // update the rows
+        setTableData(tempObj);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <>
       <TableContainer className={classes.container}>
@@ -123,9 +147,9 @@ const GamesTable = (props) => {
                   <TableRow hover role="checkbox" tabIndex={-1} key={r_index}>
                     {columns.map((column, c_index) => {
                       const value = row[column.id];
-                      return (
-                        <TableCell key={c_index} align={column.align}>
-                          {value === "Editar" ? (
+                      if (column.id === "actions") {
+                        return (
+                          <TableCell key={c_index} align={column.align}>
                             <EditButton
                               variant="contained"
                               color="primary"
@@ -135,13 +159,24 @@ const GamesTable = (props) => {
                                 search: `?id=${row.game_id}`,
                               }}
                             >
-                              {value}
+                              Editar
                             </EditButton>
-                          ) : (
-                            value
-                          )}
-                        </TableCell>
-                      );
+                            <DeleteButton
+                              variant="contained"
+                              color="primary"
+                              onClick={() => deleteGame(row.game_id)}
+                            >
+                              Eliminar
+                            </DeleteButton>
+                          </TableCell>
+                        );
+                      } else {
+                        return (
+                          <TableCell key={c_index} align={column.align}>
+                            {value}
+                          </TableCell>
+                        );
+                      }
                     })}
                   </TableRow>
                 );
@@ -200,6 +235,12 @@ const AddGameWrapper = styled.div`
 const EditButton = styled(Button)`
   && {
     font-size: 0.75rem;
+  }
+`;
+const DeleteButton = styled(Button)`
+  && {
+    font-size: 0.75rem;
+    background-color: #880000;
   }
 `;
 
