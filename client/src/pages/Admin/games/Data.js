@@ -106,6 +106,70 @@ export const puzzleDefaultInputs = {
   },
 };
 
+export const colorGameInfo = {
+  assets: {
+    images: [
+      {
+        label: "Imagem já pintada",
+        ref: "colored_img",
+        type: "Image",
+      },
+      {
+        label: "Imagem para pintar",
+        ref: "blank_img",
+        type: "Image",
+      },
+    ],
+  },
+  config: [],
+};
+
+export const colorGameDefaultInputs = {
+  assets: {
+    images: {
+      colored_img: {
+        id: "defaultImage",
+        path: "",
+        server_path: "",
+      },
+      blank_img: {
+        id: "defaultImage",
+        path: "",
+        server_path: "",
+      },
+    },
+  },
+  config: {},
+};
+
+export const quizInfo = {
+  assets: {
+    images: [],
+  },
+  config: [
+    {
+      label: "Questões",
+      ref: "questions",
+      type: "String",
+    },
+    {
+      label: "Tempo para responder às questões",
+      ref: "time_to_resp_question",
+      type: "Number",
+    },
+  ],
+};
+
+export const quizDefaultInputs = {
+  assets: {
+    images: {},
+  },
+  config: {
+    time_to_resp_question: 15,
+    questions: "tiago",
+  },
+};
+
 /**
  * Object with all games information
  */
@@ -115,4 +179,13 @@ export const SpecificGameEdit = {
     info: { ...puzzleInfo },
     defaultInputs: { ...puzzleDefaultInputs },
   },
+  colorGame: {
+    info: { ...colorGameInfo },
+    defaultInputs: { ...colorGameDefaultInputs },
+  },
+  quiz: {
+    info: { ...quizInfo },
+    defaultInputs: { ...quizDefaultInputs },
+  },
+  wordSearch: {},
 };

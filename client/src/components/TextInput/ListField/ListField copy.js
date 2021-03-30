@@ -5,11 +5,17 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import TextField from "@material-ui/core/TextField";
 
-import styled from "styled-components";
+import { makeStyles } from "@material-ui/core/styles";
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 150,
+  },
+}));
 
 const ListField = (props) => {
+  const classes = useStyles();
   const {
     arr,
     field_ref,
@@ -19,13 +25,12 @@ const ListField = (props) => {
     paramType,
   } = props;
   return (
-    <Container>
-      <TextFieldCustom
-        id="outlined-select-currency"
-        variant="outlined"
-        select
+    <FormControl className={classes.formControl}>
+      <InputLabel id="demo-simple-select-outlined-label">{label}</InputLabel>
+      <Select
+        labelId="demo-simple-select-outlined-label"
+        id="demo-simple-select-outlined"
         label={label}
-        // helperText={label}
         value={value}
         onChange={(ev) => parentChangeHandler(ev, field_ref, paramType)}
       >
@@ -34,20 +39,9 @@ const ListField = (props) => {
             {item}
           </MenuItem>
         ))}
-      </TextFieldCustom>
-    </Container>
+      </Select>
+    </FormControl>
   );
 };
 
 export default ListField;
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-`;
-
-const TextFieldCustom = styled(TextField)`
-  width: 100%;
-`;

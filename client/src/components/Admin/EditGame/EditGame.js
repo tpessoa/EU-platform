@@ -2,241 +2,270 @@ import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-
-import FieldType from "../FieldType/FieldType";
-
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import SaveIcon from "@material-ui/icons/Save";
-import Button from "@material-ui/core/Button";
+
+import TextField from "../../TextInput/TextField";
+import ListField from "../../TextInput/ListField";
+
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Typography from "@material-ui/core/Typography";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
-  button: {
-    margin: theme.spacing(2),
-    padding: theme.spacing(1.5),
+  root: {
+    width: "100%",
   },
-  deleteButton: {
-    marginTop: theme.spacing(5),
-    padding: theme.spacing(0.8),
-  },
-  backButton: {
-    padding: theme.spacing(1),
-    margin: theme.spacing(1),
+  heading: {
+    fontSize: theme.typography.pxToRem(30),
+    fontWeight: theme.typography.fontWeightRegular,
   },
 }));
 
-const EditGame = (props) => {
-  const { gamesNames, gameInfo, specificGameInfo } = props;
+var emptyObj = {
+  assets: {
+    images: {},
+  },
+  config: {
+    questions: [
+      {
+        question: "",
+        answers: {
+          answer1: "11",
+          answer2: "22",
+          answer3: "33",
+          answer4: "44",
+        },
+        right_answer: 2,
+        justification: "justificaçao",
+        audio: {
+          id: "sem audio",
+          path: "no se",
+        },
+      },
+    ],
+  },
+  time_to_resp_question: 20,
+};
+
+const addQuestion = (obj) => {
+  if (obj.config.questions.length > 0) {
+    const temp = { ...obj.config.questions[0] };
+    obj.config.questions.push(temp);
+  }
+  return obj;
+};
+
+const removeQuestion = (obj) => {
+  if (obj.config.questions.length > 0) {
+    obj.config.questions.pop();
+  }
+  return obj;
+};
+
+const generateArray = (min, max) => {
+  const tempArr = [];
+  for (let i = min; i <= max; i++) {
+    tempArr.push(i);
+  }
+  return tempArr;
+};
+
+const EditGame = () => {
   const classes = useStyles();
-  const history = useHistory();
   const { gameRef } = useParams();
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const idField = query.get("id");
 
-  const [gameParams, setGameParms] = useState(null);
-  const [gameType, setGameType] = useState(null);
-  const [success, setSuccess] = useState(false);
-  const [createGame, setCreateGame] = useState(null);
+  const [userQuestionsInput, setUserQuestionsInput] = useState(0);
+  const [numQuestionsArr, setNumQuestionsArr] = useState(generateArray(4, 15));
+  const [quizObj, setQuizObj] = useState(null);
 
   useEffect(() => {
-    if (idField === "createNew") {
-      setCreateGame(true);
-
-      setGameType({ ...specificGameInfo.puzzle.info });
-      setGameParms({ ...specificGameInfo[gameRef].defaultInputs });
-    } else {
-      setCreateGame(false);
-      axios
-        .get(`/api/games/game/${idField}`)
-        .then(function (res) {
-          console.log(res.data);
-
-          setGameType({ ...specificGameInfo[gameRef].info });
-          setGameParms({ ...res.data });
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    const numQuestions = numQuestionsArr[userQuestionsInput];
+    const emptyQuestion = { ...emptyObj.config.questions[0] };
+    const emptyQuestionsArr = [];
+    for (let i = 0; i < numQuestions; i++) {
+      emptyQuestionsArr.push({ ...emptyQuestion });
     }
-  }, [gameRef || idField]);
+    // update arrays
+    emptyObj.config.questions = [...emptyQuestionsArr];
+    setQuizObj({ ...emptyObj });
+  }, [userQuestionsInput]);
 
-  const performSave = (ev) => {
-    console.log("saving");
-    ev.preventDefault();
-    // get all updated fields
-    console.log(gameParams);
-    // validate the params
+  const textChange = (ev, ref) => {
+    const userInput = ev.target.value;
+    // console.log(ref);
+    // console.log(userInput);
 
-    let URL_str = "";
-    if (createGame) {
-      const gameObj = gamesNames.find((obj) => obj.game_ref_name === gameRef);
-      URL_str = `/api/games/add/${gameRef}/${gameObj.game_ref_id}`;
-    } else {
-      URL_str = `/api/games/${gameRef}/${idField}`;
+    // inside the accordions
+    if (ref.includes("accordion_")) {
+      const tempStr = ref.split("_");
+      // remove accordion ref
+      tempStr.shift();
+      const fieldRef = tempStr[0];
+      const questionNumRef = tempStr[1];
+      if (fieldRef.includes("answer")) {
+        emptyObj.config.questions[questionNumRef].answers[fieldRef] = userInput;
+      } else if (fieldRef.includes("audio")) {
+      } else {
+        emptyObj.config.questions[questionNumRef][fieldRef] = userInput;
+      }
     }
-
-    // post them to database
-    axios
-      .post(URL_str, { gameObj: gameParams })
-      .then(function (res) {
-        console.log(res.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    // display feedback
-    setSuccess(true);
-  };
-
-  const textChangeHandler = (ev, ref, paramType) => {
-    if (!gameParams) return;
-    let tempObj = { ...gameParams };
-    if (paramType === "config") {
-      tempObj.config[ref] = ev.target.value;
-    } else if (paramType === "assets") {
-      tempObj.assets[ref] = ev.target.value;
-    } else {
-      tempObj[ref] = ev.target.value;
-    }
-    setGameParms(tempObj);
-  };
-
-  const listChangeHandler = (ev, ref) => {
-    if (!gameParams) return;
-    let tempObj = { ...gameParams };
-    tempObj[ref] = ev.target.value;
-    setGameParms(tempObj);
-  };
-
-  const ageChangeHandler = (ev, ref) => {
-    if (!gameParams) return;
-    let tempObj = { ...gameParams };
-    if (ref === "min") {
-      tempObj.age.min = ev.target.value;
-    } else if (ref === "max") {
-      tempObj.age.max = ev.target.value;
-    }
-    setGameParms(tempObj);
-  };
-
-  const imageChangeHandler = (obj, ref) => {
-    if (!gameParams) return;
-
-    let tempObj = { ...gameParams };
-
-    if (obj != null) {
-      tempObj.assets.images[ref] = { ...obj };
-      setGameParms(tempObj);
+    if (ref === "num_questions") {
+      setUserQuestionsInput(userInput);
     }
   };
 
-  let menu = "";
-  if (success) {
-    menu = <p>Sucesso</p>;
-  } else if (!success && gameType && gameParams) {
-    menu = (
-      <Wrapper>
-        <Typography variant="h6" gutterBottom>
-          Editar Jogo
-        </Typography>
-        {gameInfo.info.map((obj, index) => {
-          return (
-            <FieldType
-              key={index}
-              obj={obj}
-              label={obj.label}
-              value={gameParams[obj.ref]}
-              textChange={textChangeHandler}
-              listChange={listChangeHandler}
-              ageChange={ageChangeHandler}
-            />
-          );
-        })}
-
-        {gameType.assets.images.map((obj, index) => {
-          return (
-            <FieldType
-              key={index}
-              obj={obj}
-              label={obj.label}
-              value={gameParams.assets.images[obj.ref]}
-              imageChange={imageChangeHandler}
-              type={"assets"}
-            />
-          );
-        })}
-
-        {gameType.config.map((obj, index) => {
-          return (
-            <FieldType
-              key={index}
-              obj={obj}
-              label={obj.label}
-              value={gameParams.config[obj.ref]}
-              textChange={textChangeHandler}
-              listChange={listChangeHandler}
-              ageChange={ageChangeHandler}
-              type={"config"}
-            />
-          );
-        })}
-
-        <UtilsWrapper>
-          <Button
-            variant="contained"
-            size="small"
-            className={classes.button}
-            startIcon={<SaveIcon />}
-            onClick={performSave}
+  let displayQuestions = "";
+  if (quizObj != null) {
+    displayQuestions = quizObj.config.questions.map((obj, index) => {
+      return (
+        <QuestionContainer key={index}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
           >
-            Guardar
-          </Button>
-        </UtilsWrapper>
-      </Wrapper>
-    );
+            <Typography>Questão {index + 1}</Typography>
+          </AccordionSummary>
+          <AccordionDetailsCustom>
+            <TextField
+              field_ref={"accordion_question_" + index}
+              label={"Questão"}
+              value={""}
+              parentChangeHandler={textChange}
+            />
+            <GridWrapper>
+              <TextField
+                field_ref={"accordion_answer1_" + index}
+                label={"Resposta 1"}
+                value={""}
+                parentChangeHandler={textChange}
+                multi={true}
+              />
+              <TextField
+                field_ref={"accordion_answer2_" + index}
+                label={"Resposta 2"}
+                value={""}
+                parentChangeHandler={textChange}
+                multi={true}
+              />
+              <TextField
+                field_ref={"accordion_answer3_" + index}
+                label={"Resposta 3"}
+                value={""}
+                parentChangeHandler={textChange}
+                multi={true}
+              />
+              <TextField
+                field_ref={"accordion_answer4_" + index}
+                label={"Resposta 4"}
+                value={""}
+                parentChangeHandler={textChange}
+                multi={true}
+              />
+            </GridWrapper>
+            <ListField
+              arr={generateArray(1, 4)}
+              field_ref={"accordion_right_answer_" + index}
+              label={"Resposta correta"}
+              value={""}
+              parentChangeHandler={textChange}
+            />
+            <TextField
+              field_ref={"accordion_justification_" + index}
+              label={"Justificação"}
+              value={""}
+              parentChangeHandler={textChange}
+              multi={true}
+            />
+          </AccordionDetailsCustom>
+        </QuestionContainer>
+      );
+    });
   }
 
-  // console.log(gameParams);
+  const objState = () => {
+    console.log(emptyObj);
+  };
 
   return (
     <Container>
-      <Button
-        variant="contained"
-        className={classes.backButton}
-        onClick={history.goBack}
-      >
-        Voltar
-      </Button>
-      {menu}
+      <ContainerWrapper>
+        <ContentWrapper>
+          <p>{gameRef}</p>
+          <ListField
+            arr={numQuestionsArr}
+            field_ref={"num_questions"}
+            label={"Número de perguntas"}
+            value={userQuestionsInput}
+            parentChangeHandler={textChange}
+          />
+          {displayQuestions}
+          <TextField
+            field_ref={"time_to_resp_question"}
+            label={"Tempo para responder às perguntas"}
+            value={""}
+            parentChangeHandler={textChange}
+          />
+          <button onClick={objState}>Click</button>
+        </ContentWrapper>
+      </ContainerWrapper>
     </Container>
   );
 };
 
-export default EditGame;
-
 const Container = styled.div`
-  width: 100%;
-  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem;
+`;
+
+const ContainerWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-`;
-
-const Wrapper = styled.div`
+  border: 1px solid #cccccc;
+  border-radius: 5px;
   width: 80%;
+`;
+
+const ContentWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  width: 90%;
 `;
 
-const UtilsWrapper = styled.div`
+const QuestionContainer = styled(Accordion)`
+  && {
+    width: 95%;
+  }
+`;
+
+const AccordionDetailsCustom = styled(AccordionDetails)`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+`;
+
+const GridWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
-
-  margin: 2rem 0;
+  width: 90%;
+  max-height: 40vh;
+  overflow-y: auto;
+  margin: 1rem 0;
 `;
+
+export default EditGame;

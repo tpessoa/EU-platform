@@ -18,7 +18,7 @@ const TextField = (props) => {
       label={label}
       defaultValue={value}
       variant="outlined"
-      onChange={(ev) => parentChangeHandler(ev, field_ref)}
+      onChange={(ev) => parentChangeHandler(ev, field_ref, paramType)}
       multiline={multi}
     />
   );

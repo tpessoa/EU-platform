@@ -41,8 +41,6 @@ router.get("/:id", async (req, res) => {
  */
 
 router.delete("/:id", async (req, res) => {
-  console.log("hey");
-
   try {
     let deletedGame = await Games.deleteOne({ _id: req.params.id });
     console.log(deletedGame);
