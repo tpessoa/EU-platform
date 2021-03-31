@@ -1,23 +1,12 @@
 import React from "react";
 
-import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import TextField from "@material-ui/core/TextField";
 
 import styled from "styled-components";
+import { TextFieldCustom } from "../TextInput.elements";
 
 const ListField = (props) => {
-  const {
-    arr,
-    field_ref,
-    label,
-    value,
-    parentChangeHandler,
-    paramType,
-  } = props;
+  const { arr, field_ref, label, value, parentChangeHandler } = props;
   return (
     <Container>
       <TextFieldCustom
@@ -27,7 +16,7 @@ const ListField = (props) => {
         label={label}
         // helperText={label}
         value={value}
-        onChange={(ev) => parentChangeHandler(ev, field_ref, paramType)}
+        onChange={(ev) => parentChangeHandler(ev, field_ref)}
       >
         {arr.map((item, index) => (
           <MenuItem key={index} value={index}>
@@ -45,9 +34,5 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-`;
-
-const TextFieldCustom = styled(TextField)`
   width: 100%;
 `;

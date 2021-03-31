@@ -2,66 +2,25 @@ import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-import { makeStyles } from "@material-ui/core/styles";
+
+import EditQuiz from "./EditQuiz";
 
 import TextField from "../../TextInput/TextField";
 import ListField from "../../TextInput/ListField";
+import NumberField from "../../TextInput/NumberField";
 
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import SaveIcon from "@material-ui/icons/Save";
+import Button from "@material-ui/core/Button";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
+const emptyGamesComumFieldsObj = {
+  title: "",
+  description: "",
+  age: {
+    min: "",
+    max: "",
   },
-  heading: {
-    fontSize: theme.typography.pxToRem(30),
-    fontWeight: theme.typography.fontWeightRegular,
-  },
-}));
-
-var emptyObj = {
-  assets: {
-    images: {},
-  },
-  config: {
-    questions: [
-      {
-        question: "",
-        answers: {
-          answer1: "11",
-          answer2: "22",
-          answer3: "33",
-          answer4: "44",
-        },
-        right_answer: 2,
-        justification: "justificaçao",
-        audio: {
-          id: "sem audio",
-          path: "no se",
-        },
-      },
-    ],
-  },
-  time_to_resp_question: 20,
-};
-
-const addQuestion = (obj) => {
-  if (obj.config.questions.length > 0) {
-    const temp = { ...obj.config.questions[0] };
-    obj.config.questions.push(temp);
-  }
-  return obj;
-};
-
-const removeQuestion = (obj) => {
-  if (obj.config.questions.length > 0) {
-    obj.config.questions.pop();
-  }
-  return obj;
+  difficulty: "",
 };
 
 const generateArray = (min, max) => {
@@ -72,200 +31,244 @@ const generateArray = (min, max) => {
   return tempArr;
 };
 
-const EditGame = () => {
-  const classes = useStyles();
+const EditGame = (props) => {
+  const { gamesNames } = props;
+  const history = useHistory();
   const { gameRef } = useParams();
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const idField = query.get("id");
 
-  const [userQuestionsInput, setUserQuestionsInput] = useState(0);
-  const [numQuestionsArr, setNumQuestionsArr] = useState(generateArray(4, 15));
-  const [quizObj, setQuizObj] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [createGame, setCreateGame] = useState(null);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [age, setAge] = useState({ min: "", max: "" });
+  const [difficulty, setDifficulty] = useState("");
+  const [config, setConfig] = useState(null);
+  const [assets, setAssets] = useState(null);
 
   useEffect(() => {
-    const numQuestions = numQuestionsArr[userQuestionsInput];
-    const emptyQuestion = { ...emptyObj.config.questions[0] };
-    const emptyQuestionsArr = [];
-    for (let i = 0; i < numQuestions; i++) {
-      emptyQuestionsArr.push({ ...emptyQuestion });
-    }
-    // update arrays
-    emptyObj.config.questions = [...emptyQuestionsArr];
-    setQuizObj({ ...emptyObj });
-  }, [userQuestionsInput]);
+    if (idField === "createNew") {
+      setCreateGame(true);
+      setConfig({});
+      setAssets({});
+    } else {
+      setCreateGame(false);
+      axios
+        .get(`/api/games/game/${idField}`)
+        .then(function (res) {
+          console.log(res.data);
 
-  const textChange = (ev, ref) => {
+          setTitle(res.data.title);
+          setDescription(res.data.description);
+          setAge(res.data.age);
+          setDifficulty(res.data.difficulty);
+          setConfig(res.data.config);
+          setAssets(res.data.assets);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  }, [gameRef || idField]);
+
+  const performSave = (ev) => {
+    console.log("saving");
+    ev.preventDefault();
+    // mount object to send to database
+    const gameObj = {
+      title: title,
+      description: description,
+      age: age,
+      difficulty: difficulty,
+      assets: assets,
+      config: config,
+    };
+    console.log(gameObj);
+
+    // validate the params
+
+    let URL_str = "";
+    if (createGame) {
+      const gameObj = gamesNames.find((obj) => obj.game_ref_name === gameRef);
+      URL_str = `/api/games/add/${gameRef}/${gameObj.game_ref_id}`;
+    } else {
+      URL_str = `/api/games/${gameRef}/${idField}`;
+    }
+
+    // post them to database
+    axios
+      .post(URL_str, { gameObj: gameObj })
+      .then(function (res) {
+        console.log(res.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    // display feedback
+    setSuccess(true);
+  };
+
+  const textChangeHandler = (ev, ref) => {
     const userInput = ev.target.value;
-    // console.log(ref);
-    // console.log(userInput);
-
-    // inside the accordions
-    if (ref.includes("accordion_")) {
-      const tempStr = ref.split("_");
-      // remove accordion ref
-      tempStr.shift();
-      const fieldRef = tempStr[0];
-      const questionNumRef = tempStr[1];
-      if (fieldRef.includes("answer")) {
-        emptyObj.config.questions[questionNumRef].answers[fieldRef] = userInput;
-      } else if (fieldRef.includes("audio")) {
-      } else {
-        emptyObj.config.questions[questionNumRef][fieldRef] = userInput;
-      }
-    }
-    if (ref === "num_questions") {
-      setUserQuestionsInput(userInput);
+    if (ref === "title") {
+      setTitle(userInput);
+    } else if (ref === "description") {
+      setDescription(userInput);
+    } else if (ref.includes("age")) {
+      const age_type = ref.split("_")[1];
+      const tempObj = { ...age };
+      // convert to int
+      tempObj[age_type] = parseInt(userInput);
+      setAge({ ...tempObj });
+    } else if (ref === "difficulty") {
+      setDifficulty(userInput);
     }
   };
 
-  let displayQuestions = "";
-  if (quizObj != null) {
-    displayQuestions = quizObj.config.questions.map((obj, index) => {
-      return (
-        <QuestionContainer key={index}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>Questão {index + 1}</Typography>
-          </AccordionSummary>
-          <AccordionDetailsCustom>
-            <TextField
-              field_ref={"accordion_question_" + index}
-              label={"Questão"}
-              value={""}
-              parentChangeHandler={textChange}
-            />
-            <GridWrapper>
-              <TextField
-                field_ref={"accordion_answer1_" + index}
-                label={"Resposta 1"}
-                value={""}
-                parentChangeHandler={textChange}
-                multi={true}
-              />
-              <TextField
-                field_ref={"accordion_answer2_" + index}
-                label={"Resposta 2"}
-                value={""}
-                parentChangeHandler={textChange}
-                multi={true}
-              />
-              <TextField
-                field_ref={"accordion_answer3_" + index}
-                label={"Resposta 3"}
-                value={""}
-                parentChangeHandler={textChange}
-                multi={true}
-              />
-              <TextField
-                field_ref={"accordion_answer4_" + index}
-                label={"Resposta 4"}
-                value={""}
-                parentChangeHandler={textChange}
-                multi={true}
-              />
-            </GridWrapper>
-            <ListField
-              arr={generateArray(1, 4)}
-              field_ref={"accordion_right_answer_" + index}
-              label={"Resposta correta"}
-              value={""}
-              parentChangeHandler={textChange}
-            />
-            <TextField
-              field_ref={"accordion_justification_" + index}
-              label={"Justificação"}
-              value={""}
-              parentChangeHandler={textChange}
-              multi={true}
-            />
-          </AccordionDetailsCustom>
-        </QuestionContainer>
-      );
-    });
+  let displayGameEdit = "";
+  if (gameRef === "quiz") {
+    displayGameEdit = (
+      <EditQuiz
+        generateArray={generateArray}
+        createGame={createGame}
+        config={config}
+        setConfig={setConfig}
+        assets={assets}
+        setAssets={setAssets}
+      />
+    );
   }
+  let menu = "";
+  if (success) {
+    menu = <p>Sucesso</p>;
+  } else if (!success) {
+    menu = (
+      <Wrapper>
+        <Typography variant="h6" gutterBottom>
+          Editar Jogo
+        </Typography>
+        <TextField
+          field_ref={"title"}
+          label={"Título"}
+          value={title}
+          parentChangeHandler={textChangeHandler}
+        />
+        <TextField
+          field_ref={"description"}
+          label={"Descrição"}
+          value={description}
+          parentChangeHandler={textChangeHandler}
+        />
+        <AgeContainer>
+          <AgeWrapper>
+            <NumberField
+              field_ref={"age_min"}
+              label={"Idade Mínima"}
+              value={age.min}
+              parentChangeHandler={textChangeHandler}
+            />
+          </AgeWrapper>
+          <AgeWrapper>
+            <NumberField
+              field_ref={"age_max"}
+              label={"Idade Máxima"}
+              value={age.max}
+              parentChangeHandler={textChangeHandler}
+            />
+          </AgeWrapper>
+        </AgeContainer>
+        <ListWrapper>
+          <ListField
+            field_ref={"difficulty"}
+            label={"Dificuldade"}
+            arr={["fácil", "média", "difícil"]}
+            value={difficulty}
+            parentChangeHandler={textChangeHandler}
+          />
+        </ListWrapper>
 
-  const objState = () => {
-    console.log(emptyObj);
-  };
+        {/* SPECIFIC GAME SELECTION */}
+
+        {createGame != null && config && displayGameEdit}
+
+        <UtilsWrapper>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<SaveIcon />}
+            onClick={performSave}
+          >
+            Guardar
+          </Button>
+        </UtilsWrapper>
+      </Wrapper>
+    );
+  }
 
   return (
     <Container>
-      <ContainerWrapper>
-        <ContentWrapper>
-          <p>{gameRef}</p>
-          <ListField
-            arr={numQuestionsArr}
-            field_ref={"num_questions"}
-            label={"Número de perguntas"}
-            value={userQuestionsInput}
-            parentChangeHandler={textChange}
-          />
-          {displayQuestions}
-          <TextField
-            field_ref={"time_to_resp_question"}
-            label={"Tempo para responder às perguntas"}
-            value={""}
-            parentChangeHandler={textChange}
-          />
-          <button onClick={objState}>Click</button>
-        </ContentWrapper>
-      </ContainerWrapper>
+      <Button variant="contained" onClick={history.goBack}>
+        Voltar
+      </Button>
+      {menu}
     </Container>
   );
 };
 
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 2rem;
-`;
-
-const ContainerWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
-  width: 80%;
-`;
-
-const ContentWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 90%;
-`;
-
-const QuestionContainer = styled(Accordion)`
-  && {
-    width: 95%;
-  }
-`;
-
-const AccordionDetailsCustom = styled(AccordionDetails)`
-  && {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-`;
-
-const GridWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  width: 90%;
-  max-height: 40vh;
-  overflow-y: auto;
-  margin: 1rem 0;
-`;
-
 export default EditGame;
+
+const Container = styled.div`
+  width: 100%;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const Wrapper = styled.div`
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const AgeContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`;
+
+const AgeWrapper = styled.div`
+  width: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const ListWrapper = styled.div`
+  width: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const SpecificGameField = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const UtilsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  margin: 2rem 0;
+`;
