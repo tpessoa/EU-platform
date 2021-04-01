@@ -71,8 +71,6 @@ router.post("/add/:gameName/:gameId", async (req, res) => {
 
   const { gameName, gameId } = req.params;
 
-  console.log(assets);
-
   try {
     const newGame = new Games({
       game_ref_id: gameId,
@@ -84,7 +82,6 @@ router.post("/add/:gameName/:gameId", async (req, res) => {
       config: { ...config },
       assets: { ...assets },
     });
-    console.log(newGame);
     await newGame.save();
 
     res.send(newGame);
@@ -109,8 +106,8 @@ router.post("/:game/:id", async (req, res) => {
     game.description = description;
     game.age = age;
     game.difficulty = difficulty;
-    game.config = config;
-    game.assets = assets;
+    game.config = { ...config };
+    game.assets = { ...assets };
 
     await game.save();
 
