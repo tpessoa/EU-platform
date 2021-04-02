@@ -36,7 +36,7 @@ const EditGame = (props) => {
 
   const addQuestion = () => {
     const tempConfig = { ...config };
-    console.log(tempConfig);
+    // console.log(tempConfig);
     tempConfig.questions.push("addedQuestion");
     setConfig(tempConfig);
   };
@@ -46,7 +46,7 @@ const EditGame = (props) => {
     tempConfig.questions[ref] = { ...obj };
     setConfig(tempConfig);
   };
-  console.log(config);
+  // console.log(config);
   let displayQuestions = "";
   if (config && config.questions) {
     displayQuestions = config.questions.map((obj, index) => {

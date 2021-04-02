@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-import TextField from "../../TextInput/TextField";
-import ListField from "../../TextInput/ListField";
+import TextField from "../../../TextInput/TextField";
+import ListField from "../../../TextInput/ListField";
 
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -49,7 +49,7 @@ const QuizQuestionForm = (props) => {
     if (createNew) {
       setCurrQuest(emptyQuestion);
     } else {
-      console.log(questionInfo);
+      // console.log(questionInfo);
       if (questionInfo === "addedQuestion") {
         setCurrQuest(emptyQuestion);
       } else {

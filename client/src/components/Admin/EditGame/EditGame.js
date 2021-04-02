@@ -3,7 +3,8 @@ import { useParams, useLocation, useHistory } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
-import EditQuiz from "./EditQuiz";
+import EditQuiz from "./Quiz/EditQuiz";
+import EditColorGame from "./ColorGame/EditColorGame";
 
 import TextField from "../../TextInput/TextField";
 import ListField from "../../TextInput/ListField";
@@ -12,16 +13,6 @@ import NumberField from "../../TextInput/NumberField";
 import Typography from "@material-ui/core/Typography";
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
-
-const emptyGamesComumFieldsObj = {
-  title: "",
-  description: "",
-  age: {
-    min: "",
-    max: "",
-  },
-  difficulty: "",
-};
 
 const generateArray = (min, max) => {
   const tempArr = [];
@@ -52,8 +43,8 @@ const EditGame = (props) => {
   useEffect(() => {
     if (idField === "createNew") {
       setCreateGame(true);
-      setConfig({});
-      setAssets({});
+      setConfig({ null: null });
+      setAssets({ null: null });
     } else {
       setCreateGame(false);
       axios
@@ -65,8 +56,16 @@ const EditGame = (props) => {
           setDescription(res.data.description);
           setAge(res.data.age);
           setDifficulty(res.data.difficulty);
-          setConfig(res.data.config);
-          setAssets(res.data.assets);
+          if (res.data.config) {
+            setConfig({ ...res.data.config });
+          } else {
+            setConfig({ null: null });
+          }
+          if (res.data.assets) {
+            setAssets({ ...res.data.assets });
+          } else {
+            setAssets({ null: null });
+          }
         })
         .catch(function (error) {
           console.log(error);
@@ -129,7 +128,18 @@ const EditGame = (props) => {
   };
 
   let displayGameEdit = "";
-  if (gameRef === "quiz") {
+  if (gameRef === "colorGame") {
+    displayGameEdit = (
+      <EditColorGame
+        createGame={createGame}
+        config={config}
+        setConfig={setConfig}
+        assets={assets}
+        setAssets={setAssets}
+      />
+    );
+  } else if (gameRef === "puzzle") {
+  } else if (gameRef === "quiz") {
     displayGameEdit = (
       <EditQuiz
         generateArray={generateArray}
@@ -140,7 +150,10 @@ const EditGame = (props) => {
         setAssets={setAssets}
       />
     );
+  } else if (gameRef === "wordSearch") {
+  } else if (gameRef === "memory") {
   }
+
   let menu = "";
   if (success) {
     menu = <p>Sucesso</p>;
@@ -192,7 +205,7 @@ const EditGame = (props) => {
 
         {/* SPECIFIC GAME SELECTION */}
 
-        {createGame != null && config && displayGameEdit}
+        {createGame != null && config && assets && displayGameEdit}
 
         <UtilsWrapper>
           <Button

@@ -23,6 +23,8 @@ const NoImage = styled.div`
 
 const Card = (props) => {
   const { imageObj } = props;
+  // console.log(imageObj);
+
   let display = "";
   if (imageObj.id === "defaultImage") {
     display = (

@@ -23,7 +23,9 @@ const ImageField = (props) => {
   const [uploaded, setUploaded] = useState(null);
 
   useEffect(() => {
-    parentChangeHandler(uploaded, field_ref);
+    if (uploaded) {
+      parentChangeHandler(uploaded, field_ref);
+    }
   }, [uploaded]);
 
   let display = "";
@@ -36,6 +38,7 @@ const ImageField = (props) => {
       </>
     );
   }
+
   return (
     <Container>
       <Card imageObj={uploaded ? uploaded : imageObj} />
