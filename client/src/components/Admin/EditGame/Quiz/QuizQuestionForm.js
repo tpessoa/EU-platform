@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-import TextField from "../../../TextInput/TextField";
-import ListField from "../../../TextInput/ListField";
+import TextField from "../../../Input/TextField";
+import ListField from "../../../Input/ListField";
 
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";

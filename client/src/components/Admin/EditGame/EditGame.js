@@ -5,10 +5,12 @@ import styled from "styled-components";
 
 import EditQuiz from "./Quiz/EditQuiz";
 import EditColorGame from "./ColorGame/EditColorGame";
+import EditPuzzle from "./Puzzle/EditPuzzle";
+import EditWordSearch from "./WordSearch/EditWordSearch";
 
-import TextField from "../../TextInput/TextField";
-import ListField from "../../TextInput/ListField";
-import NumberField from "../../TextInput/NumberField";
+import TextField from "../../Input/TextField";
+import ListField from "../../Input/ListField";
+import NumberField from "../../Input/NumberField";
 
 import Typography from "@material-ui/core/Typography";
 import SaveIcon from "@material-ui/icons/Save";
@@ -139,6 +141,15 @@ const EditGame = (props) => {
       />
     );
   } else if (gameRef === "puzzle") {
+    displayGameEdit = (
+      <EditPuzzle
+        createGame={createGame}
+        config={config}
+        setConfig={setConfig}
+        assets={assets}
+        setAssets={setAssets}
+      />
+    );
   } else if (gameRef === "quiz") {
     displayGameEdit = (
       <EditQuiz
@@ -151,6 +162,15 @@ const EditGame = (props) => {
       />
     );
   } else if (gameRef === "wordSearch") {
+    displayGameEdit = (
+      <EditWordSearch
+        createGame={createGame}
+        config={config}
+        setConfig={setConfig}
+        assets={assets}
+        setAssets={setAssets}
+      />
+    );
   } else if (gameRef === "memory") {
   }
 

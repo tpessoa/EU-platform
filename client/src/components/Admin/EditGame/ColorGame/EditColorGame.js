@@ -31,7 +31,6 @@ const EditColorGame = (props) => {
   const imageHandler = (obj, ref) => {
     // console.log(obj);
     // console.log(ref);
-    // console.log(ref);
     const tempAssets = { ...assets };
     tempAssets.images[ref] = obj;
     setAssets(tempAssets);
