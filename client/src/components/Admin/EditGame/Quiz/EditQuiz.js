@@ -28,10 +28,14 @@ const EditGame = (props) => {
     setAssets,
   } = props;
 
+  const [loadedComplete, setLoadedComplete] = useState(false);
+  const [update, setUpdate] = useState(false);
+
   useEffect(() => {
     if (createGame) {
       setConfig({ ...emptyConfig });
     }
+    setLoadedComplete(true);
   }, []);
 
   const addQuestion = () => {
@@ -42,13 +46,24 @@ const EditGame = (props) => {
   };
 
   const updatedQuestionObj = (obj, ref) => {
+    // console.log(obj);
+    // console.log(ref);
+
     const tempConfig = { ...config };
     tempConfig.questions[ref] = { ...obj };
     setConfig(tempConfig);
   };
-  // console.log(config);
+
+  const deleteQuestionHandler = (objRef) => {
+    const tempConfig = { ...config };
+    tempConfig.questions.splice(objRef, 1);
+    setConfig(tempConfig);
+    setUpdate(true);
+  };
+
   let displayQuestions = "";
-  if (config && config.questions) {
+  if (loadedComplete) {
+    console.log("edit quiz");
     displayQuestions = config.questions.map((obj, index) => {
       return (
         <QuizQuestionForm
@@ -58,10 +73,17 @@ const EditGame = (props) => {
           questionInfo={obj}
           questionChanged={updatedQuestionObj}
           createNew={createGame}
+          deleteQuestion={deleteQuestionHandler}
+          update={update}
+          setUpdate={setUpdate}
         />
       );
     });
   }
+
+  const updateHandler = () => {
+    setUpdate(!update);
+  };
 
   return (
     <Container>
@@ -70,6 +92,7 @@ const EditGame = (props) => {
           <p>Perguntas</p>
           {displayQuestions}
           <button onClick={addQuestion}>Adicionar Questão</button>
+          {/* <button onClick={updateHandler}>Update</button> */}
         </ContentWrapper>
       </ContainerWrapper>
     </Container>

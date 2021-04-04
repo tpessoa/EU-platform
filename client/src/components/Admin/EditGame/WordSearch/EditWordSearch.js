@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import NumberField from "../../../Input/NumberField";
+import TextField from "../../../Input/TextField/TextField2";
 import CheckboxField from "../../../Input/CheckboxField";
 import Word from "./Word";
+
+import Paper from "@material-ui/core/Paper";
 
 const emptyWordSearchConfig = {
   words: [],
@@ -28,12 +31,14 @@ const emptyWordSearchConfig = {
   num_horizontal_cells: "",
   num_vertical_cells: "",
   time_to_complete: "",
+  timer: false,
 };
 
 const EditWordSearch = (props) => {
   const { createGame, config, setConfig } = props;
   const [loadedCompleted, setLoadedCompleted] = useState(false);
   const [timerActive, setTimerActive] = useState(false);
+  const [addedWord, setAddedWord] = useState("");
 
   useEffect(() => {
     if (createGame) {
@@ -43,6 +48,7 @@ const EditWordSearch = (props) => {
   }, []);
 
   const directionsHandler = (checkedFlag, ref) => {
+    console.log(ref);
     const tempConfig = { ...config };
     const directionObj = tempConfig.directions.find(
       (obj) => obj.direction === ref
@@ -52,29 +58,35 @@ const EditWordSearch = (props) => {
   };
 
   const numberHandler = (ev, ref) => {
-    console.log(ev.target.value);
-    console.log(ref);
+    // console.log(ev.target.value);
+    // console.log(ref);
 
     const tempConfig = { ...config };
     tempConfig[ref] = parseInt(ev.target.value);
     setConfig(tempConfig);
   };
 
-  const textHandler = (word, ref) => {
-    console.log(word);
+  const timerHandler = (flag, ref) => {
+    console.log(flag);
     console.log(ref);
-
     const tempConfig = { ...config };
-    if (ref.type === "word") {
-      tempConfig.words[ref.index] = word;
-    }
+    tempConfig[ref] = flag;
+    setConfig(tempConfig);
+
+    setTimerActive(flag);
+  };
+
+  const deleteWord = (wordIndex) => {
+    const tempConfig = { ...config };
+    tempConfig.words.splice(wordIndex, 1);
     setConfig(tempConfig);
   };
 
-  const addWord = () => {
+  const addWordHandler = () => {
     const tempConfig = { ...config };
-    tempConfig.words.push("");
+    tempConfig.words.push(addedWord);
     setConfig(tempConfig);
+    setAddedWord("");
   };
 
   let display = "";
@@ -82,23 +94,32 @@ const EditWordSearch = (props) => {
     display = (
       <>
         <WordsContainer>
+          <h3>Palavras</h3>
           {config.words.map((word, index) => {
             return (
               <Word
                 key={index}
                 word={word}
                 index={index}
-                textChangeHandler={textHandler}
+                deleteHandler={deleteWord}
               />
             );
           })}
-          <button onClick={addWord}>Adicionar Palavra</button>
+          <AddWordContainer>
+            <TextField
+              label={"Nova Palavra"}
+              value={addedWord}
+              parentChangeHandler={(word) => setAddedWord(word)}
+            />
+            <button onClick={addWordHandler}>Adicionar Palavra</button>
+          </AddWordContainer>
         </WordsContainer>
         <CheckboxesContainer>
-          <h1>Direções</h1>
+          <h3>Direções</h3>
           {config.directions.map((obj, index) => {
             return (
               <CheckboxField
+                field_ref={obj.direction}
                 key={index}
                 value={obj.checked}
                 description={obj.direction}
@@ -122,14 +143,16 @@ const EditWordSearch = (props) => {
         <TimeContainer>
           <TimeCheckboxContainer>
             <CheckboxField
-              value={timerActive}
+              field_ref={"timer"}
+              value={config.timer}
               description={"Ativar"}
-              setHandler={setTimerActive}
+              setHandler={timerHandler}
             />
           </TimeCheckboxContainer>
 
           <TimeValueCheckboxContainer>
             <NumberField
+              disabled={!config.timer}
               field_ref={"time_to_complete"}
               label={"Tempo para completar o jogo (segundos)"}
               value={config.time_to_complete}
@@ -154,12 +177,22 @@ const CheckboxesContainer = styled.div`
   width: 60%;
 `;
 
-const WordsContainer = styled.div`
+const WordsContainer = styled(Paper)`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 100%;
+  width: 60%;
+  padding: 1rem;
+  margin: 1rem;
+`;
+
+const AddWordContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 90%;
 `;
 
 const TimeContainer = styled.div`

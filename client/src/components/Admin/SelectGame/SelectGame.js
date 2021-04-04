@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams, Link } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -30,14 +31,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SelectGame = (props) => {
-  const { gamesNames, setSelectedGame } = props;
+  // const { gamesNames, setSelectedGame } = props;
+  const { gamesNames, selectedGame } = props;
+  const { game } = useParams();
+  console.log(selectedGame);
   const classes = useStyles();
   const [selectedPos, setSelectedPos] = useState(-1);
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    const tempObj = gamesNames.find(
+      (elem) => elem.game_ref_name === selectedGame
+    );
+    if (tempObj) {
+      setSelectedPos(tempObj.game_ref_id - 1);
+    }
+  }, [selectedGame]);
+
   const handleChange = (event) => {
     setSelectedPos(event.target.value);
-    setSelectedGame(gamesNames[event.target.value]);
+    // setSelectedGame(gamesNames[event.target.value]);
   };
 
   const handleClose = () => {
@@ -63,7 +76,12 @@ const SelectGame = (props) => {
             onChange={handleChange}
           >
             {gamesNames.map((obj, index) => (
-              <MenuItem key={index} value={index}>
+              <MenuItem
+                key={index}
+                value={index}
+                component={Link}
+                to={`/admin/games/${obj.game_ref_name}`}
+              >
                 {obj.game_name}
               </MenuItem>
             ))}

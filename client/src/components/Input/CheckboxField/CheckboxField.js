@@ -4,13 +4,13 @@ import styled from "styled-components";
 import Checkbox from "@material-ui/core/Checkbox";
 
 const CheckboxField = (props) => {
-  const { description, value, setHandler } = props;
+  const { field_ref, description, value, setHandler } = props;
   const [checked, setChecked] = React.useState(value);
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
 
-    setHandler(event.target.checked, description);
+    setHandler(event.target.checked, field_ref);
   };
   return (
     <Container>

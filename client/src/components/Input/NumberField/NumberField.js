@@ -5,6 +5,7 @@ import { TextFieldCustom } from "../Input.elements";
 
 const NumberField = (props) => {
   const {
+    disabled,
     field_ref,
     label,
     value,
@@ -36,6 +37,7 @@ const NumberField = (props) => {
         InputLabelProps={{
           shrink: true,
         }}
+        disabled={disabled}
       ></TextFieldCustom>
     </Container>
   );

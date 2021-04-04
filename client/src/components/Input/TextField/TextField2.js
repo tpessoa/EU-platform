@@ -2,7 +2,7 @@ import React from "react";
 import { TextFieldCustom } from "../Input.elements";
 
 const TextField = (props) => {
-  const { label, value, parentChangeHandler, multi } = props;
+  const { label, value, parentChangeHandler, multi, disabled } = props;
   const [word, setWord] = React.useState(value);
 
   const handleChange = (ev) => {
@@ -19,6 +19,7 @@ const TextField = (props) => {
       variant="outlined"
       onChange={handleChange}
       multiline={multi}
+      disabled={disabled}
     />
   );
 };

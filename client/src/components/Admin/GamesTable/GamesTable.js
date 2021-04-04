@@ -47,8 +47,16 @@ const formatRows = (arr) => {
   return temp_arr;
 };
 
+const getGameInfoNames = (arr, name_ref) => {
+  return arr.find((elem) => elem.game_ref_name === name_ref);
+};
+
 const GamesTable = (props) => {
-  const { selectedGame } = props;
+  // const { selectedGame } = props;
+  const { gamesNames, setGame } = props;
+  const { game } = useParams();
+  const selectedGame = getGameInfoNames(gamesNames, game);
+
   const [tableData, setTableData] = useState({
     columns: initTableColumns(),
     rows: initTableRows(),
@@ -72,6 +80,8 @@ const GamesTable = (props) => {
             rows: initTableRows(),
           });
         }
+
+        setGame(game);
       })
       .catch(function (error) {
         console.log(error);

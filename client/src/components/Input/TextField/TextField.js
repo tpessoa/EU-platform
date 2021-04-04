@@ -11,6 +11,10 @@ const TextField = (props) => {
     parentChangeHandler(ev, field_ref);
   };
 
+  React.useEffect(() => {
+    setWord(value);
+  }, [value]);
+
   return (
     <TextFieldCustom
       required

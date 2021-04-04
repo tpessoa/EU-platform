@@ -7,22 +7,30 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 const Word = (props) => {
-  const { word, index, textChangeHandler } = props;
+  const { word, index, deleteHandler } = props;
 
   return (
     <Container>
       <WordWrapper>
-        <TextField
-          field_ref={"word_" + index}
-          label={"Palavra " + (index + 1)}
+        {/* <TextFieldCustom
+          required
+          id="outlined-required"
+          label={"Palavra " + index}
           value={word}
-          parentChangeHandler={(currentWord) =>
-            textChangeHandler(currentWord, { type: "word", index: index })
-          }
-        />
+          variant="outlined"
+          onChange={handleChange}
+        /> */}
+        {/* <TextField
+          id="outlined-required"
+          label={"Palavra " + index}
+          value={word}
+          variant="outlined"
+          disabled={true}
+        /> */}
+        <p>{word}</p>
       </WordWrapper>
       <RemoveWrapper>
-        <IconButton aria-label="delete">
+        <IconButton aria-label="delete" onClick={() => deleteHandler(index)}>
           <DeleteIcon />
         </IconButton>
       </RemoveWrapper>
@@ -37,7 +45,8 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60%;
+  width: 90%;
+  margin: 0.8rem;
 `;
 
 const RemoveWrapper = styled.div`
@@ -50,3 +59,5 @@ const WordWrapper = styled.div`
   justify-content: center;
   width: 100%;
 `;
+
+const TextFieldCustom = styled(TextField)``;
