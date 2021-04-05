@@ -34,7 +34,6 @@ const SelectGame = (props) => {
   // const { gamesNames, setSelectedGame } = props;
   const { gamesNames, selectedGame } = props;
   const { game } = useParams();
-  console.log(selectedGame);
   const classes = useStyles();
   const [selectedPos, setSelectedPos] = useState(-1);
   const [open, setOpen] = useState(false);

@@ -9,7 +9,7 @@ import GamesTable from "../../components/Admin/GamesTable";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ptPT } from "@material-ui/core/locale";
 
-import { gamesIDsRefs } from "./games/Data";
+import { gamesIDsRefs, processInfoMessages } from "./games/Data";
 
 const theme = createMuiTheme({
   palette: {
@@ -28,7 +28,9 @@ const Admin = () => {
       <Route exact path="/admin" component={Dashboard} />
       <Route
         path="/admin/games"
-        component={() => <EditGames gamesNames={gamesIDsRefs} />}
+        component={() => (
+          <EditGames gamesNames={gamesIDsRefs} messages={processInfoMessages} />
+        )}
       />
       <Route
         exact

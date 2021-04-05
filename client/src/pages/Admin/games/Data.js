@@ -20,3 +20,8 @@ export const gamesIDsRefs = [
     game_name: "Sopa de Letras",
   },
 ];
+
+export const processInfoMessages = {
+  success: "Alteração realizada com sucesso",
+  error: "Occoreu um erro na alteração",
+};

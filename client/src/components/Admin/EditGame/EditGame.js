@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation, useHistory } from "react-router-dom";
+import { useParams, useLocation, useHistory, Redirect } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
@@ -15,6 +15,7 @@ import NumberField from "../../Input/NumberField";
 import Typography from "@material-ui/core/Typography";
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const generateArray = (min, max) => {
   const tempArr = [];
@@ -104,9 +105,11 @@ const EditGame = (props) => {
       .post(URL_str, { gameObj: gameObj })
       .then(function (res) {
         console.log(res.data);
+        window.location = `/admin/games/${gameRef}/success`;
       })
       .catch(function (error) {
         console.log(error);
+        window.location = `/admin/games/${gameRef}/error`;
       });
     // display feedback
     setSuccess(true);
@@ -176,57 +179,61 @@ const EditGame = (props) => {
 
   let menu = "";
   if (success) {
-    menu = <p>Sucesso</p>;
+    menu = <CircularProgress />;
   } else if (!success) {
     menu = (
-      <Wrapper>
-        <Typography variant="h6" gutterBottom>
-          Editar Jogo
-        </Typography>
-        <TextField
-          field_ref={"title"}
-          label={"Título"}
-          value={title}
-          parentChangeHandler={textChangeHandler}
-        />
-        <TextField
-          field_ref={"description"}
-          label={"Descrição"}
-          value={description}
-          parentChangeHandler={textChangeHandler}
-        />
-        <AgeContainer>
-          <AgeWrapper>
-            <NumberField
-              field_ref={"age_min"}
-              label={"Idade Mínima"}
-              value={age.min}
-              parentChangeHandler={textChangeHandler}
-            />
-          </AgeWrapper>
-          <AgeWrapper>
-            <NumberField
-              field_ref={"age_max"}
-              label={"Idade Máxima"}
-              value={age.max}
-              parentChangeHandler={textChangeHandler}
-            />
-          </AgeWrapper>
-        </AgeContainer>
-        <ListWrapper>
-          <ListField
-            field_ref={"difficulty"}
-            label={"Dificuldade"}
-            arr={["fácil", "média", "difícil"]}
-            value={difficulty}
+      <>
+        <Button variant="contained" onClick={history.goBack}>
+          Voltar
+        </Button>
+        <Wrapper>
+          <Typography variant="h6" gutterBottom>
+            Editar Jogo
+          </Typography>
+          <TextField
+            field_ref={"title"}
+            label={"Título"}
+            value={title}
             parentChangeHandler={textChangeHandler}
           />
-        </ListWrapper>
+          <TextField
+            field_ref={"description"}
+            label={"Descrição"}
+            value={description}
+            parentChangeHandler={textChangeHandler}
+          />
+          <AgeContainer>
+            <AgeWrapper>
+              <NumberField
+                field_ref={"age_min"}
+                label={"Idade Mínima"}
+                value={age.min}
+                parentChangeHandler={textChangeHandler}
+              />
+            </AgeWrapper>
+            <AgeWrapper>
+              <NumberField
+                field_ref={"age_max"}
+                label={"Idade Máxima"}
+                value={age.max}
+                parentChangeHandler={textChangeHandler}
+              />
+            </AgeWrapper>
+          </AgeContainer>
+          <ListWrapper>
+            <ListField
+              field_ref={"difficulty"}
+              label={"Dificuldade"}
+              arr={["fácil", "média", "difícil"]}
+              value={difficulty}
+              parentChangeHandler={textChangeHandler}
+            />
+          </ListWrapper>
 
-        {/* SPECIFIC GAME SELECTION */}
+          {/* SPECIFIC GAME SELECTION */}
 
-        {createGame != null && config && assets && displayGameEdit}
-
+          {createGame != null && config && assets && displayGameEdit}
+        </Wrapper>
         <UtilsWrapper>
           <Button
             variant="contained"
@@ -237,18 +244,11 @@ const EditGame = (props) => {
             Guardar
           </Button>
         </UtilsWrapper>
-      </Wrapper>
+      </>
     );
   }
 
-  return (
-    <Container>
-      <Button variant="contained" onClick={history.goBack}>
-        Voltar
-      </Button>
-      {menu}
-    </Container>
-  );
+  return <Container>{menu}</Container>;
 };
 
 export default EditGame;

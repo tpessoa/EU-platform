@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import styled from "styled-components";
+import { Link, useParams } from "react-router-dom";
+
+import ConfirmDialog from "../ConfirmDialog";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -10,9 +15,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
-
-import styled from "styled-components";
-import { Link, useParams } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -64,6 +66,8 @@ const GamesTable = (props) => {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [deleteGame, setDeleteGame] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   useEffect(() => {
     axios
@@ -88,6 +92,30 @@ const GamesTable = (props) => {
       });
   }, [selectedGame]);
 
+  useEffect(() => {
+    if (confirmDelete) {
+      // delete request
+      axios
+        .delete(`/api/games/${deleteGame.game_id}`)
+        .then(function (res) {
+          // verify success, if the deletedCount is 1 the document was successfully deleted
+          if (res.data.deletedCount != 1) return;
+          // copy the old rows
+          const tempObj = { ...tableData };
+          const rowObjIndex = tempObj.rows.findIndex(
+            (obj) => obj.game_id === deleteGame.game_id
+          );
+          tempObj.rows.splice(rowObjIndex, 1);
+          // TODO delete image in server!!
+          // update the rows
+          setTableData(tempObj);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  }, [confirmDelete]);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -107,33 +135,21 @@ const GamesTable = (props) => {
     });
   });
 
-  const deleteGame = (gameId) => {
-    // delete request
-    axios
-      .delete(`/api/games/${gameId}`)
-      .then(function (res) {
-        // verify success, if the deletedCount is 1 the document was successfully deleted
-        if (res.data.deletedCount != 1) return;
-
-        // copy the old rows
-        const tempObj = { ...tableData };
-        const rowObjIndex = tempObj.rows.findIndex(
-          (obj) => obj.game_id === gameId
-        );
-        tempObj.rows.splice(rowObjIndex, 1);
-
-        // TODO delete image in server!!
-
-        // update the rows
-        setTableData(tempObj);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
+  let displayDialog = "";
+  if (deleteGame) {
+    displayDialog = (
+      <ConfirmDialog
+        contentText={`De certeza que pretende eliminar o jogo com o título ${deleteGame.title}?`}
+        gameInfo={deleteGame}
+        setDelete={setDeleteGame}
+        setConfirm={setConfirmDelete}
+      />
+    );
+  }
 
   return (
     <>
+      {displayDialog}
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -174,7 +190,7 @@ const GamesTable = (props) => {
                             <DeleteButton
                               variant="contained"
                               color="primary"
-                              onClick={() => deleteGame(row.game_id)}
+                              onClick={() => setDeleteGame(row)}
                             >
                               Eliminar
                             </DeleteButton>
