@@ -49,7 +49,7 @@ var INFO = {
         "Resposta 4",
       ],
       justification: "justificação",
-      right_answer: 2,
+      rightAnswer: 2,
       user_right: null,
       user_guess: null,
       audio: true,
@@ -58,7 +58,7 @@ var INFO = {
   current_question_num: 0,
   timer: false,
   time_to_resp_question: null,
-  has_audio: true,
+  has_audio: false,
 };
 
 var timer_text, timedEvent;
@@ -66,7 +66,7 @@ var mili = 1000;
 // workaround, need to be global to be used by the timer event if the game has timer
 var answers_container;
 var PLAY_JUSTIFICATION = false;
-var GAME_REF;
+var GAME_ID;
 
 var right_a_sound, wrong_a_sound;
 
@@ -78,7 +78,7 @@ class Quiz extends Phaser.Scene {
   init() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    GAME_REF = urlParams.get("id");
+    GAME_ID = urlParams.get("id");
   }
 
   async preload() {
@@ -92,7 +92,7 @@ class Quiz extends Phaser.Scene {
     this.load.audio("right_answer", "./assets/sounds/right_answer.mp3");
     this.load.audio("wrong_answer", "./assets/sounds/wrong_answer.mp3");
 
-    const get_game_str = "/api/games/quiz/" + GAME_REF;
+    const get_game_str = "/api/games/game/" + GAME_ID;
     await axios
       .get(get_game_str)
       .then((response) => this.loadFromDB(response))
@@ -106,17 +106,14 @@ class Quiz extends Phaser.Scene {
   }
 
   loadFromDB(response) {
-    if (response.data) {
-      console.log(response.data);
-      let obj = response.data;
-      // DB_src = response.data.src;
-      // DB_size_pieces = response.data.piece_size;
-      // DB_image_ref = response.data.image_ref;
-      INFO.input = obj.input;
-      INFO.timer = obj.timer;
-      INFO.time_to_resp_question = obj.time_to_resp_question;
-      INFO.has_audio = obj.has_audio;
-    }
+    const config = response.data.config;
+    const assets = response.data.assets;
+
+    // INFO.has_audio = obj.has_audio;
+    INFO.input = config.questions;
+    INFO.timer = config.timer;
+    INFO.time_to_resp_question = config.time_to_resp_question;
+
     this.load.on("complete", () => this.createCostum());
 
     // load sound answers
@@ -715,7 +712,7 @@ class Quiz extends Phaser.Scene {
     }
 
     var current_question_num = INFO.current_question_num;
-    var right_answer_pos = INFO.input[current_question_num].right_answer;
+    var right_answer_pos = INFO.input[current_question_num].rightAnswer;
     var question_obj = INFO.input[current_question_num];
 
     // if its the right answer
@@ -878,11 +875,14 @@ class Quiz extends Phaser.Scene {
     }
   }
 
-  setAnswer(container, answers_arr) {
-    var answers_arr_counter = 0;
+  setAnswer(container, answersObj) {
+    // console.log(answersObj);
+    var answers_arr_counter = 1;
     for (let i = 0; i < container.list.length; i++) {
       if (container.list[i].getData("text_type") == "Answer") {
-        container.list[i].setText(answers_arr[answers_arr_counter++]);
+        const answerChildObj = "answer" + answers_arr_counter;
+        container.list[i].setText(answersObj[answerObj]);
+        answers_arr_counter++;
       }
     }
   }

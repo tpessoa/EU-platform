@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import QuizQuestionForm from "./QuizQuestionForm";
+import CheckboxField from "../../../Input/CheckboxField";
+import NumberField from "../../../Input/NumberField";
 
 var emptyObj = {
   assets: {
@@ -9,6 +11,7 @@ var emptyObj = {
   },
   config: {
     questions: [],
+    timer: false,
     time_to_resp_question: "",
   },
 };
@@ -26,10 +29,13 @@ const EditGame = (props) => {
     setConfig,
     assets,
     setAssets,
+    configTitle,
+    assetsTitle,
   } = props;
 
   const [loadedComplete, setLoadedComplete] = useState(false);
   const [update, setUpdate] = useState(false);
+  const [timerActive, setTimerActive] = useState(false);
 
   useEffect(() => {
     if (createGame) {
@@ -63,7 +69,6 @@ const EditGame = (props) => {
 
   let displayQuestions = "";
   if (loadedComplete) {
-    console.log("edit quiz");
     displayQuestions = config.questions.map((obj, index) => {
       return (
         <QuizQuestionForm
@@ -81,28 +86,63 @@ const EditGame = (props) => {
     });
   }
 
-  const updateHandler = () => {
-    setUpdate(!update);
+  const numberHandler = (ev, ref) => {
+    // console.log(ev.target.value);
+    // console.log(ref);
+
+    const tempConfig = { ...config };
+    tempConfig[ref] = parseInt(ev.target.value);
+    setConfig(tempConfig);
+  };
+
+  const timerHandler = (flag, ref) => {
+    const tempConfig = { ...config };
+    tempConfig[ref] = flag;
+    setConfig(tempConfig);
+
+    setTimerActive(flag);
   };
 
   return (
     <Container>
+      <p>{configTitle}</p>
       <ContainerWrapper>
         <ContentWrapper>
-          <p>Perguntas</p>
           {displayQuestions}
           <button onClick={addQuestion}>Adicionar Questão</button>
-          {/* <button onClick={updateHandler}>Update</button> */}
         </ContentWrapper>
       </ContainerWrapper>
+      <TimeContainer>
+        <TimeCheckboxContainer>
+          <CheckboxField
+            field_ref={"timer"}
+            value={config.timer}
+            description={"Ativar"}
+            setHandler={timerHandler}
+          />
+        </TimeCheckboxContainer>
+
+        <TimeValueCheckboxContainer>
+          <NumberField
+            disabled={!config.timer}
+            field_ref={"time_to_resp_question"}
+            label={"Tempo para responder a cada questão (segundos)"}
+            value={config.time_to_resp_question}
+            parentChangeHandler={numberHandler}
+          />
+        </TimeValueCheckboxContainer>
+      </TimeContainer>
     </Container>
   );
 };
+
+export default EditGame;
 
 const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   margin: 2rem;
   width: 100%;
 `;
@@ -125,4 +165,23 @@ const ContentWrapper = styled.div`
   width: 90%;
 `;
 
-export default EditGame;
+const TimeContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+`;
+
+const TimeCheckboxContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+`;
+const TimeValueCheckboxContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70%;
+`;
