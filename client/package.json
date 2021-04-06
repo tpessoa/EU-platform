@@ -16,6 +16,7 @@
     "react": "^17.0.1",
     "react-audio-player": "^0.14.0",
     "react-bootstrap": "^1.5.2",
+    "react-color": "^2.19.3",
     "react-dom": "^17.0.1",
     "react-full-screen": "^1.0.1",
     "react-icons": "^4.2.0",

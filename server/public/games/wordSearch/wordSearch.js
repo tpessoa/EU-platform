@@ -64,7 +64,7 @@ var MAX_TIME = 5;
 var timer_text;
 var timedEvent;
 
-var GAME_REF;
+var GAME_ID;
 
 var right_guess_sound, finish_game_sound;
 class WordSearch extends Phaser.Scene {
@@ -75,14 +75,14 @@ class WordSearch extends Phaser.Scene {
   init() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    GAME_REF = urlParams.get("id");
+    GAME_ID = urlParams.get("id");
   }
 
   async preload() {
     this.load.audio("right_guess", "./assets/sounds/right_guess.mp3");
     this.load.audio("finish_game", "./assets/sounds/finish_game.mp3");
 
-    const get_game_str = "/api/games/wordSearch/" + GAME_REF;
+    const get_game_str = "/api/games/game/" + GAME_ID;
     await axios
       .get(get_game_str)
       .then((response) => this.loadFromDB(response))
@@ -96,17 +96,34 @@ class WordSearch extends Phaser.Scene {
   }
 
   loadFromDB(response) {
-    if (response.data) {
-      console.log(response.data);
-      let obj = response.data;
+    const getFormattedDirections = (arr) => {
+      const tempArr = [];
+      arr.forEach((elem) => {
+        if (elem.checked) {
+          tempArr.push(elem.direction.toLowerCase());
+        }
+      });
+      return tempArr;
+    };
 
-      INPUT_ARR = obj.input;
-      DIRECTIONS_ARR = obj.directions;
-      WIDTH = obj.num_horizontal_cells;
-      HEIGHT = obj.num_vertical_cells;
-      MAX_TIME = obj.time_to_complete;
-      time_flag = obj.timer;
-    }
+    const getFormattedWords = (arr) => {
+      const tempArr = [];
+      arr.forEach((elem) => {
+        tempArr.push(elem.toUpperCase());
+      });
+      return tempArr;
+    };
+
+    const config = response.data.config;
+    const assets = response.data.assets;
+
+    INPUT_ARR = getFormattedWords(config.words);
+    DIRECTIONS_ARR = getFormattedDirections(config.directions);
+    WIDTH = config.num_horizontal_cells;
+    HEIGHT = config.num_vertical_cells;
+    time_flag = config.timer;
+    MAX_TIME = config.time_to_complete;
+
     this.load.on("complete", () => this.createCostum());
 
     this.load.start();

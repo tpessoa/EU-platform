@@ -16,7 +16,8 @@ import {
 } from "./GameCard.elements";
 
 const GameCard = (props) => {
-  const { name, title, img, imgAlt, cardsType, cardRef } = props.gameInfo;
+  const { gameInfo } = props;
+
   return (
     <>
       <LinkScroll
@@ -29,21 +30,23 @@ const GameCard = (props) => {
         <Container>
           <Card
             to={{
-              pathname: `/games/${cardsType}/${name}`,
-              search: `?id=${cardRef}`,
+              pathname: `/games/${gameInfo.game_ref_name}/game`,
+              search: `?id=${gameInfo._id}`,
             }}
           >
             <ImgWrapper>
-              <Img src={img} alt={imgAlt} />
+              <Img
+                src={gameInfo.thumbnail.path + gameInfo.thumbnail.server_path}
+                alt={gameInfo.thumbnail.id}
+              />
             </ImgWrapper>
             <ContentWrapper>
               <ContentTop>
-                <Title>{title}</Title>
+                <Title>{gameInfo.title}</Title>
               </ContentTop>
               <Icon>
                 <FaPlay />
               </Icon>
-              {/* <ContentBottom>Info</ContentBottom> */}
             </ContentWrapper>
           </Card>
         </Container>

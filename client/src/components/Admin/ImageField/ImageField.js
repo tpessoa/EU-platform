@@ -18,7 +18,7 @@ const Container = styled.div`
 `;
 
 const ImageField = (props) => {
-  const { field_ref, imageObj, parentChangeHandler } = props;
+  const { field_ref, imageObj, parentChangeHandler, title } = props;
   const [isUploading, setIsUploading] = useState(false);
   const [uploaded, setUploaded] = useState(null);
 
@@ -41,6 +41,7 @@ const ImageField = (props) => {
 
   return (
     <Container>
+      <p>{title}</p>
       <Card imageObj={uploaded ? uploaded : imageObj} />
       {display}
     </Container>

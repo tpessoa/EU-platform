@@ -54,7 +54,7 @@ var complete_sound;
 var DB_src = "/api/games/puzzle/assets/images/test_image_1.jpg";
 var DB_size_pieces = 100;
 var DB_image_ref = "puzzleImg";
-var GAME_REF;
+var GAME_ID;
 
 class Puzzle extends Phaser.Scene {
   constructor() {
@@ -64,12 +64,10 @@ class Puzzle extends Phaser.Scene {
   init() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    GAME_REF = urlParams.get("id");
+    GAME_ID = urlParams.get("id");
   }
 
   async preload() {
-    this.load.image(DB_image_ref, DB_src);
-
     this.load.audio("select", "/api/games/puzzle/assets/sounds/select.mp3");
     this.load.audio("drop_piece", "/api/games/puzzle/assets/sounds/drop.mp3");
     this.load.audio(
@@ -81,7 +79,7 @@ class Puzzle extends Phaser.Scene {
       "/api/games/puzzle/assets/sounds/complete.mp3"
     );
 
-    const get_game_str = "/api/games/puzzle/" + GAME_REF;
+    const get_game_str = "/api/games/game/" + GAME_ID;
     await axios
       .get(get_game_str)
       .then((response) => this.loadFromDB(response))
@@ -95,12 +93,14 @@ class Puzzle extends Phaser.Scene {
   }
 
   loadFromDB(response) {
-    console.log(response.data);
-    if (response.data) {
-      DB_src = response.data.src;
-      DB_size_pieces = response.data.piece_size;
-      DB_image_ref = response.data.image_ref;
-    }
+    const config = response.data.config;
+    const assets = response.data.assets;
+    const puzzleImg = assets.images.final_img;
+
+    DB_src = puzzleImg.path + puzzleImg.server_path;
+    DB_size_pieces = config.pieces_size;
+    DB_image_ref = puzzleImg.id;
+
     this.load.on("complete", () => this.createCostum());
     this.load.image(DB_image_ref, DB_src);
     this.load.start();

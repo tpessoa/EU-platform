@@ -4,9 +4,9 @@ export const CardsSection = styled.div`
   padding: 30px 0 50px; // padding top - right/left - bottom
   display: flex;
   flex-direction: column;
-  justify-content: center;
   /* background: #4b59f7; */
   background: #003399;
+  min-height: 60vh;
 `;
 
 export const CardsWrapper = styled.div`

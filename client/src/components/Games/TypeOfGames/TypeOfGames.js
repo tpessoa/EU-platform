@@ -14,22 +14,22 @@ import {
 
 const gamesList = [
   {
-    url: "/games/allPuzzles",
+    url: "/games/puzzle",
     icon: <BsPuzzleFill />,
     name: "Puzzle",
   },
   {
-    url: "/games/allColorGames",
+    url: "/games/colorGame",
     icon: <IoColorPaletteSharp />,
     name: "Colorir",
   },
   {
-    url: "/games/allWordSearchs",
+    url: "/games/wordSearch",
     icon: <GiMagnifyingGlass />,
     name: "Sopa de Letras",
   },
   {
-    url: "/games/allQuizzes",
+    url: "/games/quiz",
     icon: <FaQuestion />,
     name: "Quiz",
   },

@@ -18,7 +18,15 @@ const emptyPuzzleAssets = {
 };
 
 const EditPuzzle = (props) => {
-  const { createGame, config, setConfig, assets, setAssets } = props;
+  const {
+    createGame,
+    config,
+    setConfig,
+    assets,
+    setAssets,
+    configTitle,
+    assetsTitle,
+  } = props;
   const [loadedCompleted, setLoadedCompleted] = useState(false);
 
   useEffect(() => {
@@ -50,16 +58,18 @@ const EditPuzzle = (props) => {
   if (loadedCompleted) {
     display = (
       <>
-        <ImageField
-          field_ref={"final_img"}
-          imageObj={assets.images.final_img}
-          parentChangeHandler={imageHandler}
-        />
+        {configTitle}
         <NumberField
           field_ref={"pieces_size"}
           label={"Tamanho das peças"}
           value={config.pieces_size}
           parentChangeHandler={textHandler}
+        />
+        {assetsTitle}
+        <ImageField
+          field_ref={"final_img"}
+          imageObj={assets.images.final_img}
+          parentChangeHandler={imageHandler}
         />
       </>
     );

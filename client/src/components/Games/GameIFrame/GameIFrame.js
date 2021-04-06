@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import "./game.css";
@@ -11,33 +12,39 @@ import {
 } from "./GameIFrame.elements";
 
 const GameIFrame = () => {
-  const [gameLink, setGameLink] = useState(false);
+  const { game } = useParams();
+  const { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const gameId = query.get("id");
+  const dir = "games";
+
+  const [gameLink, setGameLink] = useState(null);
   const handle = useFullScreenHandle();
 
   useEffect(() => {
-    const search_arr = window.location.search.split("=");
-    if (search_arr.length > 0) {
-      const gameId = search_arr[1];
-      const dir = "games";
-      const gameType = window.location.pathname.split("/")[3];
+    setGameLink(`/api/${dir}/${game}/game.html?id=${gameId}`);
+  }, [gameId || game]);
 
-      setGameLink(`/api/${dir}/${gameType}/game.html?id=${gameId}`);
-    }
-  }, [window.location.search]);
+  // console.log(gameLink);
+
+  let displayGame = "";
+  if (gameLink) {
+    displayGame = (
+      <Game
+        id="game"
+        title="game"
+        scrolling="no"
+        src={gameLink}
+        allowfullscreen="true"
+      ></Game>
+    );
+  }
 
   return (
     <>
       <GameContainer>
         <GameWrapper>
-          <FullScreen handle={handle}>
-            <Game
-              id="game"
-              title="game"
-              scrolling="no"
-              src={gameLink}
-              allowfullscreen="true"
-            ></Game>
-          </FullScreen>
+          <FullScreen handle={handle}>{displayGame}</FullScreen>
         </GameWrapper>
         <FullScreenBtn onClick={handle.enter}>Ecrã Inteiro</FullScreenBtn>
       </GameContainer>

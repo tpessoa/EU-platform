@@ -11,6 +11,7 @@ import EditWordSearch from "./WordSearch/EditWordSearch";
 import TextField from "../../Input/TextField";
 import ListField from "../../Input/ListField";
 import NumberField from "../../Input/NumberField";
+import ImageField from "../ImageField";
 
 import Typography from "@material-ui/core/Typography";
 import SaveIcon from "@material-ui/icons/Save";
@@ -38,6 +39,11 @@ const EditGame = (props) => {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [thumbnail, setThumbnail] = useState({
+    id: "defaultImage",
+    path: "",
+    server_path: "",
+  });
   const [age, setAge] = useState({ min: "", max: "" });
   const [difficulty, setDifficulty] = useState("");
   const [config, setConfig] = useState(null);
@@ -58,6 +64,7 @@ const EditGame = (props) => {
           setTitle(res.data.title);
           setDescription(res.data.description);
           setAge(res.data.age);
+          setThumbnail(res.data.thumbnail);
           setDifficulty(res.data.difficulty);
           if (res.data.config) {
             setConfig({ ...res.data.config });
@@ -83,6 +90,7 @@ const EditGame = (props) => {
     const gameObj = {
       title: title,
       description: description,
+      thumbnail: thumbnail,
       age: age,
       difficulty: difficulty,
       assets: assets,
@@ -132,7 +140,13 @@ const EditGame = (props) => {
     }
   };
 
+  const imageChangeHandler = (obj, ref) => {
+    setThumbnail({ ...obj });
+  };
+
   let displayGameEdit = "";
+  const configTitle = "Configurações específicas";
+  const assetsTitle = "Images específicas";
   if (gameRef === "colorGame") {
     displayGameEdit = (
       <EditColorGame
@@ -141,6 +155,8 @@ const EditGame = (props) => {
         setConfig={setConfig}
         assets={assets}
         setAssets={setAssets}
+        configTitle={configTitle}
+        assetsTitle={assetsTitle}
       />
     );
   } else if (gameRef === "puzzle") {
@@ -151,6 +167,8 @@ const EditGame = (props) => {
         setConfig={setConfig}
         assets={assets}
         setAssets={setAssets}
+        configTitle={configTitle}
+        assetsTitle={assetsTitle}
       />
     );
   } else if (gameRef === "quiz") {
@@ -162,6 +180,8 @@ const EditGame = (props) => {
         setConfig={setConfig}
         assets={assets}
         setAssets={setAssets}
+        configTitle={configTitle}
+        assetsTitle={assetsTitle}
       />
     );
   } else if (gameRef === "wordSearch") {
@@ -172,6 +192,8 @@ const EditGame = (props) => {
         setConfig={setConfig}
         assets={assets}
         setAssets={setAssets}
+        configTitle={configTitle}
+        assetsTitle={"Images do Jogo"}
       />
     );
   } else if (gameRef === "memory") {
@@ -201,6 +223,11 @@ const EditGame = (props) => {
             label={"Descrição"}
             value={description}
             parentChangeHandler={textChangeHandler}
+          />
+          <ImageField
+            field_ref={"thumbnail"}
+            imageObj={thumbnail}
+            parentChangeHandler={imageChangeHandler}
           />
           <AgeContainer>
             <AgeWrapper>

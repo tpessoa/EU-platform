@@ -137,6 +137,7 @@ const GamesTable = (props) => {
 
   let displayDialog = "";
   if (deleteGame) {
+    console.log(deleteGame);
     displayDialog = (
       <ConfirmDialog
         contentText={`De certeza que pretende eliminar o jogo com o título ${deleteGame.title}?`}
