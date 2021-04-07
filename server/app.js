@@ -32,14 +32,16 @@ mongoose
 app.get("/", (req, res) => res.status(200).send("helloo Tiago"));
 
 const adminRouter = require("./routes/admin");
-const usersRouter = require("./routes/users");
-const gamesRouter = require("./routes/games");
 const uploadRouter = require("./routes/upload");
+const gamesRouter = require("./routes/games");
+const videosRouter = require("./routes/videos");
+const usersRouter = require("./routes/users");
 
 app.use("/admin", adminRouter);
-app.use("/users", usersRouter);
-app.use("/games", gamesRouter);
 app.use("/upload", uploadRouter);
+app.use("/games", gamesRouter);
+app.use("/videos", videosRouter);
+app.use("/users", usersRouter);
 
 // Listener
 app.listen(port, () => {

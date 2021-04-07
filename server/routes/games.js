@@ -64,7 +64,7 @@ router.post("/add/:gameName/:gameId", async (req, res) => {
     difficulty,
     config,
     assets,
-  } = req.body.gameObj;
+  } = req.body.obj;
 
   const { gameName, gameId } = req.params;
 
@@ -111,15 +111,6 @@ router.post("/:game/:id", async (req, res) => {
 
     await game.save();
 
-    res.send(game);
-  } catch (e) {
-    res.status(500).send({ message: e.message });
-  }
-});
-
-router.get("/colorGame/:game_type", async (req, res) => {
-  try {
-    let game = await ConfigGames.findOne({ game_type: req.params.game_type });
     res.send(game);
   } catch (e) {
     res.status(500).send({ message: e.message });

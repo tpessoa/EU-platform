@@ -4,7 +4,9 @@ import { Route } from "react-router-dom";
 import Dashboard from "../../components/Admin/Dashboard";
 import EditGames from "../../components/Admin/EditGames";
 import EditGame from "../../components/Admin/EditGame";
-import GamesTable from "../../components/Admin/GamesTable";
+import EditVideos from "../../components/Admin/Videos/EditVideos";
+import Categories from "../../components/Admin/Videos/Categories";
+import EditCategory from "../../components/Admin/Videos/EditCategory";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ptPT } from "@material-ui/core/locale";
@@ -36,6 +38,18 @@ const Admin = () => {
         exact
         path="/admin/edit/game/:gameRef"
         component={() => <EditGame gamesNames={gamesIDsRefs} />}
+      />
+      <Route
+        path="/admin/videos"
+        component={() => <EditVideos messages={processInfoMessages} />}
+      />
+      <Route
+        path="/admin/videoCategories"
+        component={() => <Categories messages={processInfoMessages} />}
+      />
+      <Route
+        path="/admin/edit/:categorieId"
+        component={() => <EditCategory messages={processInfoMessages} />}
       />
     </ThemeProvider>
   );

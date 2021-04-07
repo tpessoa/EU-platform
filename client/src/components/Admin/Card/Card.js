@@ -2,9 +2,35 @@ import React from "react";
 import styled from "styled-components";
 import { FaImage } from "react-icons/fa";
 
+const Card = (props) => {
+  const { imageObj, width, height } = props;
+  if (!width) width = "200px";
+  if (!height) height = "200px";
+  // console.log(imageObj);
+  let display = "";
+  if (imageObj.id === "defaultImage") {
+    display = (
+      <NoImage>
+        <FaImage />
+      </NoImage>
+    );
+  } else {
+    display = (
+      <Img src={imageObj.path + imageObj.server_path} alt={imageObj.id} />
+    );
+  }
+  return (
+    <ImgCard w={width} h={height}>
+      {display}
+    </ImgCard>
+  );
+};
+
+export default Card;
+
 const ImgCard = styled.div`
-  width: 200px;
-  height: 200px;
+  width: ${(props) => props.w};
+  height: ${(props) => props.h};
 `;
 const Img = styled.img`
   width: 100%;
@@ -20,24 +46,3 @@ const NoImage = styled.div`
   width: 100%;
   font-size: 4rem;
 `;
-
-const Card = (props) => {
-  const { imageObj } = props;
-  // console.log(imageObj);
-
-  let display = "";
-  if (imageObj.id === "defaultImage") {
-    display = (
-      <NoImage>
-        <FaImage />
-      </NoImage>
-    );
-  } else {
-    display = (
-      <Img src={imageObj.path + imageObj.server_path} alt={imageObj.id} />
-    );
-  }
-  return <ImgCard>{display}</ImgCard>;
-};
-
-export default Card;
