@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import Button from "@material-ui/core/Button";
 
-const EditVideos = () => {
+const VideosMenu = () => {
   return (
     <Container>
       <CustomButton
@@ -15,18 +15,14 @@ const EditVideos = () => {
       >
         Editar Categorias de vídeos
       </CustomButton>
-      <CustomButton
-        variant="contained"
-        component={Link}
-        to={`/admin/edit/videos`}
-      >
+      <CustomButton variant="contained" component={Link} to={`/admin/videos`}>
         Editar vídeo
       </CustomButton>
     </Container>
   );
 };
 
-export default EditVideos;
+export default VideosMenu;
 
 const Container = styled.div`
   display: flex;

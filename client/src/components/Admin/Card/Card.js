@@ -2,23 +2,39 @@ import React from "react";
 import styled from "styled-components";
 import { FaImage } from "react-icons/fa";
 
+import { getVideoIDbyThumbnailURL } from "../../../globalFuncUtils";
+
 const Card = (props) => {
-  const { imageObj, width, height } = props;
+  const { imageObj, onlineImage } = props;
+  let { width, height } = props;
   if (!width) width = "200px";
   if (!height) height = "200px";
-  // console.log(imageObj);
+
+  const defaultImg = (
+    <NoImage>
+      <FaImage />
+    </NoImage>
+  );
+
   let display = "";
-  if (imageObj.id === "defaultImage") {
-    display = (
-      <NoImage>
-        <FaImage />
-      </NoImage>
-    );
+  if (onlineImage) {
+    const image = imageObj;
+    if (image === "defaultImage") {
+      display = defaultImg;
+    } else {
+      display = <Img src={image} alt={getVideoIDbyThumbnailURL(image)} />;
+    }
+    // if the image comes from an online provides (Youtube, p.e)
   } else {
-    display = (
-      <Img src={imageObj.path + imageObj.server_path} alt={imageObj.id} />
-    );
+    if (imageObj.id === "defaultImage") {
+      display = defaultImg;
+    } else {
+      display = (
+        <Img src={imageObj.path + imageObj.server_path} alt={imageObj.id} />
+      );
+    }
   }
+
   return (
     <ImgCard w={width} h={height}>
       {display}

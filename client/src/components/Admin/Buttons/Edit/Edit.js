@@ -5,23 +5,36 @@ import styled from "styled-components";
 import Button from "@material-ui/core/Button";
 
 const Edit = (props) => {
-  const { url, objId, redirect } = props;
+  const { url, objId, search, redirect } = props;
 
   let display = "";
   if (redirect) {
-    display = (
-      <EditButton
-        variant="contained"
-        color="primary"
-        component={Link}
-        to={{
-          pathname: url,
-          search: `?id=${objId}`,
-        }}
-      >
-        {props.children}
-      </EditButton>
-    );
+    if (search) {
+      display = (
+        <EditButton
+          variant="contained"
+          color="primary"
+          component={Link}
+          to={{
+            pathname: url,
+            search: `?id=${objId}`,
+          }}
+        >
+          {props.children}
+        </EditButton>
+      );
+    } else {
+      display = (
+        <EditButton
+          variant="contained"
+          color="primary"
+          component={Link}
+          to={`${url}/${objId}`}
+        >
+          {props.children}
+        </EditButton>
+      );
+    }
   } else {
     display = (
       <EditButton variant="contained" color="primary">

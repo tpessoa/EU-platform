@@ -3,16 +3,13 @@ import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
-import TextInput from "../../../Input/TextField/TextField";
+import TextInput from "../../../Input/TextField/TextFieldNew";
 import ImageField from "../../ImageField";
 import Save from "../../Buttons/Save";
 import Back from "../../Buttons/Back";
 
 const EditCategory = () => {
-  const { gameRef } = useParams();
-  const { search } = useLocation();
-  const query = new URLSearchParams(search);
-  const idField = query.get("id");
+  const { catId } = useParams();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -26,12 +23,12 @@ const EditCategory = () => {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (idField === "createNew") {
+    if (catId === "createNew") {
       setCreateGame(true);
     } else {
       setCreateGame(false);
       axios
-        .get(`/api/videos/categories/${idField}`)
+        .get(`/api/videos/categories/${catId}`)
         .then(function (res) {
           console.log(res.data);
           setTitle(res.data.title);
@@ -42,7 +39,7 @@ const EditCategory = () => {
           console.log(error);
         });
     }
-  }, [gameRef || idField]);
+  }, [catId]);
 
   const textChangeHandler = (ev, ref) => {
     const userInput = ev.target.value;
@@ -77,7 +74,7 @@ const EditCategory = () => {
     if (createGame) {
       URL_str = `/api/videos/categories/add`;
     } else {
-      URL_str = `/api/videos/categories/${idField}`;
+      URL_str = `/api/videos/categories/${catId}`;
     }
 
     // post them to database

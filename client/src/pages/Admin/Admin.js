@@ -1,12 +1,14 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import Dashboard from "../../components/Admin/Dashboard";
 import EditGames from "../../components/Admin/EditGames";
 import EditGame from "../../components/Admin/EditGame";
-import EditVideos from "../../components/Admin/Videos/EditVideos";
+import VideosMenu from "../../components/Admin/Videos/VideosMenu";
 import Categories from "../../components/Admin/Videos/Categories";
 import EditCategory from "../../components/Admin/Videos/EditCategory";
+import SelectVideo from "../../components/Admin/Videos/SelectVideo";
+import EditVideo from "../../components/Admin/Videos/EditVideo";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ptPT } from "@material-ui/core/locale";
@@ -40,17 +42,29 @@ const Admin = () => {
         component={() => <EditGame gamesNames={gamesIDsRefs} />}
       />
       <Route
-        path="/admin/videos"
-        component={() => <EditVideos messages={processInfoMessages} />}
-      />
-      <Route
+        exact
         path="/admin/videoCategories"
         component={() => <Categories messages={processInfoMessages} />}
       />
       <Route
-        path="/admin/edit/:categorieId"
+        path="/admin/edit/category/:catId"
         component={() => <EditCategory messages={processInfoMessages} />}
       />
+      <Route
+        path="/admin/edit/video/:videoId"
+        component={() => <EditVideo messages={processInfoMessages} />}
+      />
+
+      <Switch>
+        <Route
+          path="/admin/videos/menu"
+          component={() => <VideosMenu messages={processInfoMessages} />}
+        />
+        <Route
+          path="/admin/videos"
+          component={() => <SelectVideo messages={processInfoMessages} />}
+        />
+      </Switch>
     </ThemeProvider>
   );
 };

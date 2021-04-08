@@ -24,7 +24,7 @@ const Dashboard = () => {
         <NavigationIcon className={classes.extendedIcon} />
         Gerir Jogos
       </Fab>
-      <Fab variant="extended" component={Link} to={"/admin/videos"}>
+      <Fab variant="extended" component={Link} to={"/admin/videos/menu"}>
         <NavigationIcon className={classes.extendedIcon} />
         Gerir Vídeos
       </Fab>

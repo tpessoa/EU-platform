@@ -1,20 +1,15 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const gamesSchema = new Schema(
+const videosSchema = new Schema(
   {
-    game_ref_id: { type: Number, require: true },
-    game_ref_name: { type: String, require: true },
+    category_id: { type: String, require: true },
     title: { type: String, require: true },
     description: String,
-    thumbnail: { type: Object, require: true },
-    age: { type: Object, require: true },
-    difficulty: { type: Number, require: true },
-    assets: { type: Object, require: true },
-    config: { type: Object, require: true },
+    url: { type: String, require: true },
   },
-  { collection: "games" }
+  { collection: "videos" }
 );
-const Games = mongoose.model("Games", gamesSchema);
+const Videos = mongoose.model("Videos", videosSchema);
 
-module.exports = Games;
+module.exports = Videos;

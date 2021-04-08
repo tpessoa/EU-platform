@@ -15,7 +15,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
 const ActionTable = (props) => {
-  const { rows, cols } = props;
+  const { rows, cols, editURL, onlineImage } = props;
 
   return (
     <Container>
@@ -42,6 +42,7 @@ const ActionTable = (props) => {
                   <ImageWrapper>
                     <Image
                       imageObj={row.thumbnail}
+                      onlineImage={onlineImage}
                       width={"100px"}
                       height={"100px"}
                     />
@@ -52,7 +53,7 @@ const ActionTable = (props) => {
                     if (action === "Editar") {
                       return (
                         <EditButton
-                          url={"/admin/edit/category"}
+                          url={editURL}
                           objId={row.id}
                           redirect={true}
                           key={index}

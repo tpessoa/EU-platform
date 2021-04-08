@@ -5,20 +5,37 @@ import styled from "styled-components";
 import Button from "@material-ui/core/Button";
 
 const Add = (props) => {
-  const { url, objId } = props;
-  return (
-    <AddButton
-      variant="contained"
-      color="primary"
-      component={Link}
-      to={{
-        pathname: url,
-        search: `?id=${objId}`,
-      }}
-    >
-      {props.children}
-    </AddButton>
-  );
+  const { url, objId, search } = props;
+
+  let displayBtn = "";
+  if (search) {
+    displayBtn = (
+      <AddButton
+        variant="contained"
+        color="primary"
+        component={Link}
+        to={{
+          pathname: url,
+          search: `?id=${objId}`,
+        }}
+      >
+        {props.children}
+      </AddButton>
+    );
+  } else {
+    displayBtn = (
+      <AddButton
+        variant="contained"
+        color="primary"
+        component={Link}
+        to={`${url}/${objId}`}
+      >
+        {props.children}
+      </AddButton>
+    );
+  }
+
+  return <>{displayBtn}</>;
 };
 
 export default Add;
