@@ -7,15 +7,18 @@ import ListField from "../../../Input/ListField/ListFielNew";
 import VideosTable from "../VideosTable";
 import Back from "../../Buttons/Back";
 import AddVideo from "../../Buttons/Add";
+import Snackbar from "../../../Snackbar";
 
 const SelectVideo = () => {
-  const { search } = useLocation();
+  const { search, state } = useLocation();
+
   const query = new URLSearchParams(search);
   const catId = query.get("id");
 
   const [loadCompleted, setLoadCompleted] = useState(false);
   const [categoriesArr, setCategoriesArr] = useState([]);
   const [selectedCategoryPos, setSelectedCategoryPos] = useState(0);
+  const [displayInfoMessage, setDisplayInfoMessage] = useState(false);
 
   const { path, url } = useRouteMatch();
 
@@ -37,6 +40,11 @@ const SelectVideo = () => {
   }, [catId]);
 
   useEffect(() => {
+    // display status message
+    setDisplayInfoMessage(true);
+  }, [state]);
+
+  useEffect(() => {
     let index = -1;
     if (categoriesArr.length > 1) {
       index = categoriesArr.findIndex((elem) => elem._id === catId);
@@ -48,9 +56,16 @@ const SelectVideo = () => {
     setSelectedCategoryPos(userSelectedPos);
   };
 
+  let displayMessage = "";
+  if (displayInfoMessage) {
+    displayMessage = (
+      <Snackbar info={"success"} message={"Video alterado com sucesso"} />
+    );
+  }
+
   return (
     <Container>
-      <Back>Voltar</Back>
+      <Back url={"/admin/videos/menu"}>Voltar</Back>
       <CategoriesWrapper>
         <ListField
           label={"Categoria"}
@@ -66,6 +81,7 @@ const SelectVideo = () => {
         Adicionar novo vídeo
       </AddVideo>
       <Route path={`${path}/:category`} component={() => <VideosTable />} />
+      {displayMessage}
     </Container>
   );
 };

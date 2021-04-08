@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
@@ -18,7 +18,7 @@ const EditVideo = () => {
   const [url, setUrl] = useState("");
 
   const [createGame, setCreateGame] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [redirect, setRedirect] = useState(false);
 
   const getAllVideoCategories = async () => {
     const tempArr = [];
@@ -37,22 +37,30 @@ const EditVideo = () => {
     return tempArr;
   };
 
+  const getCategoryIndex = (arr, id) => {
+    return arr.findIndex((elem) => elem._id === id);
+  };
+
   useEffect(() => {
+    let categories;
+
+    const fetchCategories = async () => {
+      categories = await getAllVideoCategories();
+      setCategoriesArr([...categories]);
+    };
+    fetchCategories();
+
     if (videoId === "createNew") {
       setCreateGame(true);
     } else {
       setCreateGame(false);
 
       const fetchData = async () => {
-        const categories = await getAllVideoCategories();
         await axios
           .get(`/api/videos/video/${videoId}`)
           .then(function (res) {
             // console.log(res.data);
-            const index = categories.findIndex(
-              (elem) => elem._id === res.data.category_id
-            );
-            setCategoriesArr([...categories]);
+            const index = getCategoryIndex(categories, res.data.category_id);
             setSelectedCategoryPos(index);
             setTitle(res.data.title);
             setDescription(res.data.description);
@@ -64,7 +72,7 @@ const EditVideo = () => {
       };
       fetchData();
     }
-  }, [videoId]);
+  }, []);
 
   const inputChangeHandler = (userInput, ref) => {
     if (ref === "title") {
@@ -117,7 +125,7 @@ const EditVideo = () => {
         console.log(error);
       });
     // display feedback
-    setSuccess(true);
+    setRedirect(true);
   };
 
   let displayCategories = (
@@ -131,10 +139,25 @@ const EditVideo = () => {
     />
   );
 
+  let displayRedirect = "";
+  if (redirect) {
+    const catId = categoriesArr[selectedCategoryPos]._id;
+    const search = `?id=${catId}`;
+    displayRedirect = (
+      <Redirect
+        to={{
+          pathname: "/admin/videos/category",
+          search: search,
+          state: { status: "Vídeo alterado com sucesso" },
+        }}
+      />
+    );
+  }
+
   return (
     <Container>
       <EditWrapper>
-        <Back>Voltar</Back>
+        <Back url={`/admin/videos`}>Voltar</Back>
         <CategoryWrapper>{displayCategories}</CategoryWrapper>
         <TextInput
           field_ref={"title"}
@@ -157,6 +180,7 @@ const EditVideo = () => {
         />
         <Save clickHandler={performSave}>Guardar</Save>
       </EditWrapper>
+      {displayRedirect}
     </Container>
   );
 };

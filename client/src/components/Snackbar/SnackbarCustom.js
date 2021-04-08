@@ -10,8 +10,7 @@ const Alert = (props) => {
 };
 
 const SnackbarCustom = (props) => {
-  const { messages } = props;
-  const { snackbar } = useParams();
+  const { info, message } = props;
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -25,24 +24,15 @@ const SnackbarCustom = (props) => {
     setOpen(false);
   };
 
-  let display = "";
-  if (snackbar === "success") {
-    display = (
-      <Alert onClose={handleClose} severity="success">
-        {messages.success}
-      </Alert>
-    );
-  } else if (snackbar === "error") {
-    display = (
-      <Alert onClose={handleClose} severity="error">
-        {messages.error}
-      </Alert>
-    );
-  }
+  let display = (
+    <Alert onClose={handleClose} severity={info}>
+      {message}
+    </Alert>
+  );
 
   return (
     <>
-      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+      <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
         {display}
       </Snackbar>
     </>
