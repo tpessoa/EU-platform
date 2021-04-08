@@ -17,7 +17,7 @@ const EditVideo = () => {
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
 
-  const [createGame, setCreateGame] = useState(null);
+  const [createVideo, setCreateVideo] = useState(null);
   const [redirect, setRedirect] = useState(false);
 
   const getAllVideoCategories = async () => {
@@ -51,9 +51,9 @@ const EditVideo = () => {
     fetchCategories();
 
     if (videoId === "createNew") {
-      setCreateGame(true);
+      setCreateVideo(true);
     } else {
-      setCreateGame(false);
+      setCreateVideo(false);
 
       const fetchData = async () => {
         await axios
@@ -109,7 +109,7 @@ const EditVideo = () => {
     console.log(videoObj);
 
     let URL_str = "";
-    if (createGame) {
+    if (createVideo) {
       URL_str = `/api/videos/video/add`;
     } else {
       URL_str = `/api/videos/video/${videoId}`;
@@ -143,12 +143,20 @@ const EditVideo = () => {
   if (redirect) {
     const catId = categoriesArr[selectedCategoryPos]._id;
     const search = `?id=${catId}`;
+    let stateObj = {};
+    if (createVideo) {
+      stateObj = { info: "success", message: "Vídeo criado com sucesso" };
+      // stateObj ={ info: "error", message: "Ocorreu um erro ao criar o vídeo" }
+    } else {
+      stateObj = { info: "success", message: "Vídeo alterado com sucesso" };
+      // stateObj ={ info: "error", message: "Ocorreu um erro ao alterar o vídeo" }
+    }
     displayRedirect = (
       <Redirect
         to={{
           pathname: "/admin/videos/category",
           search: search,
-          state: { status: "Vídeo alterado com sucesso" },
+          state: stateObj,
         }}
       />
     );

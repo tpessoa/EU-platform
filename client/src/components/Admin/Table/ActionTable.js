@@ -15,7 +15,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
 const ActionTable = (props) => {
-  const { rows, cols, editURL, onlineImage } = props;
+  const { rows, cols, editURL, onlineImage, setDeleteRow } = props;
 
   return (
     <Container>
@@ -62,7 +62,14 @@ const ActionTable = (props) => {
                         </EditButton>
                       );
                     } else if (action === "Eliminar") {
-                      return <DeleteButton key={index}>{action}</DeleteButton>;
+                      return (
+                        <DeleteButton
+                          key={index}
+                          deleteHandler={() => setDeleteRow(row)}
+                        >
+                          {action}
+                        </DeleteButton>
+                      );
                     }
                   })}
                 </TableCell>

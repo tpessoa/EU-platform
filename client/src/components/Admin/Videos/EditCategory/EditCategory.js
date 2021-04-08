@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
@@ -20,7 +20,7 @@ const EditCategory = () => {
   });
 
   const [createGame, setCreateGame] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
     if (catId === "createNew") {
@@ -30,7 +30,7 @@ const EditCategory = () => {
       axios
         .get(`/api/videos/categories/${catId}`)
         .then(function (res) {
-          console.log(res.data);
+          // console.log(res.data);
           setTitle(res.data.title);
           setDescription(res.data.description);
           setThumbnail(res.data.thumbnail);
@@ -41,9 +41,7 @@ const EditCategory = () => {
     }
   }, [catId]);
 
-  const textChangeHandler = (ev, ref) => {
-    const userInput = ev.target.value;
-
+  const textChangeHandler = (userInput, ref) => {
     if (ref === "title") {
       setTitle(userInput);
     } else if (ref === "description") {
@@ -87,13 +85,33 @@ const EditCategory = () => {
         console.log(error);
       });
     // display feedback
-    setSuccess(true);
+    setRedirect(true);
   };
+
+  let displayRedirect = "";
+  if (redirect) {
+    let stateObj = {};
+    if (createGame) {
+      stateObj = { info: "success", message: "Categoria criada com sucesso" };
+      // stateObj ={ info: "error", message: "Ocorreu um erro ao criar a categoria" }
+    } else {
+      stateObj = { info: "success", message: "Categoria alterada com sucesso" };
+      // stateObj ={ info: "error", message: "Ocorreu um erro ao alterar a categoria" }
+    }
+    displayRedirect = (
+      <Redirect
+        to={{
+          pathname: "/admin/videoCategories",
+          state: stateObj,
+        }}
+      />
+    );
+  }
 
   return (
     <Container>
       <EditWrapper>
-        <Back>Voltar</Back>
+        <Back url={"/admin/videoCategories"}>Voltar</Back>
         <TextInput
           field_ref={"title"}
           label={"Título"}
@@ -113,6 +131,7 @@ const EditCategory = () => {
         />
         <Save clickHandler={performSave}>Guardar</Save>
       </EditWrapper>
+      {displayRedirect}
     </Container>
   );
 };

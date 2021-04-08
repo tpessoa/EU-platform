@@ -4,8 +4,9 @@ import styled from "styled-components";
 import Button from "@material-ui/core/Button";
 
 const Delete = (props) => {
+  const { deleteHandler } = props;
   return (
-    <DeleteButton variant="contained" color="primary">
+    <DeleteButton variant="contained" color="primary" onClick={deleteHandler}>
       {props.children}
     </DeleteButton>
   );

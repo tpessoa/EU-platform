@@ -89,6 +89,18 @@ router.post("/categories/:id", async (req, res) => {
 });
 
 /**
+ * Delete category by ID
+ */
+router.delete("/category/:id", async (req, res) => {
+  try {
+    let deletedCategory = await Categories.deleteOne({ _id: req.params.id });
+    res.send(deletedCategory);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+/**
  * get all videos of one category by ID
  */
 router.get("/:categoryId", async (req, res) => {
@@ -153,6 +165,18 @@ router.post("/video/:id", async (req, res) => {
     await video.save();
 
     res.send(video);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+/**
+ * Delete video by ID
+ */
+router.delete("/video/:id", async (req, res) => {
+  try {
+    let deletedVideo = await Videos.deleteOne({ _id: req.params.id });
+    res.send(deletedVideo);
   } catch (e) {
     res.status(500).send({ message: e.message });
   }

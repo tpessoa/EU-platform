@@ -41,7 +41,12 @@ const SelectVideo = () => {
 
   useEffect(() => {
     // display status message
-    setDisplayInfoMessage(true);
+    if (state) {
+      setDisplayInfoMessage({
+        info: state.info,
+        message: state.message,
+      });
+    }
   }, [state]);
 
   useEffect(() => {
@@ -59,7 +64,10 @@ const SelectVideo = () => {
   let displayMessage = "";
   if (displayInfoMessage) {
     displayMessage = (
-      <Snackbar info={"success"} message={"Video alterado com sucesso"} />
+      <Snackbar
+        info={displayInfoMessage.info}
+        message={displayInfoMessage.message}
+      />
     );
   }
 
