@@ -15,6 +15,31 @@ router.get("/categories", async (req, res) => {
 });
 
 /**
+ *
+ * Get all categories and their respective videos
+ */
+router.get("/get_categories_and_videos", async (req, res) => {
+  try {
+    const categoriesData = [];
+
+    const categoriesArr = await Categories.find({
+      category_ref_name: "video",
+    });
+    // cycle for reading in sequence
+    for (const category of categoriesArr) {
+      const videosArr = await Videos.find({ category_id: category._id });
+      categoriesData.push({
+        categoryData: category,
+        categoryVideos: videosArr,
+      });
+    }
+    res.send(categoriesData);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+/**
  * Get all video categories
  */
 router.get("/categories/type/:ref", async (req, res) => {

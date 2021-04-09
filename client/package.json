@@ -23,6 +23,7 @@
     "react-modal": "^3.12.1",
     "react-pageflip": "^1.0.0",
     "react-paginate": "^7.1.0",
+    "react-query": "^3.13.5",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "react-scroll": "^1.8.2",

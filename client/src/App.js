@@ -12,7 +12,7 @@ import Videos from "./pages/Videos";
 import Book from "./pages/Book";
 import Poll from "./pages/Poll";
 import AdminDashboard from "./pages/Admin";
-import VideoGallery from "./components/VideoGallery";
+// import VideoGallery from "./components/VideoGallery";
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function App() {
         <Route path="/" exact component={Home} />
         <Route path="/games" component={Games} />
         <Route exact path="/videos" component={Videos} />
-        <Route exact path="/videos/category" component={VideoGallery} />
+        {/* <Route exact path="/videos/category" component={VideoGallery} /> */}
         <Route path="/book" component={Book} />
         <Route path="/poll" component={Poll} />
         <Route path="/admin" component={AdminDashboard} />

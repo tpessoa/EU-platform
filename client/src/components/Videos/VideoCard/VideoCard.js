@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Link as LinkScroll } from "react-scroll";
+import { getVideoIDByURL } from "../../../globalFuncUtils";
 
 import { FaYoutube } from "react-icons/fa";
 import { Container, ImgWrapper, YoutubeIcon, Img } from "./VideoCard.elements";
 
-const VideoCard = ({ src, left, setVideo, category, gallery }) => {
-  const video_id = src.split("/")[4];
-  const video_thumbnail_url = `https://img.youtube.com/vi/${video_id}/0.jpg`;
+const VideoCard = ({ src, left, category, gallery }) => {
+  const video_id = getVideoIDByURL(src);
+  const video_thumbnail_url = `https://img.youtube.com/vi/${video_id}/sddefault.jpg`;
 
   const [hover, setHover] = useState(false);
 
@@ -14,15 +15,10 @@ const VideoCard = ({ src, left, setVideo, category, gallery }) => {
     setHover(!hover);
   };
 
-  const playVideo = () => {
-    setVideo(src);
-  };
-
   let typeOfPage;
   if (gallery) {
     typeOfPage = (
       <YoutubeIcon
-        onClick={playVideo}
         to={{
           pathname: `/videos/category`,
           search: `?id=${category}&video=${video_id}`,
@@ -34,10 +30,9 @@ const VideoCard = ({ src, left, setVideo, category, gallery }) => {
   } else {
     typeOfPage = (
       <YoutubeIcon
-        onClick={playVideo}
         to={{
           pathname: `/videos`,
-          search: `?id=${category}&video=${video_id}`,
+          search: `?catId=${category}&videoId=${video_id}`,
         }}
       >
         <FaYoutube />
@@ -52,7 +47,7 @@ const VideoCard = ({ src, left, setVideo, category, gallery }) => {
         smooth={true}
         delay={500}
         duration={1000}
-        offset={-280}
+        offset={-200}
       >
         <Container
           left={left}

@@ -18,6 +18,7 @@ export const Container = styled.div`
     }
   }} */
 
+  width: 100%;
   display: grid;
   margin: 30px 0;
   padding: 100px 10px;

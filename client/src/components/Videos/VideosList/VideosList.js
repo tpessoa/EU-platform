@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 import VideoCard from "../VideoCard";
+import Image from "../../UI/Image";
 import PlayVideo from "../PlayVideo";
 
 import {
@@ -11,7 +11,6 @@ import {
   InfoWrapper,
   Title,
   ImgWrapper,
-  Img,
   ScrollContainer,
   DisableArrow,
   Slide,
@@ -20,12 +19,13 @@ import {
   ShowMore,
 } from "./VideosList.elements";
 
-const VideosList = ({ id, title, img, reverse, videos }) => {
+const VideosList = (props) => {
+  const { categoryData, categoryVideos, reverse, playVideo } = props;
+  const { title, thumbnail } = categoryData;
+
   const dir_r = -1,
     dir_l = 1;
-  const location = useLocation();
   const [left, setLeft] = useState(-20);
-  const [video, setVideo] = useState(null);
   const [scrollCounter, setScrollCounter] = useState(0);
 
   const [disableArrowLeft, setDisableArrowLeft] = useState(false);
@@ -43,7 +43,7 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
       }
       setDisableArrowRight(false);
     } else {
-      if (Math.abs(scrollCounter) < videos.length) {
+      if (Math.abs(scrollCounter) < categoryVideos.length) {
         flagAllowScroll = true;
         setDisableArrowRight(false);
       } else {
@@ -59,15 +59,6 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
     }
   };
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    let videoId = null;
-    videoId = urlParams.get("video");
-    const video_url = videos.find((element) => element.includes(videoId));
-    if (video_url) {
-      setVideo(video_url);
-    }
-  }, []);
   return (
     <>
       <Container lightBg={reverse} reverse={reverse}>
@@ -76,7 +67,7 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
             <h1>{title}</h1>
           </Title>
           <ImgWrapper>
-            <Img src={img} alt={"image_" + title}></Img>
+            <Image imgObj={thumbnail} />
           </ImgWrapper>
         </InfoWrapper>
         <ScrollContainer>
@@ -92,14 +83,13 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
             )}
           </Slide>
           <VideosWrapper reverse={reverse}>
-            {videos.map((video, index) => {
+            {categoryVideos.map((video, index) => {
               return (
                 <VideoCard
-                  src={video}
                   key={index}
+                  src={video.url}
+                  category={video.category_id}
                   left={left}
-                  setVideo={setVideo}
-                  category={id}
                   gallery={false}
                 />
               );
@@ -121,17 +111,17 @@ const VideosList = ({ id, title, img, reverse, videos }) => {
           <ShowMore
             to={{
               pathname: `/videos/category`,
-              search: `?id=${id}`,
+              search: `?id=${categoryData._id}`,
             }}
-            id={"scrollToVideoPlayer_" + id}
+            id={"scrollToVideoPlayer_" + categoryData._id}
           >
             Ver Todos
           </ShowMore>
         </BtnWrapper>
       </Container>
-      {video && (
+      {playVideo && (
         <VideoWrapper>
-          <PlayVideo video_url={video} />
+          <PlayVideo videoURL={playVideo} />
         </VideoWrapper>
       )}
     </>
