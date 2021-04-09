@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import { getEmbedURL } from "../../../globalFuncUtils";
+import { getEmbedURL, getVideoIDByURL } from "../../../globalFuncUtils";
 
 import VideosList from "../VideosList";
 
@@ -24,7 +24,9 @@ const VideosGenerator = (props) => {
       {categoriesData.map((cat, index) => {
         let videoPlayInfo = null;
         if (selectedVideo && selectedVideo.catId === cat.categoryData._id) {
-          videoPlayInfo = getEmbedURL(selectedVideo.videoId);
+          videoPlayInfo = cat.categoryVideos.find(
+            (video) => getVideoIDByURL(video.url) === selectedVideo.videoId
+          );
         }
         return (
           <VideosList

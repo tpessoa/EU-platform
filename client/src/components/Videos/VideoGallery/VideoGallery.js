@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Route } from "react-router-dom";
-import { CategoryData } from "../../pages/Videos/Data";
+import { Route, useLocation } from "react-router-dom";
+import { useQuery } from "react-query";
+import axios from "axios";
 
+import Loading from "../../UI/Loading";
+import Error from "../../UI/Error";
+import Image from "../../UI/Image";
 import VideoCard from "../VideoCard";
-import VideoGalleryPlayer from "../VideoGalleryPlayer";
 
 import {
   Container,
@@ -14,68 +17,56 @@ import {
   VideosContainer,
   VideosWrapper,
 } from "./VideoGallery.elements";
+import PlayVideo from "../PlayVideo";
 
-const VideoGallery = ({ location }) => {
-  const [catData, setCatData] = useState(null);
-  const [video, setVideo] = useState(null);
+const VideoGallery = ({ props }) => {
+  const { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const catId = query.get("id");
+  const videoId = query.get("videoId");
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    let id = null;
-    let videoId = null;
-    id = urlParams.get("id");
-    if (id) {
-      const currentCatData = CategoryData.find((element) => element.id == id);
-      setCatData(currentCatData);
+  const [playVideo, setPlayVideo] = useState(null);
 
-      // case of reloading the page, the video url is already there
-      videoId = urlParams.get("video");
-      if (videoId) {
-        const videoObj = currentCatData.videos.find((element) =>
-          element.includes(videoId)
-        );
-        setVideo(videoObj);
-      }
-    }
-  }, []);
+  const {
+    isLoading: isLoadingVideos,
+    error: errorVideos,
+    data: dataVideos,
+  } = useQuery("videos", () => axios(`/api/videos/${catId}`));
+  const {
+    isLoading: isLoadingCat,
+    error: errorCat,
+    data: dataCat,
+  } = useQuery("category", () => axios(`/api/videos/categories/${catId}`));
 
-  let body = null;
-  if (catData) {
-    body = (
-      <InfoWrapper>
-        <Title>{catData.title}</Title>
-        <ImgWrapper>
-          <CategoryImg src={catData.img} alt={`img_${catData.title}`} />
-        </ImgWrapper>
-      </InfoWrapper>
-    );
-  }
+  if (isLoadingVideos || isLoadingCat) return <Loading />;
+  if (errorVideos || errorCat) return <Error error={errorCat} />;
 
   return (
     <>
-      <Container>
-        {body}
-        <VideosContainer>
-          <VideosWrapper>
-            {catData &&
-              catData.videos.map((video, index) => {
-                return (
-                  <VideoCard
-                    src={video}
-                    key={index}
-                    left={false}
-                    setVideo={setVideo}
-                    category={catData.id}
-                    gallery={true}
-                  />
-                );
-              })}
-          </VideosWrapper>
-        </VideosContainer>
-        {video && (
-          <Route exact path="/videos/category" component={VideoGalleryPlayer} />
-        )}
-      </Container>
+      <InfoWrapper>
+        <Title>{dataCat.data.title}</Title>
+        <ImgWrapper>
+          <Image imgObj={dataCat.data.thumbnail} />
+        </ImgWrapper>
+      </InfoWrapper>
+      <VideosContainer>
+        <VideosWrapper>
+          {dataVideos.data.map((video, index) => {
+            return (
+              <VideoCard
+                key={index}
+                src={video.url}
+                left={false}
+                category={video.category_id}
+                gallery={true}
+                setVideo={setPlayVideo}
+              />
+            );
+          })}
+        </VideosWrapper>
+      </VideosContainer>
+      {playVideo && <PlayVideo videoURL={playVideo} />}
+      <div id={"scrollToVideoPlayer_" + catId}></div>
     </>
   );
 };

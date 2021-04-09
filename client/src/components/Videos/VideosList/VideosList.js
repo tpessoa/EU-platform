@@ -121,7 +121,7 @@ const VideosList = (props) => {
       </Container>
       {playVideo && (
         <VideoWrapper>
-          <PlayVideo videoURL={playVideo} />
+          <PlayVideo videoURL={playVideo.url} />
         </VideoWrapper>
       )}
     </>

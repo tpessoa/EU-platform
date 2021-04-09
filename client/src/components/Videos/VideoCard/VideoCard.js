@@ -5,7 +5,7 @@ import { getVideoIDByURL } from "../../../globalFuncUtils";
 import { FaYoutube } from "react-icons/fa";
 import { Container, ImgWrapper, YoutubeIcon, Img } from "./VideoCard.elements";
 
-const VideoCard = ({ src, left, category, gallery }) => {
+const VideoCard = ({ src, left, category, gallery, setVideo }) => {
   const video_id = getVideoIDByURL(src);
   const video_thumbnail_url = `https://img.youtube.com/vi/${video_id}/sddefault.jpg`;
 
@@ -19,9 +19,10 @@ const VideoCard = ({ src, left, category, gallery }) => {
   if (gallery) {
     typeOfPage = (
       <YoutubeIcon
+        onClick={() => setVideo(src)}
         to={{
           pathname: `/videos/category`,
-          search: `?id=${category}&video=${video_id}`,
+          search: `?id=${category}&videoId=${video_id}`,
         }}
       >
         <FaYoutube />
