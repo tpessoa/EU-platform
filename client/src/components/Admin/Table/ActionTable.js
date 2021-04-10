@@ -15,7 +15,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
 const ActionTable = (props) => {
-  const { rows, cols, editURL, onlineImage, setDeleteRow } = props;
+  const { rows, cols, editURL, onlineImage, setDeleteRow, video } = props;
 
   return (
     <Container>
@@ -38,16 +38,19 @@ const ActionTable = (props) => {
                 <TableCell component="th" scope="row">
                   {row.title}
                 </TableCell>
-                <TableCell align="center">
-                  <ImageWrapper>
-                    <Image
-                      imageObj={row.thumbnail}
-                      onlineImage={onlineImage}
-                      width={"100px"}
-                      height={"100px"}
-                    />
-                  </ImageWrapper>
-                </TableCell>
+                {video && (
+                  <TableCell align="center">
+                    <ImageWrapper>
+                      <Image
+                        imageObj={row.thumbnail}
+                        onlineImage={onlineImage}
+                        width={"100px"}
+                        height={"100px"}
+                      />
+                    </ImageWrapper>
+                  </TableCell>
+                )}
+
                 <TableCell align="center">
                   {row.actions.map((action, index) => {
                     if (action === "Editar") {

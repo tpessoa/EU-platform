@@ -24,8 +24,9 @@ router.get("/all", async (req, res) => {
  * Get game by ID
  */
 router.get("/:id", async (req, res) => {
+  const gameId = parseInt(req.params.id);
   try {
-    let games = await Games.find({ game_ref_id: req.params.id });
+    let games = await Games.find({ game_ref_id: gameId });
     res.send(games);
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -56,19 +57,19 @@ router.get("/game/:id", async (req, res) => {
 });
 
 router.post("/add/:gameName/:gameId", async (req, res) => {
-  const {
-    title,
-    description,
-    thumbnail,
-    age,
-    difficulty,
-    config,
-    assets,
-  } = req.body.obj;
-
-  const { gameName, gameId } = req.params;
-
+  console.log(req.body.obj);
   try {
+    const {
+      title,
+      description,
+      thumbnail,
+      age,
+      difficulty,
+      config,
+      assets,
+    } = req.body.obj;
+
+    const { gameName, gameId } = req.params;
     const newGame = new Games({
       game_ref_id: gameId,
       game_ref_name: gameName,
@@ -89,17 +90,17 @@ router.post("/add/:gameName/:gameId", async (req, res) => {
 });
 
 router.post("/:game/:id", async (req, res) => {
-  const {
-    title,
-    description,
-    thumbnail,
-    age,
-    difficulty,
-    config,
-    assets,
-  } = req.body.gameObj;
-
   try {
+    const {
+      title,
+      description,
+      thumbnail,
+      age,
+      difficulty,
+      config,
+      assets,
+    } = req.body;
+
     let game = await Games.findOne({ _id: req.params.id });
     game.title = title;
     game.description = description;

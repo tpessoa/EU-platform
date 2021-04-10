@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
+
+import Loading from "../../UI/Loading";
+import Error from "../../UI/Error";
 
 import GameCard from "../GameCard";
 import { CardsSection, CardsWrapper, CardsHeading } from "./Cards.elements";
@@ -13,22 +17,12 @@ const Cards = (props) => {
   const { gamesInfo } = props;
   const { game } = useParams();
 
-  const [gamesInfoArr, setGamesInfoArr] = useState([]);
+  const { isLoading, error, data } = useQuery("getGamesOfCurrentType", () =>
+    axios(`/api/games/${getCurrentGameObj(gamesInfo, game).game_ref_id}`)
+  );
 
-  useEffect(async () => {
-    let tempArr = [];
-    axios
-      .get("/api/games/" + getCurrentGameObj(gamesInfo, game).game_ref_id)
-      .then(function (res) {
-        res.data.forEach((elem) => {
-          tempArr.push(elem);
-        });
-        setGamesInfoArr(tempArr);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, [game]);
+  if (isLoading) return <Loading />;
+  if (error) return <Error error={error} />;
 
   return (
     <CardsSection>
@@ -36,7 +30,7 @@ const Cards = (props) => {
         {getCurrentGameObj(gamesInfo, game).game_name}
       </CardsHeading>
       <CardsWrapper>
-        {gamesInfoArr.map((obj, index) => (
+        {data.data.map((obj, index) => (
           <GameCard key={index} gameInfo={obj} />
         ))}
       </CardsWrapper>

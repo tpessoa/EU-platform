@@ -125,3 +125,18 @@ export const NavBtnLink = styled(Link)`
     color: #010606;
   }
 `;
+
+export const ImageWrapper = styled.div`
+  width: 10vh;
+  height: 6vh;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+`;
+
+export const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;

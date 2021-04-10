@@ -2,8 +2,10 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 
 import Dashboard from "../../components/Admin/Dashboard";
-import EditGames from "../../components/Admin/EditGames";
-import EditGame from "../../components/Admin/EditGame";
+
+import GameMenu from "../../components/Admin/Games/Menu";
+import EditGame from "../../components/Admin/Games/EditGame";
+
 import VideosMenu from "../../components/Admin/Videos/VideosMenu";
 import Categories from "../../components/Admin/Videos/Categories";
 import EditCategory from "../../components/Admin/Videos/EditCategory";
@@ -32,13 +34,11 @@ const Admin = () => {
       <Route exact path="/admin" component={Dashboard} />
       <Route
         path="/admin/games"
-        component={() => (
-          <EditGames gamesNames={gamesIDsRefs} messages={processInfoMessages} />
-        )}
+        component={() => <GameMenu gamesNames={gamesIDsRefs} />}
       />
       <Route
         exact
-        path="/admin/edit/game/:gameRef"
+        path="/admin/edit/game/:gameType/:gameId"
         component={() => <EditGame gamesNames={gamesIDsRefs} />}
       />
       <Route

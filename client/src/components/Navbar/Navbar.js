@@ -11,7 +11,11 @@ import {
   NavLink,
   NavBtn,
   NavBtnLink,
+  ImageWrapper,
+  Image,
 } from "./Navbar.elements";
+
+import flagEU from "../../assets/images/navbar/eu-flag.png";
 
 const Navbar = () => {
   const [click, setClick] = useState(false);
@@ -24,7 +28,9 @@ const Navbar = () => {
       <Nav>
         <NavbarContainer>
           <NavLogo to="/" onClick={closeMobileMenu}>
-            Navbar
+            <ImageWrapper>
+              <Image src={flagEU} alt={"flag-eu"} />
+            </ImageWrapper>
           </NavLogo>
           <MobileIcon onClick={handleClick}>
             {click ? <FaTimes /> : <FaBars />}
@@ -40,12 +46,9 @@ const Navbar = () => {
               <NavLink to="/book">Livro</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink to="/poll">Trabalhos</NavLink>
+              <NavLink to="/poll">Votações</NavLink>
             </NavItem>
           </NavMenu>
-          {/* <NavBtn>
-            <NavBtnLink>Sign In</NavBtnLink>
-          </NavBtn> */}
         </NavbarContainer>
       </Nav>
     </>

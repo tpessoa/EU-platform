@@ -43,7 +43,6 @@ export default Add;
 const AddButton = styled(Button)`
   && {
     font-size: 0.75rem;
-    margin: 0.3rem;
     background-color: #00a531;
     margin: 2rem;
 

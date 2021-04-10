@@ -1,16 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
 import { GiMagnifyingGlass } from "react-icons/gi";
 import { IoColorPaletteSharp } from "react-icons/io5";
 import { BsPuzzleFill } from "react-icons/bs";
 import { FaBrain, FaQuestion } from "react-icons/fa";
 
-import {
-  Container,
-  GamesItemsWrapper,
-  GameItem,
-  GameIcon,
-  GameName,
-} from "./TypeOfGames.elements";
+import GameIcon from "../GameIcon";
+
+import { Container, GamesItemsWrapper } from "./TypeOfGames.elements";
 
 const gamesList = [
   {
@@ -41,28 +39,28 @@ const gamesList = [
 ];
 
 const TypeOfGames = () => {
-  const [activeBtn, setActiveBtn] = useState(-1);
+  const [item, setItem] = useState(-1);
+  const location = useLocation();
 
-  const handleClick = (index) => {
-    setActiveBtn(index);
-  };
+  useEffect(() => {
+    const gameIndex = gamesList.findIndex(
+      (elem) => elem.url === location.pathname
+    );
+    setItem(gameIndex);
+  }, [location.pathname]);
 
   return (
     <Container>
       <GamesItemsWrapper>
-        {gamesList.map((game, index) => {
-          return (
-            <GameItem
-              to={game.url}
-              key={index}
-              onClick={() => handleClick(index)}
-              highlight={index == activeBtn ? "#ffcc00" : "transparent"}
-            >
-              <GameIcon>{game.icon}</GameIcon>
-              <GameName>{game.name}</GameName>
-            </GameItem>
-          );
-        })}
+        {gamesList.map((game, index) => (
+          <GameIcon
+            key={index}
+            game={game}
+            index={index}
+            itemActive={item}
+            setItem={setItem}
+          />
+        ))}
       </GamesItemsWrapper>
     </Container>
   );

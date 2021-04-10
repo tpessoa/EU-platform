@@ -1,12 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+
+import { TextFieldCustom } from "../Input.elements";
 
 import MenuItem from "@material-ui/core/MenuItem";
 
-import styled from "styled-components";
-import { TextFieldCustom } from "../Input.elements";
-
 const ListField = (props) => {
   const { arr, field_ref, label, value, parentChangeHandler } = props;
+
+  const [selected, setSelected] = useState("");
+
+  useEffect(() => {
+    setSelected(value);
+  }, []);
+
+  const changeHandler = (ev, field_ref) => {
+    const userInput = ev.target.value;
+    setSelected(userInput);
+    parentChangeHandler(userInput, field_ref);
+  };
+
   return (
     <Container>
       <TextFieldCustom
@@ -14,9 +27,8 @@ const ListField = (props) => {
         variant="outlined"
         select
         label={label}
-        // helperText={label}
-        value={value}
-        onChange={(ev) => parentChangeHandler(ev, field_ref)}
+        value={selected}
+        onChange={(ev) => changeHandler(ev, field_ref)}
       >
         {arr.map((item, index) => (
           <MenuItem key={index} value={index}>

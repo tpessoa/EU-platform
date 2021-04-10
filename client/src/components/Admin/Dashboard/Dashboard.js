@@ -1,35 +1,66 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { makeStyles } from "@material-ui/core/styles";
 import NavigationIcon from "@material-ui/icons/Navigation";
-import Fab from "@material-ui/core/Fab";
+import Button from "@material-ui/core/Button";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
-  extendedIcon: {
-    marginRight: theme.spacing(1),
-  },
-}));
+import { CgGames } from "react-icons/cg";
+import { RiVideoFill } from "react-icons/ri";
+
+import styled from "styled-components";
 
 const Dashboard = () => {
-  const classes = useStyles();
   return (
-    <div className={classes.root}>
-      <Fab variant="extended" component={Link} to={"/admin/games"}>
-        <NavigationIcon className={classes.extendedIcon} />
-        Gerir Jogos
-      </Fab>
-      <Fab variant="extended" component={Link} to={"/admin/videos/menu"}>
-        <NavigationIcon className={classes.extendedIcon} />
-        Gerir Vídeos
-      </Fab>
-    </div>
+    <Container>
+      <DashboardWrapper>
+        <ButtonCustom
+          variant="contained"
+          color="default"
+          endIcon={<CgGames />}
+          size="large"
+          component={Link}
+          to={"/admin/games"}
+        >
+          Gerir Jogos
+        </ButtonCustom>
+        <ButtonCustom
+          variant="contained"
+          color="default"
+          endIcon={<RiVideoFill />}
+          size="large"
+          component={Link}
+          to={"/admin/videos/menu"}
+        >
+          Gerir Vídeos
+        </ButtonCustom>
+      </DashboardWrapper>
+    </Container>
   );
 };
 
 export default Dashboard;
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DashboardWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 3rem;
+`;
+
+const ButtonWrapper = styled.div`
+  margin: 2rem;
+`;
+
+const ButtonCustom = styled(Button)`
+  && {
+    margin: 1rem;
+    border-radius: 1rem;
+  }
+`;
