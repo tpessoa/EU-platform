@@ -57,7 +57,6 @@ router.get("/game/:id", async (req, res) => {
 });
 
 router.post("/add/:gameName/:gameId", async (req, res) => {
-  console.log(req.body.obj);
   try {
     const {
       title,
@@ -67,7 +66,7 @@ router.post("/add/:gameName/:gameId", async (req, res) => {
       difficulty,
       config,
       assets,
-    } = req.body.obj;
+    } = req.body;
 
     const { gameName, gameId } = req.params;
     const newGame = new Games({

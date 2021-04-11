@@ -42,8 +42,11 @@ const Table = (props) => {
   const { availableGames } = props;
   const { game } = useParams();
   const gameObj = getGameTypeID(availableGames, game);
+  const editURL = `/admin/edit/game/${gameObj.game_ref_name}`;
+  const deleteURL = "/api/games";
+  const queryStringId = `${game}PartialInfo`;
 
-  const { isLoading, error, data } = useQuery("allGamesFromGameRef", () =>
+  const { isLoading, error, data } = useQuery(queryStringId, () =>
     axios(`/api/games/${gameObj.game_ref_id}`)
   );
 
@@ -52,18 +55,14 @@ const Table = (props) => {
 
   const rows = generateRows(data.data);
 
-  const deleteHandler = () => {
-    console.log("delete");
-  };
-
-  const editURL = `/admin/edit/game/${gameObj.game_ref_name}`;
   return (
     <>
       <ActionTable
         rows={rows}
         cols={cols}
         editURL={editURL}
-        setDeleteRow={deleteHandler}
+        deleteURL={deleteURL}
+        fetchQuery={queryStringId}
         video={false}
       />
       <AddGameWrapper>

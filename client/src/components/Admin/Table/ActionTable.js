@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+
 import { Link, useParams } from "react-router-dom";
+
 import styled from "styled-components";
 
 import EditButton from "../Buttons/Edit";
@@ -15,7 +17,15 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
 const ActionTable = (props) => {
-  const { rows, cols, editURL, onlineImage, setDeleteRow, video } = props;
+  const {
+    rows,
+    cols,
+    editURL,
+    deleteURL,
+    fetchQuery,
+    onlineImage,
+    video,
+  } = props;
 
   return (
     <Container>
@@ -52,29 +62,33 @@ const ActionTable = (props) => {
                 )}
 
                 <TableCell align="center">
-                  {row.actions.map((action, index) => {
-                    if (action === "Editar") {
-                      return (
-                        <EditButton
-                          url={editURL}
-                          objId={row.id}
-                          redirect={true}
-                          key={index}
-                        >
-                          {action}
-                        </EditButton>
-                      );
-                    } else if (action === "Eliminar") {
-                      return (
-                        <DeleteButton
-                          key={index}
-                          deleteHandler={() => setDeleteRow(row)}
-                        >
-                          {action}
-                        </DeleteButton>
-                      );
-                    }
-                  })}
+                  <ActionsWrapper>
+                    {row.actions.map((action, index) => {
+                      if (action === "Editar") {
+                        return (
+                          <EditButton
+                            url={editURL}
+                            objId={row.id}
+                            redirect={true}
+                            key={index}
+                          >
+                            {action}
+                          </EditButton>
+                        );
+                      } else if (action === "Eliminar") {
+                        return (
+                          <DeleteButton
+                            key={index}
+                            deleteURL={deleteURL}
+                            deleteObjId={row.id}
+                            fetchQuery={fetchQuery}
+                          >
+                            {action}
+                          </DeleteButton>
+                        );
+                      }
+                    })}
+                  </ActionsWrapper>
                 </TableCell>
               </TableRow>
             ))}
@@ -102,7 +116,11 @@ const TableCustom = styled(Table)`
   }
 `;
 
-const TableCellCustom = styled.div``;
+const ActionsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const TableHeadCustom = styled(TableHead)`
   && {

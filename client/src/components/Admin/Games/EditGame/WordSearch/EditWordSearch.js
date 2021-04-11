@@ -57,12 +57,9 @@ const EditWordSearch = (props) => {
     setConfig(tempConfig);
   };
 
-  const numberHandler = (ev, ref) => {
-    // console.log(ev.target.value);
-    // console.log(ref);
-
+  const numberHandler = (userInput, ref) => {
     const tempConfig = { ...config };
-    tempConfig[ref] = parseInt(ev.target.value);
+    tempConfig[ref] = parseInt(userInput);
     setConfig(tempConfig);
   };
 
@@ -152,7 +149,7 @@ const EditWordSearch = (props) => {
 
           <TimeValueCheckboxContainer>
             <NumberField
-              disabled={!config.timer}
+              disabled={!timerActive}
               field_ref={"time_to_complete"}
               label={"Tempo para completar o jogo (segundos)"}
               value={config.time_to_complete}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import { useMutation } from "react-query";
 
 import TextField from "../../../Input/TextField/TextFieldNew";
@@ -7,11 +8,23 @@ import ListField from "../../../Input/ListField";
 import NumberField from "../../../Input/NumberField";
 import ImageField from "../../ImageField";
 import SaveBtn from "../../Buttons/Save";
+import Loading from "../../../UI/Loading";
+import Error from "../../../UI/Error";
 
 import EditColorGame from "./ColorGame/EditColorGame";
+import EditPuzzle from "./Puzzle/EditPuzzle";
+import EditQuiz from "./Quiz/EditQuiz";
+import EditWordSearch from "./WordSearch/EditWordSearch";
 
 import Typography from "@material-ui/core/Typography";
-import axios from "axios";
+
+const generateArray = (min, max) => {
+  const tempArr = [];
+  for (let i = min; i <= max; i++) {
+    tempArr.push(i);
+  }
+  return tempArr;
+};
 
 const EditForm = (props) => {
   const { gamesNames, fields, game, createGame } = props;
@@ -25,8 +38,6 @@ const EditForm = (props) => {
     assets,
     id,
   } = fields;
-
-  console.log(fields);
 
   const [curConfig, setCurConfig] = useState(config);
   const [curAssets, setCurAssets] = useState(assets);
@@ -46,6 +57,44 @@ const EditForm = (props) => {
         assetsTitle={assetsTitle}
       />
     );
+  } else if (game === "puzzle") {
+    displayGameEdit = (
+      <EditPuzzle
+        createGame={createGame}
+        config={curConfig}
+        assets={curAssets}
+        setConfig={setCurConfig}
+        setAssets={setCurAssets}
+        configTitle={configTitle}
+        assetsTitle={assetsTitle}
+      />
+    );
+  } else if (game === "quiz") {
+    displayGameEdit = (
+      <EditQuiz
+        generateArray={generateArray}
+        createGame={createGame}
+        config={curConfig}
+        assets={curAssets}
+        setConfig={setCurConfig}
+        setAssets={setCurAssets}
+        configTitle={configTitle}
+        assetsTitle={assetsTitle}
+      />
+    );
+  } else if (game === "wordSearch") {
+    displayGameEdit = (
+      <EditWordSearch
+        createGame={createGame}
+        config={curConfig}
+        assets={curAssets}
+        setConfig={setCurConfig}
+        setAssets={setCurAssets}
+        configTitle={configTitle}
+        assetsTitle={"Images do Jogo"}
+      />
+    );
+  } else if (game === "memory") {
   }
 
   const inputChangeHandler = (userInput, ref) => {
@@ -59,7 +108,6 @@ const EditForm = (props) => {
     }
   };
 
-  let displaySave = "";
   let URL_str = "";
   if (createGame) {
     const gameObj = gamesNames.find((elem) => elem.game_ref_name === game);
@@ -78,6 +126,17 @@ const EditForm = (props) => {
 
     mutation.mutate(newObj);
   };
+
+  let displaySave = "";
+  if (mutation.isSuccess) {
+    displaySave = <p>sucesso</p>;
+  } else if (mutation.isLoading) {
+    displaySave = <Loading />;
+  } else if (mutation.isError) {
+    displaySave = <Error error={mutation.error} />;
+  } else {
+    displaySave = <SaveBtn clickHandler={performSave}>Guardar</SaveBtn>;
+  }
 
   return (
     <Container>
@@ -129,11 +188,10 @@ const EditForm = (props) => {
             parentChangeHandler={inputChangeHandler}
           />
         </ListWrapper>
-
         {/* SPECIFIC GAME SELECTION */}
         {displayGameEdit}
       </Wrapper>
-      <SaveBtn clickHandler={performSave}>Guardar</SaveBtn>
+      {displaySave}
     </Container>
   );
 };

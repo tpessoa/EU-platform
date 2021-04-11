@@ -86,12 +86,12 @@ const EditGame = (props) => {
     });
   }
 
-  const numberHandler = (ev, ref) => {
+  const numberHandler = (userInput, ref) => {
     // console.log(ev.target.value);
     // console.log(ref);
 
     const tempConfig = { ...config };
-    tempConfig[ref] = parseInt(ev.target.value);
+    tempConfig[ref] = parseInt(userInput);
     setConfig(tempConfig);
   };
 
@@ -124,7 +124,7 @@ const EditGame = (props) => {
 
         <TimeValueCheckboxContainer>
           <NumberField
-            disabled={!config.timer}
+            disabled={!timerActive}
             field_ref={"time_to_resp_question"}
             label={"Tempo para responder a cada questão (segundos)"}
             value={config.time_to_resp_question}

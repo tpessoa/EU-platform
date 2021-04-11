@@ -15,9 +15,11 @@ const EditGame = (props) => {
 
   const fetchDataFlag = gameId.toString() !== "createNew";
   const { isLoading, isError, error, data } = useQuery(
-    "getGameInfoById",
+    `get${gameId}InfoById"`,
     () => axios(`/api/games/game/${gameId}`),
-    { enabled: fetchDataFlag }
+    {
+      enabled: fetchDataFlag,
+    }
   );
   if (isLoading) return <Loading />;
   if (isError) return <Error error={error} />;

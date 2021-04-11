@@ -21,12 +21,13 @@ const EditPuzzle = (props) => {
   const {
     createGame,
     config,
-    setConfig,
     assets,
+    setConfig,
     setAssets,
     configTitle,
     assetsTitle,
   } = props;
+
   const [loadedCompleted, setLoadedCompleted] = useState(false);
 
   useEffect(() => {
@@ -37,11 +38,11 @@ const EditPuzzle = (props) => {
     setLoadedCompleted(true);
   }, []);
 
-  const textHandler = (ev, ref) => {
+  const textHandler = (userInput, ref) => {
     // console.log(ev.target.value);
     // console.log(ref);
     const tempConfig = { ...config };
-    tempConfig[ref] = parseInt(ev.target.value);
+    tempConfig[ref] = parseInt(userInput);
     setConfig(tempConfig);
   };
 

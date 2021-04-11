@@ -5,7 +5,7 @@ const Error = (props) => {
   const { error } = props;
   return (
     <Container>
-      <h1>Erro, {error.message}</h1>
+      <p>Erro, {error.message}</p>
     </Container>
   );
 };
