@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useMutation } from "react-query";
+import { useHistory } from "react-router-dom";
 
 import TextField from "../../../Input/TextField/TextFieldNew";
 import ListField from "../../../Input/ListField";
@@ -109,8 +110,8 @@ const EditForm = (props) => {
   };
 
   let URL_str = "";
+  const gameObj = gamesNames.find((elem) => elem.game_ref_name === game);
   if (createGame) {
-    const gameObj = gamesNames.find((elem) => elem.game_ref_name === game);
     URL_str = `/api/games/add/${game}/${gameObj.game_ref_id}`;
   } else {
     URL_str = `/api/games/${game}/${fields.id}`;
@@ -128,21 +129,23 @@ const EditForm = (props) => {
   };
 
   let displaySave = "";
-  if (mutation.isSuccess) {
-    displaySave = <p>sucesso</p>;
-  } else if (mutation.isLoading) {
+  if (mutation.isLoading) {
     displaySave = <Loading />;
   } else if (mutation.isError) {
     displaySave = <Error error={mutation.error} />;
   } else {
-    displaySave = <SaveBtn clickHandler={performSave}>Guardar</SaveBtn>;
+    displaySave = (
+      <SaveBtn clickHandler={performSave} saved={mutation.isSuccess}>
+        Guardar
+      </SaveBtn>
+    );
   }
 
   return (
     <Container>
       <Wrapper>
         <Typography variant="h6" gutterBottom>
-          Editar Jogo
+          {`Editar ${gameObj.game_name}`}
         </Typography>
         <TextField
           field_ref={"title"}

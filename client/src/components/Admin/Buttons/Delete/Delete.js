@@ -8,24 +8,19 @@ import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
 
 const Delete = (props) => {
-  const { deleteObjId, deleteURL, fetchQuery } = props;
+  const { deleteURL, fetchQuery } = props;
   const queryClient = new useQueryClient();
 
-  const mutation = useMutation(
-    (objId) => axios.delete(`${deleteURL}/${objId}2`),
-    {
-      onSuccess: () => queryClient.invalidateQueries(fetchQuery),
-    }
-  );
+  const mutation = useMutation(() => axios.delete(`${deleteURL}`), {
+    onSuccess: () => queryClient.invalidateQueries(fetchQuery),
+  });
 
   const deleteHandler = () => {
-    mutation.mutate(deleteObjId);
+    mutation.mutate();
   };
 
   let display = "";
-  if (mutation.isSuccess) {
-    display = <p>sucesso</p>;
-  } else if (mutation.isError) {
+  if (mutation.isError) {
     display = <Error error={mutation.error} />;
   } else if (mutation.isLoading) {
     display = <Loading />;

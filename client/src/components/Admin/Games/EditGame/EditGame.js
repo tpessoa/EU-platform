@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useHistory, Redirect } from "react-router-dom";
-import { useQuery, useLazyQuery } from "react-query";
+import { useQuery } from "react-query";
 import axios from "axios";
 import styled from "styled-components";
 

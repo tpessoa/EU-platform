@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import MenuItem from "@material-ui/core/MenuItem";
@@ -16,6 +16,12 @@ const ListField = (props) => {
     objElem,
     redirectURL,
   } = props;
+
+  const [selected, setSelected] = useState("");
+
+  useEffect(() => {
+    setSelected(value);
+  }, []);
 
   let displayItems = "";
   if (redirectURL) {
@@ -40,6 +46,11 @@ const ListField = (props) => {
     ));
   }
 
+  const changeHandler = (userInput, field_ref) => {
+    setSelected(userInput);
+    parentChangeHandler(userInput, field_ref);
+  };
+
   return (
     <Container>
       <TextFieldCustom
@@ -47,8 +58,8 @@ const ListField = (props) => {
         variant="outlined"
         select
         label={label}
-        value={value}
-        onChange={(ev) => parentChangeHandler(ev.target.value, field_ref)}
+        value={selected}
+        onChange={(ev) => changeHandler(ev.target.value, field_ref)}
       >
         {displayItems}
       </TextFieldCustom>

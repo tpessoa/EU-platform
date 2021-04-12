@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useQuery } from "react-query";
 import { useParams, Redirect } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
@@ -6,132 +7,58 @@ import styled from "styled-components";
 import TextInput from "../../../Input/TextField/TextFieldNew";
 import ImageField from "../../ImageField";
 import Save from "../../Buttons/Save";
-import Back from "../../Buttons/Back";
+import BackBtn from "../../Buttons/Back";
+
+import Loading from "../../../UI/Loading";
+import Error from "../../../UI/Error";
+
+import EditForm from "./EditForm";
 
 const EditCategory = () => {
   const { catId } = useParams();
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [thumbnail, setThumbnail] = useState({
-    id: "defaultImage",
-    path: "",
-    server_path: "",
-  });
-
-  const [createGame, setCreateGame] = useState(null);
-  const [redirect, setRedirect] = useState(false);
-
-  useEffect(() => {
-    if (catId === "createNew") {
-      setCreateGame(true);
-    } else {
-      setCreateGame(false);
-      axios
-        .get(`/api/videos/categories/${catId}`)
-        .then(function (res) {
-          // console.log(res.data);
-          setTitle(res.data.title);
-          setDescription(res.data.description);
-          setThumbnail(res.data.thumbnail);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+  const fetchDataFlag = catId.toString() !== "createNew";
+  const { isLoading, isError, error, data } = useQuery(
+    `get${catId}Info"`,
+    () => axios(`/api/videos/categories/${catId}`),
+    {
+      enabled: fetchDataFlag,
     }
-  }, [catId]);
+  );
 
-  const textChangeHandler = (userInput, ref) => {
-    if (ref === "title") {
-      setTitle(userInput);
-    } else if (ref === "description") {
-      setDescription(userInput);
-    }
-  };
+  if (isLoading) return <Loading />;
+  if (isError) return <Error error={error} />;
 
-  const imageChangeHandler = (obj, ref) => {
-    setThumbnail({ ...obj });
-  };
+  let gameObj = {};
+  if (fetchDataFlag) {
+    const tempObj = { ...data.data };
+    const { title, description, thumbnail, _id } = tempObj;
 
-  const performSave = (ev) => {
-    console.log("saving");
-    ev.preventDefault();
-    // mount object to send to database
-    const categorieObj = {
-      category_ref_id: 1,
-      category_ref_name: "video",
+    gameObj = {
       title: title,
       description: description,
       thumbnail: thumbnail,
+      id: _id,
     };
-    console.log(categorieObj);
-
-    // validate the params
-
-    let URL_str = "";
-    if (createGame) {
-      URL_str = `/api/videos/categories/add`;
-    } else {
-      URL_str = `/api/videos/categories/${catId}`;
-    }
-
-    // post them to database
-    axios
-      .post(URL_str, { obj: categorieObj })
-      .then(function (res) {
-        console.log(res.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    // display feedback
-    setRedirect(true);
-  };
-
-  let displayRedirect = "";
-  if (redirect) {
-    let stateObj = {};
-    if (createGame) {
-      stateObj = { info: "success", message: "Categoria criada com sucesso" };
-      // stateObj ={ info: "error", message: "Ocorreu um erro ao criar a categoria" }
-    } else {
-      stateObj = { info: "success", message: "Categoria alterada com sucesso" };
-      // stateObj ={ info: "error", message: "Ocorreu um erro ao alterar a categoria" }
-    }
-    displayRedirect = (
-      <Redirect
-        to={{
-          pathname: "/admin/videoCategories",
-          state: stateObj,
-        }}
-      />
-    );
+  } else {
+    gameObj = {
+      title: "",
+      description: "",
+      thumbnail: {
+        id: "defaultImage",
+        path: "",
+        server_path: "",
+      },
+      id: null,
+    };
   }
 
   return (
     <Container>
       <EditWrapper>
-        <Back url={"/admin/videoCategories"}>Voltar</Back>
-        <TextInput
-          field_ref={"title"}
-          label={"Título"}
-          value={title}
-          parentChangeHandler={textChangeHandler}
-        />
-        <TextInput
-          field_ref={"description"}
-          label={"Descrição"}
-          value={description}
-          parentChangeHandler={textChangeHandler}
-        />
-        <ImageField
-          field_ref={"thumbnail"}
-          imageObj={thumbnail}
-          parentChangeHandler={imageChangeHandler}
-        />
-        <Save clickHandler={performSave}>Guardar</Save>
+        <BackBtn>Voltar</BackBtn>
+        <EditForm fields={gameObj} createCategory={!fetchDataFlag} />
       </EditWrapper>
-      {displayRedirect}
     </Container>
   );
 };

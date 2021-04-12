@@ -58,12 +58,12 @@ const Table = (props) => {
   return (
     <>
       <ActionTable
+        video={false}
         rows={rows}
         cols={cols}
         editURL={editURL}
         deleteURL={deleteURL}
         fetchQuery={queryStringId}
-        video={false}
       />
       <AddGameWrapper>
         <AddGame url={editURL} objId={"createNew"}>

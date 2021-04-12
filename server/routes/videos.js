@@ -69,15 +69,15 @@ router.get("/categories/:id", async (req, res) => {
  * Create category (video or poll) by ID
  */
 router.post("/categories/add", async (req, res) => {
-  const {
-    category_ref_id,
-    category_ref_name,
-    title,
-    description,
-    thumbnail,
-  } = req.body.obj;
-
   try {
+    const {
+      category_ref_id,
+      category_ref_name,
+      title,
+      description,
+      thumbnail,
+    } = req.body;
+
     const newCategory = new Categories({
       game_ref_id: category_ref_id,
       game_ref_name: category_ref_name,
@@ -97,9 +97,8 @@ router.post("/categories/add", async (req, res) => {
  * Update category (video or poll) by ID
  */
 router.post("/categories/:id", async (req, res) => {
-  const { title, description, thumbnail } = req.body.obj;
-
   try {
+    const { title, description, thumbnail } = req.body;
     let category = await Categories.findOne({ _id: req.params.id });
     category.title = title;
     category.description = description;
@@ -157,9 +156,8 @@ router.get("/video/:id", async (req, res) => {
  * Create video
  */
 router.post("/video/add", async (req, res) => {
-  const { categoryId, title, description, url } = req.body.obj;
-
   try {
+    const { categoryId, title, description, url } = req.body;
     const newVideo = new Videos({
       category_id: categoryId,
       title: title,
@@ -178,9 +176,8 @@ router.post("/video/add", async (req, res) => {
  * Update video by ID
  */
 router.post("/video/:id", async (req, res) => {
-  const { categoryId, title, description, url } = req.body.obj;
-
   try {
+    const { categoryId, title, description, url } = req.body;
     let video = await Videos.findOne({ _id: req.params.id });
     video.category_id = categoryId;
     video.title = title;

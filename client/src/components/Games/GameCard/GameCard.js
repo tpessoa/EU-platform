@@ -2,6 +2,8 @@ import React from "react";
 import { Link as LinkScroll } from "react-scroll";
 import { FaPlay } from "react-icons/fa";
 
+import DefaultImage from "../../../assets/images/defaultImage.jpg";
+
 import {
   Container,
   Card,
@@ -35,10 +37,14 @@ const GameCard = (props) => {
             }}
           >
             <ImgWrapper>
-              <Img
-                src={gameInfo.thumbnail.path + gameInfo.thumbnail.server_path}
-                alt={gameInfo.thumbnail.id}
-              />
+              {gameInfo.thumbnail.id === "defaultImage" ? (
+                <Img src={DefaultImage} alt={gameInfo.thumbnail.id} />
+              ) : (
+                <Img
+                  src={gameInfo.thumbnail.path + gameInfo.thumbnail.server_path}
+                  alt={gameInfo.thumbnail.id}
+                />
+              )}
             </ImgWrapper>
             <ContentWrapper>
               <ContentTop>

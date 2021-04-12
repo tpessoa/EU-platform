@@ -5,9 +5,14 @@ import styled from "styled-components";
 import Button from "@material-ui/core/Button";
 
 const Save = (props) => {
-  const { clickHandler } = props;
+  const { clickHandler, saved } = props;
   return (
-    <SaveButton variant="contained" color="primary" onClick={clickHandler}>
+    <SaveButton
+      variant="contained"
+      color="primary"
+      onClick={clickHandler}
+      disabled={saved}
+    >
       {props.children}
     </SaveButton>
   );
