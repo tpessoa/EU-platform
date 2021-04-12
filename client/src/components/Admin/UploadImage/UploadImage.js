@@ -13,7 +13,7 @@ const Upload = (props) => {
   const { linkedObj, inputRef, fetchQuery, setImage } = props;
   const queryClient = new useQueryClient();
 
-  const [file, setFile] = useState("");
+  const [file, setFile] = useState(null);
 
   const URL_str = `/api/upload/gameImage/${linkedObj}/${inputRef}`;
   const config = {
@@ -34,10 +34,12 @@ const Upload = (props) => {
   const onFormSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("image", file);
+    if (file) {
+      const formData = new FormData();
+      formData.append("image", file);
 
-    mutation.mutate(formData);
+      mutation.mutate(formData);
+    }
   };
 
   let displayUpload = "";

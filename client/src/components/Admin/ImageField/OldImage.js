@@ -10,7 +10,7 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 const OldImage = (props) => {
-  const { imageId, imageURL, fetchQuery } = props;
+  const { imageId, imageURL, fetchQuery, setImage } = props;
   const queryClient = new useQueryClient();
 
   const imageNameSplitted = imageURL.split("/");
@@ -38,7 +38,9 @@ const OldImage = (props) => {
 
   return (
     <Container>
-      <ImageNameWrapper>{imageName}</ImageNameWrapper>
+      <ImageNameWrapper onClick={() => setImage(imageId)}>
+        {imageName}
+      </ImageNameWrapper>
       <RemoveWrapper>
         <IconButton aria-label="delete" onClick={deleteHandler}>
           <DeleteIcon />
@@ -67,6 +69,7 @@ const ImageNameWrapper = styled.div`
   width: 85%;
   margin-left: 1rem;
   min-width: 10rem;
+  cursor: pointer;
 `;
 
 const RemoveWrapper = styled.div`

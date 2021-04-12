@@ -4,9 +4,6 @@ import { useParams, Redirect } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
-import TextInput from "../../../Input/TextField/TextFieldNew";
-import ImageField from "../../ImageField";
-import Save from "../../Buttons/Save";
 import BackBtn from "../../Buttons/Back";
 
 import Loading from "../../../UI/Loading";
@@ -18,8 +15,9 @@ const EditCategory = () => {
   const { catId } = useParams();
 
   const fetchDataFlag = catId.toString() !== "createNew";
+  const fetchQuery = `get${catId}Info`;
   const { isLoading, isError, error, data } = useQuery(
-    `get${catId}Info"`,
+    fetchQuery,
     () => axios(`/api/videos/categories/${catId}`),
     {
       enabled: fetchDataFlag,
@@ -57,7 +55,11 @@ const EditCategory = () => {
     <Container>
       <EditWrapper>
         <BackBtn>Voltar</BackBtn>
-        <EditForm fields={gameObj} createCategory={!fetchDataFlag} />
+        <EditForm
+          fields={gameObj}
+          createCategory={!fetchDataFlag}
+          fetchQuery={fetchQuery}
+        />
       </EditWrapper>
     </Container>
   );

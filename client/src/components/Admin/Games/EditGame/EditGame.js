@@ -14,8 +14,9 @@ const EditGame = (props) => {
   const { gameType, gameId } = useParams();
 
   const fetchDataFlag = gameId.toString() !== "createNew";
+  const fetchQuery = `get${gameId}InfoById"`;
   const { isLoading, isError, error, data } = useQuery(
-    `get${gameId}InfoById"`,
+    fetchQuery,
     () => axios(`/api/games/game/${gameId}`),
     {
       enabled: fetchDataFlag,
@@ -64,6 +65,9 @@ const EditGame = (props) => {
       id: null,
     };
   }
+
+  console.log(data.data);
+
   return (
     <Container>
       <BackBtn>Voltar</BackBtn>
@@ -72,6 +76,7 @@ const EditGame = (props) => {
         fields={gameObj}
         game={gameType}
         createGame={!fetchDataFlag}
+        fetchQuery={fetchQuery}
       />
     </Container>
   );

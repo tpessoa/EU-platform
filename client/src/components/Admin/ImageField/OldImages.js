@@ -8,7 +8,7 @@ import Error from "../../UI/Error";
 import OldImage from "./OldImage";
 
 const OldImages = (props) => {
-  const { linkedObj, inputRef, fetchQuery } = props;
+  const { linkedObj, inputRef, fetchQuery, setImage } = props;
 
   const { isLoading, isError, error, data } = useQuery(fetchQuery, () =>
     axios(`/api/upload/images/${linkedObj}`)
@@ -24,6 +24,11 @@ const OldImages = (props) => {
     }
   });
 
+  const setImageObj = (imageId) => {
+    const imageObj = inputRefImagesArr.find((image) => image._id === imageId);
+    setImage(imageObj.image);
+  };
+
   return (
     <Container>
       <p>Imagens antigas</p>
@@ -35,6 +40,7 @@ const OldImages = (props) => {
               imageId={obj._id}
               imageURL={obj.image.server_path}
               fetchQuery={fetchQuery}
+              setImage={setImageObj}
             />
           );
         })}

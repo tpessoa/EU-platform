@@ -24,8 +24,7 @@ const ImageField = (props) => {
     <Container>
       <AtualImageContainer>
         <p>{title}</p>
-        {/* {image && <Card imageObj={image} />} */}
-        {<Card imageObj={image} />}
+        <Card imageObj={image} />
         <UploadImage
           linkedObj={linkedObj}
           inputRef={field_ref}
@@ -38,6 +37,7 @@ const ImageField = (props) => {
           linkedObj={linkedObj}
           inputRef={field_ref}
           fetchQuery={fetchQuery}
+          setImage={changeImageHandler}
         />
       </OldImagesContainer>
     </Container>

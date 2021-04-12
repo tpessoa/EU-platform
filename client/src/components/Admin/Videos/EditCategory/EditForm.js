@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 import TextField from "../../../Input/TextField/TextFieldNew";
 import ImageField from "../../ImageField";
@@ -14,7 +14,7 @@ import Typography from "@material-ui/core/Typography";
 const EditForm = (props) => {
   const { fields, createCategory } = props;
 
-  const { title, description, thumbnail, id } = fields;
+  const { title, description, thumbnail, id, fetchQuery } = fields;
 
   const inputChangeHandler = (userInput, ref) => {
     // console.log(userInput);
@@ -28,7 +28,10 @@ const EditForm = (props) => {
   } else {
     URL_str = `/api/videos/categories/${id}`;
   }
-  const mutation = useMutation((obj) => axios.post(URL_str, obj));
+  const queryClient = new useQueryClient();
+  const mutation = useMutation((obj) => axios.post(URL_str, obj), {
+    onSettled: () => queryClient.invalidateQueries(fetchQuery),
+  });
 
   const performSave = () => {
     const newObj = { ...fields };

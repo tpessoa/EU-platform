@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useHistory } from "react-router-dom";
 
 import TextField from "../../../Input/TextField/TextFieldNew";
@@ -28,7 +28,7 @@ const generateArray = (min, max) => {
 };
 
 const EditForm = (props) => {
-  const { gamesNames, fields, game, createGame } = props;
+  const { gamesNames, fields, game, createGame, fetchQuery } = props;
   const {
     title,
     description,
@@ -99,8 +99,8 @@ const EditForm = (props) => {
   }
 
   const inputChangeHandler = (userInput, ref) => {
-    console.log(userInput);
-    console.log(ref);
+    // console.log(userInput);
+    // console.log(ref);
     if (ref.includes("age")) {
       const age_type = ref.split("_")[1];
       fields.age[age_type] = userInput;
@@ -116,7 +116,11 @@ const EditForm = (props) => {
   } else {
     URL_str = `/api/games/${game}/${fields.id}`;
   }
-  const mutation = useMutation((obj) => axios.post(URL_str, obj));
+
+  const queryClient = new useQueryClient();
+  const mutation = useMutation((obj) => axios.post(URL_str, obj), {
+    onSuccess: () => queryClient.invalidateQueries(fetchQuery),
+  });
 
   const performSave = () => {
     const newObj = { ...fields };
@@ -124,6 +128,8 @@ const EditForm = (props) => {
     newObj.assets = { ...curAssets };
 
     console.log(newObj);
+
+    // validate fields
 
     mutation.mutate(newObj);
   };

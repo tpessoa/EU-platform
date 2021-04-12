@@ -29,6 +29,9 @@ const Footer = () => {
 export default Footer;
 
 export const Container = styled.footer`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #101522;
 `;
 
