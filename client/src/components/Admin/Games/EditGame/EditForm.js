@@ -99,8 +99,8 @@ const EditForm = (props) => {
   }
 
   const inputChangeHandler = (userInput, ref) => {
-    // console.log(userInput);
-    // console.log(ref);
+    console.log(userInput);
+    console.log(ref);
     if (ref.includes("age")) {
       const age_type = ref.split("_")[1];
       fields.age[age_type] = userInput;
@@ -160,9 +160,11 @@ const EditForm = (props) => {
           parentChangeHandler={inputChangeHandler}
         />
         <ImageField
+          title={`Thumbnail do jogo`}
           field_ref={"thumbnail"}
           imageObj={thumbnail}
           parentChangeHandler={inputChangeHandler}
+          linkedObj={id}
         />
         <AgeContainer>
           <AgeWrapper>

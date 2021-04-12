@@ -4,9 +4,6 @@ import { useQuery } from "react-query";
 import axios from "axios";
 import styled from "styled-components";
 
-import ListField from "../../../Input/ListField/ListFielNew";
-import TextInput from "../../../Input/TextField/TextFieldNew";
-import Save from "../../Buttons/Save";
 import Back from "../../Buttons/Back";
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
@@ -81,6 +78,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  min-height: 60vh;
 `;
 
 const EditWrapper = styled.div`

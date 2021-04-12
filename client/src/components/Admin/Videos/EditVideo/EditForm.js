@@ -12,7 +12,7 @@ import Error from "../../../UI/Error";
 import Typography from "@material-ui/core/Typography";
 
 const EditForm = (props) => {
-  const { fields, categories, createCategory } = props;
+  const { fields, categories, createVideo } = props;
 
   const { categoryId, title, description, url, id } = fields;
 
@@ -25,7 +25,7 @@ const EditForm = (props) => {
   };
 
   let URL_str = "";
-  if (createCategory) {
+  if (createVideo) {
     URL_str = `/api/videos/video/add`;
   } else {
     URL_str = `/api/videos/video/${id}`;
@@ -52,6 +52,10 @@ const EditForm = (props) => {
     );
   }
 
+  const getCategoryIdPos = categories.findIndex(
+    (elem) => elem._id === categoryId
+  );
+
   return (
     <Container>
       <Wrapper>
@@ -64,7 +68,7 @@ const EditForm = (props) => {
             field_ref={"categoryId"}
             arr={categories}
             objElem={"title"}
-            value={categoryId}
+            value={getCategoryIdPos}
             parentChangeHandler={inputChangeHandler}
           />
         </CategoryWrapper>

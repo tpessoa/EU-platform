@@ -70,6 +70,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  min-height: 60vh;
 `;
 
 const EditWrapper = styled.div`

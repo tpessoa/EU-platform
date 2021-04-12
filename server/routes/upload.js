@@ -3,7 +3,8 @@ const multer = require("multer");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 
-let Games = require("../models/games.model");
+const Games = require("../models/games.model");
+const Images = require("../models/images.model");
 
 const removeFile = (path) => {
   fs.unlink(path, (err) => {
@@ -57,24 +58,31 @@ const uploadGames = multer({
   fileFilter: fileFilter,
 });
 
+/**
+ * Upload a image to server and keep a reference to that in the database
+ */
 router.post(
-  "/gameImage",
-  uploadGames.single("image"),
+  "/gameImage/:linkedObjId/:inputRef",
+  upload.single("image"),
   async (req, res, next) => {
-    if (req.file == null) {
-      return res.send("Imagem inválida");
-    }
-
-    const tempObj = {
-      id: uuidv4(),
-      path: "/api/", // this is needed for loading the image
-      server_path: req.file.path,
-    };
-
-    // save to collection of images with the respective game reference
-
     try {
-      let game = await Games.findOne({ _id: req.params.id });
+      if (req.file == null) {
+        return res.send("Imagem inválida");
+      }
+      const tempObj = {
+        id: uuidv4(),
+        path: "/api/", // this is needed for loading the image
+        server_path: req.file.path,
+      };
+
+      // save to collection of images with the respective game reference
+      const newImage = new Images({
+        image: tempObj,
+        linked_obj_id: req.params.linkedObjId,
+        input_ref: req.params.inputRef,
+      });
+      await newImage.save();
+
       res.send({ img: tempObj });
     } catch (e) {
       removeFile(req.file.path);
@@ -82,5 +90,41 @@ router.post(
     }
   }
 );
+
+/**
+ * get images by the respective linked object
+ */
+router.get("/images/:linkedObjId", async (req, res) => {
+  try {
+    const imagesArr = await Images.find({
+      linked_obj_id: req.params.linkedObjId,
+    });
+    res.send(imagesArr);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+/**
+ * Delete image by ID
+ */
+router.delete("/images/:id", async (req, res) => {
+  try {
+    // delete in the server
+    console.log(req.params.id);
+    console.log(req.body.imgServerPath);
+
+    // variables sanitizer #TODO
+    const path = req.body.imgServerPath;
+    fs.unlinkSync(path);
+
+    // delete in the DB
+    let deletedImage = await Images.deleteOne({ _id: req.params.id });
+    console.log(deletedImage);
+    res.send(deletedImage);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
 
 module.exports = router;

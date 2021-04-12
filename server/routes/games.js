@@ -56,7 +56,7 @@ router.get("/game/:id", async (req, res) => {
   }
 });
 
-router.post("/add/:gameName/:gameId", async (req, res) => {
+router.post("/add/:gameName/:gameRefId", async (req, res) => {
   try {
     const {
       title,
@@ -68,9 +68,9 @@ router.post("/add/:gameName/:gameId", async (req, res) => {
       assets,
     } = req.body;
 
-    const { gameName, gameId } = req.params;
+    const { gameName, gameRefId } = req.params;
     const newGame = new Games({
-      game_ref_id: gameId,
+      game_ref_id: gameRefId,
       game_ref_name: gameName,
       title: title,
       description: description,

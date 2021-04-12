@@ -52,7 +52,6 @@ const Categories = () => {
   if (isLoading) return <Loading />;
   if (isError) return <Error error={error} />;
 
-  console.log(data.data);
   const rows = generateRows(data.data);
 
   return (

@@ -30,9 +30,9 @@ export default Menu;
 const Container = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
   width: 100%;
+  min-height: 60vh;
 `;
 
 const SelectGameWrapper = styled.div`
