@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-import TextField from "../../../../Input/TextField";
+import TextField from "../../../../Input/TextField/TextFieldNew";
 import ListField from "../../../../Input/ListField";
 
 import Accordion from "@material-ui/core/Accordion";
@@ -80,11 +80,11 @@ const QuizQuestionForm = (props) => {
     }
   }, [questionInfo]);
 
-  const textChange = (ev, ref) => {
-    const userInput = ev.target.value;
+  const textChange = (userInput, ref) => {
+    // const userInput = ev.target.value;
     const tempQuestionObj = { ...currQuestObj };
-    // console.log(ref);
-    // console.log(userInput);
+    console.log(ref);
+    console.log(userInput);
     if (ref.includes("answer")) {
       tempQuestionObj.answers[ref] = userInput;
     } else if (ref.includes("audio")) {

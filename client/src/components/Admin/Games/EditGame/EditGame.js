@@ -66,8 +66,6 @@ const EditGame = (props) => {
     };
   }
 
-  console.log(data.data);
-
   return (
     <Container>
       <BackBtn>Voltar</BackBtn>

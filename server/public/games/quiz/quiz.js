@@ -876,12 +876,11 @@ class Quiz extends Phaser.Scene {
   }
 
   setAnswer(container, answersObj) {
-    // console.log(answersObj);
     var answers_arr_counter = 1;
     for (let i = 0; i < container.list.length; i++) {
       if (container.list[i].getData("text_type") == "Answer") {
         const answerChildObj = "answer" + answers_arr_counter;
-        container.list[i].setText(answersObj[answerObj]);
+        container.list[i].setText(answersObj[answerChildObj]);
         answers_arr_counter++;
       }
     }

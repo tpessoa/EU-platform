@@ -6,7 +6,7 @@ import rightImage from "../../assets/images/footer/eu-flag.png";
 
 const Footer = () => {
   return (
-    <Container>
+    <Container id="scrollToFooter">
       <Wrapper>
         <RightContainer>
           <ImageWrapperRight>
