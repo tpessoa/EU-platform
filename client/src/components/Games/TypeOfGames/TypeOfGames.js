@@ -5,6 +5,7 @@ import { GiMagnifyingGlass } from "react-icons/gi";
 import { IoColorPaletteSharp } from "react-icons/io5";
 import { BsPuzzleFill } from "react-icons/bs";
 import { FaBrain, FaQuestion } from "react-icons/fa";
+import { FcGlobe } from "react-icons/fc";
 
 import GameIcon from "../GameIcon";
 
@@ -31,11 +32,16 @@ const gamesList = [
     icon: <FaQuestion />,
     name: "Quiz",
   },
-  // {
-  //   url: "/games/allMemoryGames",
-  //   icon: <FaBrain />,
-  //   name: "Memória",
-  // },
+  {
+    url: "/games/memoryGame",
+    icon: <FaBrain />,
+    name: "Memória",
+  },
+  {
+    url: "/games/interactiveMaps",
+    icon: <FcGlobe />,
+    name: "Mapas Interativos",
+  },
 ];
 
 const TypeOfGames = () => {

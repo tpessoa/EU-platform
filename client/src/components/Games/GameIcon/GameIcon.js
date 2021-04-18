@@ -46,5 +46,6 @@ export const Icon = styled.div`
 `;
 
 export const Title = styled.div`
+  margin-top: 0.5rem;
   text-align: center;
 `;

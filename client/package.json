@@ -26,6 +26,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "react-scroll": "^1.8.2",
+    "react-simple-maps": "^2.3.0",
+    "react-tooltip": "^4.2.17",
     "styled-components": "^5.2.1",
     "web-vitals": "^0.2.4"
   },

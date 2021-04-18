@@ -19,6 +19,16 @@ export const gamesIDsRefs = [
     game_ref_name: "wordSearch",
     game_name: "Sopa de Letras",
   },
+  {
+    game_ref_id: 5,
+    game_ref_name: "memoryGame",
+    game_name: "Jogo de Memória",
+  },
+  {
+    game_ref_id: 6,
+    game_ref_name: "interactiveMaps",
+    game_name: "Mapas Interativos",
+  },
 ];
 
 export const processInfoMessages = {
