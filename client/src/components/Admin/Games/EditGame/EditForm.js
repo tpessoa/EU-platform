@@ -16,6 +16,7 @@ import EditColorGame from "./ColorGame/EditColorGame";
 import EditPuzzle from "./Puzzle/EditPuzzle";
 import EditQuiz from "./Quiz/EditQuiz";
 import EditWordSearch from "./WordSearch/EditWordSearch";
+import EditInteractiveMaps from "./InteractiveMaps/EditInteractiveMaps";
 
 import Typography from "@material-ui/core/Typography";
 
@@ -92,10 +93,22 @@ const EditForm = (props) => {
         setConfig={setCurConfig}
         setAssets={setCurAssets}
         configTitle={configTitle}
-        assetsTitle={"Images do Jogo"}
+        assetsTitle={assetsTitle}
       />
     );
   } else if (game === "memory") {
+  } else if (game === "interactiveMaps") {
+    displayGameEdit = (
+      <EditInteractiveMaps
+        createGame={createGame}
+        config={curConfig}
+        assets={curAssets}
+        setConfig={setCurConfig}
+        setAssets={setCurAssets}
+        configTitle={configTitle}
+        assetsTitle={assetsTitle}
+      />
+    );
   }
 
   const inputChangeHandler = (userInput, ref) => {

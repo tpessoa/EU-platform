@@ -9,7 +9,7 @@ const pickRandomQuestion = (arr) => {
 
 const Question = (props) => {
   const { questions, setCurrentQuestion } = props;
-  const [randomIndex, setRandomIndex] = useState(0);
+  const [randomIndex, setRandomIndex] = useState(null);
 
   const handleBtn = () => {
     const rndIndex = pickRandomQuestion(questions);
@@ -19,10 +19,19 @@ const Question = (props) => {
 
   return (
     <Container>
-      <Button variant="contained" color="primary" onClick={handleBtn}>
+      <BtnWrapper variant="contained" color="primary" onClick={handleBtn}>
         Pergunta aleatória
-      </Button>
-      <QuestionWrapper>{questions[randomIndex].question}</QuestionWrapper>
+      </BtnWrapper>
+      {randomIndex != null && (
+        <>
+          <QuestionWrapper>
+            Pergunta: {questions[randomIndex].question}
+          </QuestionWrapper>
+          {/* <AnswerWrapper>
+            Resposta: {questions[randomIndex].rightAnswer}
+          </AnswerWrapper> */}
+        </>
+      )}
     </Container>
   );
 };
@@ -36,7 +45,17 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
+const BtnWrapper = styled(Button)`
+  && {
+    margin: 2rem;
+  }
+`;
+
 const QuestionWrapper = styled.div`
   font-size: 1.5rem;
-  margin: 2rem;
+`;
+
+const AnswerWrapper = styled.div`
+  font-size: 1rem;
+  margin: 1rem;
 `;

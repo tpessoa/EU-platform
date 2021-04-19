@@ -4,7 +4,7 @@ import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
 import MapChart from "./MapChart";
-import CountryDetails from "./ContryDetails";
+import AnswerDetails from "./AnswerDetails";
 import Question from "./Question";
 
 import styled from "styled-components";
@@ -25,29 +25,40 @@ const InteractiveMap = () => {
   const query = new URLSearchParams(search);
   const gameId = query.get("id");
 
-  const { isLoading, error, data } = useQuery("getInteractiveMapObj", () =>
-    axios(`/api/games/game/${gameId}`, {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-    })
+  const { isLoading, error, data } = useQuery(
+    `getInteractiveMap_${gameId}`,
+    () =>
+      axios(`/api/games/game/${gameId}`, {
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+      })
   );
 
   if (isLoading) return <Loading />;
   if (error) return <Error error={error} />;
 
-  // console.log(data.data);
-  console.log(country);
-
   return (
     <Container>
-      <MapWrapper>
-        <Question
-          questions={data.data.config.questions}
-          setCurrentQuestion={setCurrentQuestion}
-        />
-        <MapChart setCountry={setCountry} />
-        <CountryDetails country={country} />
-      </MapWrapper>
+      <Question
+        questions={data.data.config.questions}
+        setCurrentQuestion={setCurrentQuestion}
+      />
+      <MainGameWrapper>
+        <MapWrapper>
+          <MapChart
+            setCountry={setCountry}
+            currQuestion={data.data.config.questions[currentQuestion]}
+          />
+        </MapWrapper>
+        <QuestionInfoWrapper>
+          {country != null && currentQuestion != null && (
+            <AnswerDetails
+              selectedCountry={country}
+              currQuestion={data.data.config.questions[currentQuestion]}
+            />
+          )}
+        </QuestionInfoWrapper>
+      </MainGameWrapper>
     </Container>
   );
 };
@@ -58,13 +69,47 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+`;
+
+const MainGameWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  margin: 0.5rem 2rem;
+  min-height: 40vh;
+
+  @media screen and (max-width: 960px) {
+    flex-direction: column;
+  }
 `;
 
 const MapWrapper = styled.div`
   display: flex;
-  align-items: center;
   justify-content: center;
-  flex-direction: column;
-  width: 80%;
-  margin: 2rem;
+  align-items: center;
+  width: 55%;
+
+  @media screen and (max-width: 768px) {
+    width: 95%;
+  }
+  @media screen and (max-width: 1100px) {
+    width: 85%;
+  }
+`;
+
+const QuestionInfoWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+
+  @media screen and (max-width: 768px) {
+    width: 95%;
+  }
+  @media screen and (max-width: 1100px) {
+    width: 40%;
+  }
 `;
