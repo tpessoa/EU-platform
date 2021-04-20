@@ -4,8 +4,15 @@ import { useLocation } from "react-router-dom";
 import { GiMagnifyingGlass } from "react-icons/gi";
 import { IoColorPaletteSharp } from "react-icons/io5";
 import { BsPuzzleFill } from "react-icons/bs";
-import { FaBrain, FaQuestion } from "react-icons/fa";
+import {
+  FaBrain,
+  FaQuestion,
+  FaChessBoard,
+  FaRegKeyboard,
+  FaKeyboard,
+} from "react-icons/fa";
 import { FcGlobe } from "react-icons/fc";
+import { GoKeyboard } from "react-icons/go";
 
 import GameIcon from "../GameIcon";
 
@@ -41,6 +48,11 @@ const gamesList = [
     url: "/games/interactiveMaps",
     icon: <FcGlobe />,
     name: "Mapas Interativos",
+  },
+  {
+    url: "/games/crossWords",
+    icon: <FaKeyboard />,
+    name: "Palavras Cruzadas",
   },
 ];
 

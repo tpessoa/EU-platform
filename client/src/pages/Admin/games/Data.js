@@ -29,6 +29,11 @@ export const gamesIDsRefs = [
     game_ref_name: "interactiveMaps",
     game_name: "Mapas Interativos",
   },
+  {
+    game_ref_id: 7,
+    game_ref_name: "crossWords",
+    game_name: "Palavras Cruzadas",
+  },
 ];
 
 export const processInfoMessages = {

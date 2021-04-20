@@ -17,6 +17,7 @@ import EditPuzzle from "./Puzzle/EditPuzzle";
 import EditQuiz from "./Quiz/EditQuiz";
 import EditWordSearch from "./WordSearch/EditWordSearch";
 import EditInteractiveMaps from "./InteractiveMaps/EditInteractiveMaps";
+import EditCrossWords from "./CrossWords/EditCrossWords";
 
 import Typography from "@material-ui/core/Typography";
 
@@ -100,6 +101,18 @@ const EditForm = (props) => {
   } else if (game === "interactiveMaps") {
     displayGameEdit = (
       <EditInteractiveMaps
+        createGame={createGame}
+        config={curConfig}
+        assets={curAssets}
+        setConfig={setCurConfig}
+        setAssets={setCurAssets}
+        configTitle={configTitle}
+        assetsTitle={assetsTitle}
+      />
+    );
+  } else if (game === "crossWords") {
+    displayGameEdit = (
+      <EditCrossWords
         createGame={createGame}
         config={curConfig}
         assets={curAssets}

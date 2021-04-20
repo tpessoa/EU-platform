@@ -3,6 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 import InteractiveMap from "../InteractiveMap";
+import CrossWords from "../CrossWords";
 
 import "./game.css";
 
@@ -31,6 +32,8 @@ const GameIFrame = () => {
 
   if (game === "interactiveMaps") {
     return <InteractiveMap />;
+  } else if (game === "crossWords") {
+    return <CrossWords />;
   }
 
   let displayGame = "";

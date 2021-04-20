@@ -1,0 +1,21 @@
+.grid {
+  margin: 0 2rem;
+}
+
+.clues {
+  display: flex;
+  justify-content: center;
+}
+
+.clue {
+  border-radius: 5px;
+  padding: 2px 10px;
+}
+
+.direction {
+  margin: 0 1rem;
+}
+
+.direction .header {
+  visibility: hidden;
+}
