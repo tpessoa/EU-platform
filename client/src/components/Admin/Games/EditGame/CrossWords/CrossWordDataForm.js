@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { countriesData } from "../../../../../pages/Admin/games/RightAnswersData";
 
 import TextField from "../../../../Input/TextField/TextFieldNew";
-import ListField from "../../../../Input/ListField/ListFielCountries";
+import NumberField from "../../../../Input/NumberField/NumberField";
 
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -17,61 +17,113 @@ import DeleteIcon from "@material-ui/icons/Delete";
 
 const QuizQuestionForm = (props) => {
   const {
-    questionRef,
+    wordRef,
     title,
     wordInfo,
     wordChanged,
     createNew,
-    deleteQuestion,
+    deleteWord,
     update,
     setUpdate,
   } = props;
 
-  const [currQuestObj, setCurrQuest] = useState(null);
+  const [currWordObj, setCurrWordObj] = useState(null);
 
   useEffect(() => {
-    const emptyQuestion = {
-      question: "",
-      rightAnswer: "",
-      justification: "",
+    const emptyWord = {
+      num: null,
+      clue: "",
+      answer: "",
+      row: null,
+      col: null,
     };
 
     // se if is from DB or not
-    if (createNew) {
-      setCurrQuest(emptyQuestion);
+    if (createNew || wordInfo === "addedQuestion") {
+      setCurrWordObj(emptyWord);
     } else {
-      // console.log(questionInfo);
-      if (questionInfo === "addedQuestion") {
-        setCurrQuest(emptyQuestion);
-      } else {
-        setCurrQuest({ ...questionInfo });
-      }
+      setCurrWordObj({ ...wordInfo });
     }
   }, []);
 
   useEffect(() => {
     // pass the object to parent component
-    if (currQuestObj != null && !update) {
-      questionChanged(currQuestObj, questionRef);
+    if (currWordObj != null && !update) {
+      wordChanged(currWordObj, wordRef);
     }
-  }, [currQuestObj]);
+  }, [currWordObj]);
 
   useEffect(() => {
     if (update) {
-      setCurrQuest(questionInfo);
+      setCurrWordObj(wordInfo);
       setUpdate(false);
     }
-  }, [questionInfo]);
+  }, [wordInfo]);
 
-  const textChange = (userInput, ref) => {
-    const tempQuestionObj = { ...currQuestObj };
-    tempQuestionObj[ref] = userInput;
-    setCurrQuest(tempQuestionObj);
+  const objChangeHandler = (userInput, ref) => {
+    // console.log(userInput);
+    // console.log(ref);
+    let userInputFormatted = userInput;
+    if (ref === "num" || ref === "row" || ref === "col") {
+      userInputFormatted = parseInt(userInput);
+    }
+    const tempWordObj = { ...currWordObj };
+    tempWordObj[ref] = userInputFormatted;
+    setCurrWordObj(tempWordObj);
   };
 
   let display = "";
-  if (currQuestObj) {
-    display = <Container></Container>;
+  if (currWordObj) {
+    display = (
+      <Container>
+        <QuestionContainer>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography>{title}</Typography>
+          </AccordionSummary>
+          <AccordionDetailsCustom>
+            <NumberField
+              field_ref={"num"}
+              label={"Número da pergunta"}
+              value={currWordObj.num}
+              parentChangeHandler={objChangeHandler}
+            />
+            <TextField
+              field_ref={"clue"}
+              label={"Pista"}
+              value={currWordObj.clue}
+              parentChangeHandler={objChangeHandler}
+            />
+            <TextField
+              field_ref={"answer"}
+              label={"Resposta correta"}
+              value={currWordObj.answer}
+              parentChangeHandler={objChangeHandler}
+            />
+            <NumberField
+              field_ref={"row"}
+              label={"Início da linha"}
+              value={currWordObj.row}
+              parentChangeHandler={objChangeHandler}
+            />
+            <NumberField
+              field_ref={"col"}
+              label={"Início da coluna"}
+              value={currWordObj.col}
+              parentChangeHandler={objChangeHandler}
+            />
+          </AccordionDetailsCustom>
+        </QuestionContainer>
+        <DeleteButton>
+          <IconButton aria-label="delete" onClick={() => deleteWord(wordRef)}>
+            <DeleteIcon />
+          </IconButton>
+        </DeleteButton>
+      </Container>
+    );
   }
 
   return <>{display}</>;

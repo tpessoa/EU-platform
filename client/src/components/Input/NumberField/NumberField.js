@@ -17,6 +17,7 @@ const NumberField = (props) => {
   const [number, setNumber] = useState("");
 
   useEffect(() => {
+    if (value === null) return;
     let tempValue = value;
     if (range_min && range_max) {
       if (parseInt(value) <= range_min) {

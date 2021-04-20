@@ -13,17 +13,15 @@ var emptyObj = {
 };
 
 var emptyConfig = {
-  crosswords_data: {
-    across: {},
-    down: {},
+  crossword_data: {
+    across: [],
+    down: [],
   },
-  countries_names_visible: null,
 };
 
 const EditCrossWords = (props) => {
   const {
     createGame,
-    generateArray,
     config,
     setConfig,
     assets,
@@ -43,41 +41,46 @@ const EditCrossWords = (props) => {
   }, []);
 
   const addQuestion = (direction) => {
-    // const tempConfig = { ...config };
-    // tempConfig.questions.push("addedQuestion");
-    // setConfig(tempConfig);
-    if (direction === "across") {
-    } else if (direction === "down") {
-    }
-  };
-
-  const updatedWordObj = (obj, ref) => {
     const tempConfig = { ...config };
-    tempConfig.questions[ref] = { ...obj };
+    if (direction === "across") {
+      tempConfig.crossword_data.across.push("addedQuestion");
+    } else if (direction === "down") {
+      tempConfig.crossword_data.down.push("addedQuestion");
+    }
     setConfig(tempConfig);
   };
 
-  const deleteQuestionHandler = (objRef) => {
+  const updatedWordObj = (obj, ref) => {
+    const objRefIndex = ref.split("_")[0];
+    const objRefType = ref.split("_")[1];
+
     const tempConfig = { ...config };
-    tempConfig.questions.splice(objRef, 1);
+    tempConfig.crossword_data[objRefType][objRefIndex] = { ...obj };
+    setConfig(tempConfig);
+  };
+
+  const deleteWordHandler = (objRef) => {
+    const objRefIndex = objRef.split("_")[0];
+    const objRefType = objRef.split("_")[1];
+
+    const tempConfig = { ...config };
+    tempConfig.crossword_data[objRefType].splice(objRefIndex, 1);
     setConfig(tempConfig);
     setUpdate(true);
   };
 
-  console.log(config.crosswords_data.across);
-
   let displayHorizontal = "";
   if (loadedComplete) {
-    displayHorizontal = config.crosswords_data.across.map((word, index) => {
+    displayHorizontal = config.crossword_data.across.map((word, index) => {
       return (
         <CrossWordForm
           key={index}
-          questionRef={index}
+          wordRef={`${index}_across`}
           title={"Palavra " + (index + 1)}
           wordInfo={word}
           wordChanged={updatedWordObj}
           createNew={createGame}
-          deleteQuestion={deleteQuestionHandler}
+          deleteWord={deleteWordHandler}
           update={update}
           setUpdate={setUpdate}
         />
@@ -86,34 +89,34 @@ const EditCrossWords = (props) => {
   }
   let displayVertical = "";
   if (loadedComplete) {
-    displayVertical = <p>Questões verticais</p>;
+    displayVertical = config.crossword_data.down.map((word, index) => {
+      return (
+        <CrossWordForm
+          key={index}
+          wordRef={`${index}_down`}
+          title={"Palavra " + (index + 1)}
+          wordInfo={word}
+          wordChanged={updatedWordObj}
+          createNew={createGame}
+          deleteWord={deleteWordHandler}
+          update={update}
+          setUpdate={setUpdate}
+        />
+      );
+    });
   }
-  //   displayHorizontal = config.questions.map((obj, index) => {
-  //     return (
-  //       <QuestionForm
-  //         key={index}
-  //         questionRef={index}
-  //         title={"Questão " + (index + 1)}
-  //         questionInfo={obj}
-  //         questionChanged={updatedQuestionObj}
-  //         createNew={createGame}
-  //         deleteQuestion={deleteQuestionHandler}
-  //         update={update}
-  //         setUpdate={setUpdate}
-  //       />
-  //     );
-  //   });
-  // }
 
   return (
     <Container>
       <p>{configTitle}</p>
       <ContainerWrapper>
         <ContentWrapper>
+          <p>Questões Horizontais</p>
           <WordsWrapper>{displayHorizontal}</WordsWrapper>
           <button onClick={() => addQuestion("across")}>
             Adicionar Palavra Horizontal
           </button>
+          <p>Questões Verticais</p>
           <WordsWrapper>{displayVertical}</WordsWrapper>
           <button onClick={() => addQuestion("down")}>
             Adicionar Palavra Vertical
