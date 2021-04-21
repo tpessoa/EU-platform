@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import CrossWordForm from "./CrossWordDataForm";
-import CheckboxField from "../../../../Input/CheckboxField";
-import NumberField from "../../../../Input/NumberField";
 
 var emptyObj = {
   assets: {
