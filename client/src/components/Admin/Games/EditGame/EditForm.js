@@ -16,6 +16,7 @@ import EditColorGame from "./ColorGame/EditColorGame";
 import EditPuzzle from "./Puzzle/EditPuzzle";
 import EditQuiz from "./Quiz/EditQuiz";
 import EditWordSearch from "./WordSearch/EditWordSearch";
+import EditMemory from "./Memory/EditMemory";
 import EditInteractiveMaps from "./InteractiveMaps/EditInteractiveMaps";
 import EditCrossWords from "./CrossWords/EditCrossWords";
 
@@ -97,7 +98,18 @@ const EditForm = (props) => {
         assetsTitle={assetsTitle}
       />
     );
-  } else if (game === "memory") {
+  } else if (game === "memoryGame") {
+    displayGameEdit = (
+      <EditMemory
+        createGame={createGame}
+        config={curConfig}
+        assets={curAssets}
+        setConfig={setCurConfig}
+        setAssets={setCurAssets}
+        configTitle={configTitle}
+        assetsTitle={assetsTitle}
+      />
+    );
   } else if (game === "interactiveMaps") {
     displayGameEdit = (
       <EditInteractiveMaps
