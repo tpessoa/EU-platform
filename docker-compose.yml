@@ -1,22 +1,22 @@
 version: "3"
 
 services:
-  react: 
+  react:
     container_name: react
     build: ./client
     environment:
       CHOKIDAR_USEPOLLING: "true"
-    volumes: 
+    volumes:
       - ./client:/usr/src/app
       - /client/node_modules
-    # ports: 
+    # ports:
     #   - "3000:3000"
     stdin_open: true
-    environment: 
-      API_URL: ${API_URL_LOCAL} 
-    depends_on: 
+    environment:
+      API_URL: ${API_URL_LOCAL}
+    depends_on:
       - node
-    networks: 
+    networks:
       - my-net
 
   node:
@@ -25,40 +25,39 @@ services:
     build: ./server/
     environment:
      CHOKIDAR_USEPOLLING: "true"
-    volumes: 
+    volumes:
       - ./server:/usr/src/app
       - /server/node_modules
     # ports:
-    #   - '8080:3000'     
-    depends_on: 
+    #   - '8080:3000'
+    depends_on:
       - db
-    networks: 
+    networks:
       - my-net
 
   db:
     container_name: mongodb
     image: mongo:4.2
     ports:
-      - '27017:27017' 
-    volumes: 
+      - '27017:27017'
+    volumes:
       - ./server/mongo-volume:/data/db
       - ./.backups/mongodb/:/backups
-    networks: 
+    networks:
       - my-net
-  
+
   proxy:
     container_name: proxy
     image: nginx:1.19
-    ports: 
+    ports:
       - ${HTTP_PORT}:${HTTP_PORT}
       - ${HTTPS_PORT}:${HTTPS_PORT}
-    volumes: 
+    volumes:
       - ./proxy/:/etc/nginx/conf.d/
-    depends_on: 
+    depends_on:
       - react
-    networks: 
+    networks:
       - my-net
 
-networks: 
+networks:
   my-net:
-
