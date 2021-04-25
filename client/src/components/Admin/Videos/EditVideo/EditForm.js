@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { useMutation } from "react-query";
 
@@ -13,16 +13,11 @@ import Typography from "@material-ui/core/Typography";
 
 const EditForm = (props) => {
   const { fields, categories, createVideo } = props;
+  const { categoryId, title, description, url, id } = { ...fields };
+  const oldTitle = fields.title;
 
-  const { categoryId, title, description, url, id } = fields;
-
-  const inputChangeHandler = (userInput, ref) => {
-    if (ref === "categoryId") {
-      fields[ref] = categories[userInput]._id;
-    } else {
-      fields[ref] = userInput;
-    }
-  };
+  const [saveErrorMessage, setSaveErrorMessage] = useState("");
+  const [fieldsUpdated, setFieldsUpdated] = useState(false);
 
   let URL_str = "";
   if (createVideo) {
@@ -32,11 +27,48 @@ const EditForm = (props) => {
   }
   const mutation = useMutation((obj) => axios.post(URL_str, obj));
 
+  const fieldUpdatedHandler = useCallback(() => {
+    if (mutation.isSuccess && createVideo) {
+      console.log("botao inativo");
+      setFieldsUpdated(false);
+    } else {
+      setFieldsUpdated(true);
+    }
+  }, [fields]);
+
+  const inputChangeHandler = (userInput, ref) => {
+    if (ref === "categoryId") {
+      fields[ref] = categories[userInput]._id;
+    } else {
+      fields[ref] = userInput;
+    }
+    fieldUpdatedHandler();
+    // console.log(userInput, ref);
+  };
+
   const performSave = () => {
     const newObj = { ...fields };
     console.log(newObj);
+    let validated = false;
 
-    mutation.mutate(newObj);
+    if (
+      newObj.categoryId !== "" &&
+      newObj.title !== "" &&
+      newObj.description !== "" &&
+      newObj.url !== ""
+    ) {
+      validated = true;
+    }
+
+    if (validated) {
+      mutation.mutate(newObj);
+      setSaveErrorMessage("");
+    } else {
+      console.log("faulty params");
+      setSaveErrorMessage("Faltam preencher campos!");
+    }
+
+    setFieldsUpdated(false);
   };
 
   let displaySave = "";
@@ -46,9 +78,15 @@ const EditForm = (props) => {
     displaySave = <Error error={mutation.error} />;
   } else {
     displaySave = (
-      <SaveBtn clickHandler={performSave} saved={mutation.isSuccess}>
-        Guardar
-      </SaveBtn>
+      <>
+        <p>{saveErrorMessage}</p>
+        <SaveBtn
+          clickHandler={performSave}
+          saved={mutation.isSuccess && !fieldsUpdated}
+        >
+          Guardar
+        </SaveBtn>
+      </>
     );
   }
 
@@ -60,7 +98,7 @@ const EditForm = (props) => {
     <Container>
       <Wrapper>
         <Typography variant="h6" gutterBottom>
-          {`Editar vídeo ${title}`}
+          {`Editar vídeo ${oldTitle}`}
         </Typography>
         <CategoryWrapper>
           <ListField

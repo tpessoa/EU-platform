@@ -6,6 +6,7 @@ import { FaYoutube } from "react-icons/fa";
 import { Container, ImgWrapper, YoutubeIcon, Img } from "./VideoCard.elements";
 
 const VideoCard = ({ src, left, category, gallery, setVideo }) => {
+  console.log(src);
   const video_id = getVideoIDByURL(src);
   const video_thumbnail_url = `https://img.youtube.com/vi/${video_id}/sddefault.jpg`;
 
@@ -44,11 +45,12 @@ const VideoCard = ({ src, left, category, gallery, setVideo }) => {
   return (
     <>
       <LinkScroll
-        to={"scrollToVideoPlayer_" + category}
+        // to={"categoryVideoPlayer_" + category}
+        to={"catId_" + category}
         smooth={true}
-        delay={500}
-        duration={1000}
-        offset={-200}
+        // delay={100}
+        // duration={1000}
+        // offset={-420}
       >
         <Container
           left={left}

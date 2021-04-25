@@ -79,14 +79,14 @@ router.post("/categories/add", async (req, res) => {
     } = req.body;
 
     const newCategory = new Categories({
-      game_ref_id: category_ref_id,
-      game_ref_name: category_ref_name,
+      category_ref_id: category_ref_id,
+      category_ref_name: category_ref_name,
       title: title,
       description: description,
       thumbnail: { ...thumbnail },
     });
-    await newCategory.save();
 
+    await newCategory.save();
     res.send(newCategory);
   } catch (e) {
     res.status(500).send({ message: e.message });

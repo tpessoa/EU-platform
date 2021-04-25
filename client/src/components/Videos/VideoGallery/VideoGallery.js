@@ -12,6 +12,7 @@ import {
   Container,
   InfoWrapper,
   Title,
+  Description,
   ImgWrapper,
   CategoryImg,
   VideosContainer,
@@ -45,6 +46,7 @@ const VideoGallery = ({ props }) => {
     <>
       <InfoWrapper>
         <Title>{dataCat.data.title}</Title>
+        <Description>{dataCat.data.description}</Description>
         <ImgWrapper>
           <Image imgObj={dataCat.data.thumbnail} />
         </ImgWrapper>

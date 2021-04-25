@@ -11,16 +11,22 @@ export const InfoWrapper = styled.div`
 
 export const Title = styled.h1`
   text-align: center;
-  margin: 30px 0;
+  margin: 30px 0 20px 0;
+`;
+
+export const Description = styled.div`
+  text-align: center;
+  margin: 20px 0 20px 0;
 `;
 
 export const ImgWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 300px;
-  max-height: 300px;
+  max-height: 40vh;
+  max-width: 40vh;
   margin-bottom: 30px;
+  overflow: hidden;
 `;
 export const CategoryImg = styled.img`
   width: 100%;

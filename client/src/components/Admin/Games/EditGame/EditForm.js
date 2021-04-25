@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
-import { useHistory } from "react-router-dom";
 
 import TextField from "../../../Input/TextField/TextFieldNew";
 import ListField from "../../../Input/ListField";
@@ -11,6 +10,7 @@ import ImageField from "../../ImageField";
 import SaveBtn from "../../Buttons/Save";
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
+import GetImages from "../../UploadImage/GetImages";
 
 import EditColorGame from "./ColorGame/EditColorGame";
 import EditPuzzle from "./Puzzle/EditPuzzle";
@@ -41,10 +41,38 @@ const EditForm = (props) => {
     config,
     assets,
     id,
+    tempId,
   } = fields;
+
+  let URL_str = "";
+  const gameObj = gamesNames.find((elem) => elem.game_ref_name === game);
+  if (createGame) {
+    URL_str = `/api/games/add/${game}/${gameObj.game_ref_id}`;
+  } else {
+    URL_str = `/api/games/${game}/${fields.id}`;
+  }
+
+  const queryClient = new useQueryClient();
+  const mutation = useMutation((obj) => axios.post(URL_str, obj), {
+    onSuccess: () => queryClient.invalidateQueries(fetchQuery),
+  });
 
   const [curConfig, setCurConfig] = useState(config);
   const [curAssets, setCurAssets] = useState(assets);
+
+  useEffect(() => {
+    fieldUpdatedHandler();
+  }, [curConfig || curAssets]);
+
+  const [fieldsUpdated, setFieldsUpdated] = useState(false);
+  const fieldUpdatedHandler = useCallback(() => {
+    if (mutation.isSuccess && createGame) {
+      console.log("botao inativo");
+      setFieldsUpdated(false);
+    } else {
+      setFieldsUpdated(true);
+    }
+  }, [fields]);
 
   let displayGameEdit = "";
   const configTitle = "Configurações específicas";
@@ -52,6 +80,7 @@ const EditForm = (props) => {
   if (game === "colorGame") {
     displayGameEdit = (
       <EditColorGame
+        id={tempId ? tempId : id}
         createGame={createGame}
         config={curConfig}
         assets={curAssets}
@@ -64,6 +93,7 @@ const EditForm = (props) => {
   } else if (game === "puzzle") {
     displayGameEdit = (
       <EditPuzzle
+        id={tempId ? tempId : id}
         createGame={createGame}
         config={curConfig}
         assets={curAssets}
@@ -101,6 +131,7 @@ const EditForm = (props) => {
   } else if (game === "memoryGame") {
     displayGameEdit = (
       <EditMemory
+        id={tempId ? tempId : id}
         createGame={createGame}
         config={curConfig}
         assets={curAssets}
@@ -136,30 +167,6 @@ const EditForm = (props) => {
     );
   }
 
-  const inputChangeHandler = (userInput, ref) => {
-    // console.log(userInput);
-    // console.log(ref);
-    if (ref.includes("age")) {
-      const age_type = ref.split("_")[1];
-      fields.age[age_type] = userInput;
-    } else {
-      fields[ref] = userInput;
-    }
-  };
-
-  let URL_str = "";
-  const gameObj = gamesNames.find((elem) => elem.game_ref_name === game);
-  if (createGame) {
-    URL_str = `/api/games/add/${game}/${gameObj.game_ref_id}`;
-  } else {
-    URL_str = `/api/games/${game}/${fields.id}`;
-  }
-
-  const queryClient = new useQueryClient();
-  const mutation = useMutation((obj) => axios.post(URL_str, obj), {
-    onSuccess: () => queryClient.invalidateQueries(fetchQuery),
-  });
-
   const performSave = () => {
     const newObj = { ...fields };
     newObj.config = { ...curConfig };
@@ -170,6 +177,21 @@ const EditForm = (props) => {
     // validate fields
 
     mutation.mutate(newObj);
+
+    setFieldsUpdated(false);
+  };
+
+  const inputChangeHandler = (userInput, ref) => {
+    // console.log(userInput);
+    // console.log(ref);
+    if (ref.includes("age")) {
+      const age_type = ref.split("_")[1];
+      fields.age[age_type] = userInput;
+    } else {
+      fields[ref] = userInput;
+    }
+
+    fieldUpdatedHandler();
   };
 
   let displaySave = "";
@@ -177,9 +199,29 @@ const EditForm = (props) => {
     displaySave = <Loading />;
   } else if (mutation.isError) {
     displaySave = <Error error={mutation.error} />;
+  } else if (mutation.isSuccess) {
+    // if there's a tempId update the id in the images collections
+    let update;
+    if (tempId != null) {
+      // swap tempId for data._id
+      update = (
+        <GetImages tempId={tempId} permanentId={mutation.data.data._id} />
+      );
+    }
+    displaySave = (
+      <>
+        {update}
+        <SaveBtn
+          clickHandler={performSave}
+          saved={mutation.isSuccess && !fieldsUpdated}
+        >
+          Guardar
+        </SaveBtn>
+      </>
+    );
   } else {
     displaySave = (
-      <SaveBtn clickHandler={performSave} saved={mutation.isSuccess}>
+      <SaveBtn clickHandler={performSave} saved={false}>
         Guardar
       </SaveBtn>
     );
@@ -208,7 +250,7 @@ const EditForm = (props) => {
           field_ref={"thumbnail"}
           imageObj={thumbnail}
           parentChangeHandler={inputChangeHandler}
-          linkedObj={id}
+          linkedObj={tempId ? tempId : id}
         />
         <AgeContainer>
           <AgeWrapper>

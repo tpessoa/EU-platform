@@ -31,6 +31,7 @@ const emptyColorGameConfig = {
 
 const EditColorGame = (props) => {
   const {
+    id,
     createGame,
     config,
     assets,
@@ -51,12 +52,6 @@ const EditColorGame = (props) => {
     setLoaded(true);
   }, []);
 
-  const imageHandler = (obj, ref) => {
-    const tempAssets = { ...assets };
-    tempAssets.images[ref] = obj;
-    setAssets(tempAssets);
-  };
-
   const deleteColorHandler = (index) => {
     const tempConfig = { ...config };
     tempConfig.colors.splice(index, 1);
@@ -76,6 +71,12 @@ const EditColorGame = (props) => {
     const tempConfig = { ...config };
     tempConfig.sensibility = parseInt(userInput);
     setConfig(tempConfig);
+  };
+
+  const imageHandler = (obj, ref) => {
+    const tempAssets = { ...assets };
+    tempAssets.images[ref] = obj;
+    setAssets(tempAssets);
   };
 
   let display = "";
@@ -117,15 +118,17 @@ const EditColorGame = (props) => {
           {assetsTitle}
           <ImageField
             field_ref={"blank_img"}
+            title={"Imagem por colorir (com contornos)"}
             imageObj={assets.images.blank_img}
             parentChangeHandler={imageHandler}
-            title={"Imagem por colorir (com contornos)"}
+            linkedObj={id}
           />
           <ImageField
             field_ref={"colored_img"}
+            title={"Imagem já colorida"}
             imageObj={assets.images.colored_img}
             parentChangeHandler={imageHandler}
-            title={"Imagem já colorida"}
+            linkedObj={id}
           />
         </AssetsContainer>
       </>

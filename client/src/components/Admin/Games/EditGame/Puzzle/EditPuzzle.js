@@ -19,6 +19,7 @@ const emptyPuzzleAssets = {
 
 const EditPuzzle = (props) => {
   const {
+    id,
     createGame,
     config,
     assets,
@@ -47,8 +48,8 @@ const EditPuzzle = (props) => {
   };
 
   const imageHandler = (obj, ref) => {
-    console.log(obj);
-    console.log(ref);
+    // console.log(obj);
+    // console.log(ref);
 
     const tempAssets = { ...assets };
     tempAssets.images[ref] = obj;
@@ -69,8 +70,10 @@ const EditPuzzle = (props) => {
         {assetsTitle}
         <ImageField
           field_ref={"final_img"}
+          title={"Image do puzzle"}
           imageObj={assets.images.final_img}
           parentChangeHandler={imageHandler}
+          linkedObj={id}
         />
       </>
     );

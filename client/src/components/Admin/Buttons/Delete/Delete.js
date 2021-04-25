@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import styled from "styled-components";
 
@@ -8,15 +8,43 @@ import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
 
 const Delete = (props) => {
-  const { deleteURL, fetchQuery } = props;
+  const { deleteURL, rowId, fetchQuery } = props;
   const queryClient = new useQueryClient();
 
   const mutation = useMutation(() => axios.delete(`${deleteURL}`), {
     onSuccess: () => queryClient.invalidateQueries(fetchQuery),
   });
 
+  const associatedVideos = useQuery(
+    `getAssociatedVideosWithCategory_${rowId}`,
+    () => axios(`/api/videos/${rowId}`)
+  );
+  const deleteVideos = useMutation((videoId) =>
+    axios.delete(`/api/videos/video/${videoId}`)
+  );
+
+  const associatedImagesToGame = useQuery(
+    `getassociatedImagesToGame_${rowId}`,
+    () => axios(`/api/upload/images/${rowId}`)
+  );
+  const deleteImage = useMutation((imageObj) => {
+    console.log(imageObj);
+    axios.delete(`/api/upload/images/${imageObj._id}`, { data: imageObj });
+  });
+
   const deleteHandler = () => {
     mutation.mutate();
+
+    // search for info associated with this id to delete
+    // categories -> videos associated
+    associatedVideos.data.data.forEach((video) =>
+      deleteVideos.mutate(video._id)
+    );
+
+    // games -> images
+    associatedImagesToGame.data.data.forEach((imageObj) => {
+      deleteImage.mutate(imageObj);
+    });
   };
 
   let display = "";

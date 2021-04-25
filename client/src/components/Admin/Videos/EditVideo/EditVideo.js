@@ -15,14 +15,17 @@ const EditVideo = () => {
   const catQueryStringId = "getAllVideosCategoriesEditVideo";
   const videoQueryStringId = "getVideoInfo";
 
-  const categoriesQuery = useQuery(catQueryStringId, () =>
-    axios.get(`/api/videos/categories`)
+  const categoriesQuery = useQuery(
+    catQueryStringId,
+    () => axios.get(`/api/videos/categories`),
+    { refetchOnWindowFocus: false }
   );
   const videoInfoQuery = useQuery(
     videoQueryStringId,
     () => axios.get(`/api/videos/video/${videoId}`),
     {
       enabled: fetchDataFlag,
+      refetchOnWindowFocus: false,
     }
   );
 
@@ -55,7 +58,6 @@ const EditVideo = () => {
       id: null,
     };
   }
-
   return (
     <Container>
       <EditWrapper>

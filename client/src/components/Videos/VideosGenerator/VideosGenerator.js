@@ -28,14 +28,20 @@ const VideosGenerator = (props) => {
             (video) => getVideoIDByURL(video.url) === selectedVideo.videoId
           );
         }
+
         return (
+          // <div id={"scrollToVideoCategory_" + cat.categoryData._id}>
           <VideosList
             key={index}
             categoryData={cat.categoryData}
             categoryVideos={cat.categoryVideos}
-            reverse={index % 2 !== 0}
+            // reverse={index % 2 !== 0}
+            reverse={false}
             playVideo={videoPlayInfo}
+            scrollCatId={index}
+            // nextCategoryScrollId
           />
+          // </div>
         );
       })}
     </>

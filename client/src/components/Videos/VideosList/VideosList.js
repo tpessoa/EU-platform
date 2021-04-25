@@ -20,7 +20,13 @@ import {
 } from "./VideosList.elements";
 
 const VideosList = (props) => {
-  const { categoryData, categoryVideos, reverse, playVideo } = props;
+  const {
+    categoryData,
+    categoryVideos,
+    reverse,
+    playVideo,
+    scrollCatId,
+  } = props;
   const { title, thumbnail } = categoryData;
 
   const dir_r = -1,
@@ -61,69 +67,71 @@ const VideosList = (props) => {
 
   return (
     <>
-      <Container lightBg={reverse} reverse={reverse}>
-        <InfoWrapper>
-          <Title>
-            <h1>{title}</h1>
-          </Title>
-          <ImgWrapper>
-            <Image imgObj={thumbnail} />
-          </ImgWrapper>
-        </InfoWrapper>
-        <ScrollContainer>
-          <Slide>
-            {reverse ? (
-              <DisableArrow disableArrow={disableArrowRight}>
-                <FaChevronRight onClick={() => handleClick(dir_r)} />
-              </DisableArrow>
-            ) : (
-              <DisableArrow disableArrow={disableArrowLeft}>
-                <FaChevronLeft onClick={() => handleClick(dir_l)} />
-              </DisableArrow>
-            )}
-          </Slide>
-          <VideosWrapper reverse={reverse}>
-            {categoryVideos.map((video, index) => {
-              return (
-                <VideoCard
-                  key={index}
-                  src={video.url}
-                  category={video.category_id}
-                  left={left}
-                  gallery={false}
-                />
-              );
-            })}
-          </VideosWrapper>
-          <Slide>
-            {reverse ? (
-              <DisableArrow disableArrow={disableArrowLeft}>
-                <FaChevronLeft onClick={() => handleClick(dir_l)} />
-              </DisableArrow>
-            ) : (
-              <DisableArrow disableArrow={disableArrowRight}>
-                <FaChevronRight onClick={() => handleClick(dir_r)} />
-              </DisableArrow>
-            )}
-          </Slide>
-        </ScrollContainer>
-        <BtnWrapper>
-          <ShowMore
-            to={{
-              pathname: `/videos/category`,
-              search: `?id=${categoryData._id}`,
-            }}
-            id={"scrollToVideoPlayer_" + categoryData._id}
-          >
-            Ver Todos
-          </ShowMore>
-        </BtnWrapper>
-      </Container>
-      {playVideo && (
-        <VideoWrapper>
-          <PlayVideo videoURL={playVideo.url} />
-        </VideoWrapper>
-      )}
+      <div id={"catId_" + categoryData._id}>
+        <Container lightBg={reverse} reverse={reverse}>
+          <InfoWrapper>
+            <Title>
+              <h1>{title}</h1>
+            </Title>
+            <ImgWrapper>
+              <Image imgObj={thumbnail} />
+            </ImgWrapper>
+          </InfoWrapper>
+          <ScrollContainer>
+            <Slide>
+              {reverse ? (
+                <DisableArrow disableArrow={disableArrowRight}>
+                  <FaChevronRight onClick={() => handleClick(dir_r)} />
+                </DisableArrow>
+              ) : (
+                <DisableArrow disableArrow={disableArrowLeft}>
+                  <FaChevronLeft onClick={() => handleClick(dir_l)} />
+                </DisableArrow>
+              )}
+            </Slide>
+            <VideosWrapper reverse={reverse}>
+              {categoryVideos.map((video, index) => {
+                return (
+                  <VideoCard
+                    key={index}
+                    src={video.url}
+                    category={video.category_id}
+                    left={left}
+                    gallery={false}
+                  />
+                );
+              })}
+            </VideosWrapper>
+            <Slide>
+              {reverse ? (
+                <DisableArrow disableArrow={disableArrowLeft}>
+                  <FaChevronLeft onClick={() => handleClick(dir_l)} />
+                </DisableArrow>
+              ) : (
+                <DisableArrow disableArrow={disableArrowRight}>
+                  <FaChevronRight onClick={() => handleClick(dir_r)} />
+                </DisableArrow>
+              )}
+            </Slide>
+          </ScrollContainer>
+          <BtnWrapper>
+            <ShowMore
+              to={{
+                pathname: `/videos/category`,
+                search: `?id=${categoryData._id}`,
+              }}
+              // id={"scrollToVideoPlayer_" + categoryData._id}
+            >
+              Ver Todos
+            </ShowMore>
+          </BtnWrapper>
+        </Container>
+        {playVideo && (
+          <VideoWrapper>
+            <PlayVideo videoURL={playVideo.url} />
+          </VideoWrapper>
+        )}
+      </div>
     </>
   );
 };

@@ -20,6 +20,7 @@ const EditGame = (props) => {
     () => axios(`/api/games/game/${gameId}`),
     {
       enabled: fetchDataFlag,
+      refetchOnWindowFocus: false,
     }
   );
   if (isLoading) return <Loading />;
@@ -48,6 +49,8 @@ const EditGame = (props) => {
       config: config,
       assets: assets,
       id: _id,
+      // tempId isn't needed for updating the respectives images ID after saving bcz a ID already exists
+      tempId: null,
     };
   } else {
     gameObj = {
@@ -63,6 +66,8 @@ const EditGame = (props) => {
       config: { null: null },
       assets: { null: null },
       id: null,
+      // this temporary Id is needed for updating the image (in images schema) with the respective ID after saving the game.
+      tempId: "temp_game_image",
     };
   }
 

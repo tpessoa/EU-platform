@@ -53,6 +53,7 @@ const emptyMemoryAssets = {
 
 const EditMemory = (props) => {
   const {
+    id,
     createGame,
     config,
     assets,
@@ -205,6 +206,7 @@ const EditMemory = (props) => {
           field_ref={"back_card"}
           imageObj={assets.images.back_card}
           parentChangeHandler={imageHandler}
+          linkedObj={id}
         />
         {assets.images.front_cards.map((image, index) => (
           <ImageField
@@ -213,6 +215,7 @@ const EditMemory = (props) => {
             field_ref={`front_cards_${index}`}
             imageObj={image}
             parentChangeHandler={imageHandler}
+            linkedObj={id}
           />
         ))}
       </>

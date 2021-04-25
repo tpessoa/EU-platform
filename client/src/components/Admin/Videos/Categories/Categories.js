@@ -45,8 +45,12 @@ const generateRows = (data) => {
 
 const Categories = () => {
   const queryStringId = "getAllVideoCategories";
-  const { isLoading, isError, error, data } = useQuery(queryStringId, () =>
-    axios.get(`/api/videos/categories`)
+  const { isLoading, isError, error, data } = useQuery(
+    queryStringId,
+    () => axios.get(`/api/videos/categories/type/video`),
+    {
+      refetchOnWindowFocus: false,
+    }
   );
 
   if (isLoading) return <Loading />;

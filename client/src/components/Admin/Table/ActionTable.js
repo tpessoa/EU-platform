@@ -80,6 +80,7 @@ const ActionTable = (props) => {
                           <DeleteButton
                             key={index}
                             deleteURL={`${deleteURL}/${row.id}`}
+                            rowId={row.id}
                             fetchQuery={fetchQuery}
                           >
                             {action}

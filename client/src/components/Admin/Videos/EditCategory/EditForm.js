@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
@@ -9,18 +9,24 @@ import SaveBtn from "../../Buttons/Save";
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
 
+import GetImages from "../../UploadImage/GetImages";
+
 import Typography from "@material-ui/core/Typography";
 
 const EditForm = (props) => {
   const { fields, createCategory } = props;
 
-  const { title, description, thumbnail, id, fetchQuery } = fields;
+  const { title, description, thumbnail, fetchQuery, id, tempId } = fields;
 
-  const inputChangeHandler = (userInput, ref) => {
-    // console.log(userInput);
-    // console.log(ref);
-    fields[ref] = userInput;
-  };
+  const [fieldsUpdated, setFieldsUpdated] = useState(false);
+  const fieldUpdatedHandler = useCallback(() => {
+    if (mutation.isSuccess && createCategory) {
+      console.log("botao inativo");
+      setFieldsUpdated(false);
+    } else {
+      setFieldsUpdated(true);
+    }
+  }, [fields]);
 
   let URL_str = "";
   if (createCategory) {
@@ -33,11 +39,21 @@ const EditForm = (props) => {
     onSettled: () => queryClient.invalidateQueries(fetchQuery),
   });
 
+  const inputChangeHandler = (userInput, ref) => {
+    // console.log(userInput);
+    // console.log(ref);
+    fields[ref] = userInput;
+
+    fieldUpdatedHandler();
+  };
+
   const performSave = () => {
     const newObj = { ...fields };
     console.log(newObj);
 
     mutation.mutate(newObj);
+
+    setFieldsUpdated(false);
   };
 
   let displaySave = "";
@@ -45,9 +61,29 @@ const EditForm = (props) => {
     displaySave = <Loading />;
   } else if (mutation.isError) {
     displaySave = <Error error={mutation.error} />;
+  } else if (mutation.isSuccess) {
+    // if there's a tempId update the id in the images collections
+    let update;
+    if (tempId != null) {
+      // swap tempId for data._id
+      update = (
+        <GetImages tempId={tempId} permanentId={mutation.data.data._id} />
+      );
+    }
+    displaySave = (
+      <>
+        {update}
+        <SaveBtn
+          clickHandler={performSave}
+          saved={mutation.isSuccess && !fieldsUpdated}
+        >
+          Guardar
+        </SaveBtn>
+      </>
+    );
   } else {
     displaySave = (
-      <SaveBtn clickHandler={performSave} saved={mutation.isSuccess}>
+      <SaveBtn clickHandler={performSave} saved={false}>
         Guardar
       </SaveBtn>
     );
@@ -73,8 +109,10 @@ const EditForm = (props) => {
         />
         <ImageField
           field_ref={"thumbnail"}
+          title={"Image do ícon da categoria"}
           imageObj={thumbnail}
           parentChangeHandler={inputChangeHandler}
+          linkedObj={tempId ? tempId : id}
         />
         {displaySave}
       </Wrapper>

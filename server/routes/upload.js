@@ -75,6 +75,8 @@ router.post(
         server_path: req.file.path,
       };
 
+      console.log(req.params);
+
       // save to collection of images with the respective game reference
       const newImage = new Images({
         image: tempObj,
@@ -106,20 +108,38 @@ router.get("/images/:linkedObjId", async (req, res) => {
 });
 
 /**
+ * update image by the respective linked object
+ */
+router.post("/images", async (req, res) => {
+  try {
+    for (const imageId of req.body.imagesIDs) {
+      console.log(imageId);
+      const imageObj = await Images.findOne({
+        _id: imageId,
+      });
+      imageObj.linked_obj_id = req.body.permanentId;
+      await imageObj.save();
+    }
+    res.send("images updated");
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+/**
  * Delete image by ID
  */
 router.delete("/images/:id", async (req, res) => {
   try {
     // delete in the server
-    console.log(req.params.id);
-    console.log(req.body.imgServerPath);
+    const { _id, image } = req.body;
 
     // variables sanitizer #TODO
-    const path = req.body.imgServerPath;
+    const path = image.server_path;
     fs.unlinkSync(path);
 
     // delete in the DB
-    let deletedImage = await Images.deleteOne({ _id: req.params.id });
+    let deletedImage = await Images.deleteOne({ _id: _id });
     console.log(deletedImage);
     res.send(deletedImage);
   } catch (e) {

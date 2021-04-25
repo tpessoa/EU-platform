@@ -21,6 +21,7 @@ const EditCategory = () => {
     () => axios(`/api/videos/categories/${catId}`),
     {
       enabled: fetchDataFlag,
+      refetchOnWindowFocus: false,
     }
   );
 
@@ -30,13 +31,14 @@ const EditCategory = () => {
   let gameObj = {};
   if (fetchDataFlag) {
     const tempObj = { ...data.data };
-    const { title, description, thumbnail, _id } = tempObj;
-
+    const { _id, title, description, thumbnail } = tempObj;
     gameObj = {
       title: title,
       description: description,
       thumbnail: thumbnail,
       id: _id,
+      // tempId isn't needed for updating the respectives images ID after saving bcz a ID already exists
+      tempId: null,
     };
   } else {
     gameObj = {
@@ -47,7 +49,11 @@ const EditCategory = () => {
         path: "",
         server_path: "",
       },
+      category_ref_id: 1,
+      category_ref_name: "video",
       id: null,
+      // this temporary Id is needed for updating the image (in images schema) with the respective ID after saving the category.
+      tempId: "temp_category_image",
     };
   }
 
