@@ -39,13 +39,13 @@ export const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: row;
 
-  max-width: 1100px;
+  width: 100%;
   padding: 48px 24px;
-  /* flex-direction: column; */
 
-  @media screen and(max-width: 820px) {
-    flex-direction: row;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
   }
 `;
 

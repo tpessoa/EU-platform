@@ -8,10 +8,15 @@ const ContryDetails = (props) => {
 
   const rightCountryAnswerObj = countriesData[currQuestion.rightAnswer];
 
+  let outside_info = null;
+  if (selectedCountry === "outside") {
+    outside_info = "Não pertence à União Europeia!";
+  }
+
   return (
     <Container>
       <AnswerSelectedWrapper>
-        País selecionado: {selectedCountry}
+        País selecionado: {outside_info ? outside_info : selectedCountry}
       </AnswerSelectedWrapper>
       <RightAnswerWrapper>
         País correto: {rightCountryAnswerObj.country}

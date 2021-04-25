@@ -87,6 +87,13 @@ const MapChart = (props) => {
     const userCountryNamePT = countriesData.find(
       (elem) => elem.code === country
     );
+    // check if the country belongs to EU
+    if (!userCountryNamePT) {
+      setUserPickedCountry(country);
+      setCountry("outside");
+      setUserRight(false);
+      return;
+    }
 
     setUserPickedCountry(country);
     setCountry(userCountryNamePT.country);

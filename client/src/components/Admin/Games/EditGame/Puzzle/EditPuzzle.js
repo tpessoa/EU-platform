@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import NumberField from "../../../../Input/NumberField";
 import ImageField from "../../../ImageField";
 
+import styled from "styled-components";
+
 const emptyPuzzleConfig = {
   pieces_size: "",
 };
@@ -61,12 +63,15 @@ const EditPuzzle = (props) => {
     display = (
       <>
         {configTitle}
-        <NumberField
-          field_ref={"pieces_size"}
-          label={"Tamanho das peças"}
-          value={config.pieces_size}
-          parentChangeHandler={textHandler}
-        />
+        <NumberWrapper>
+          <NumberField
+            field_ref={"pieces_size"}
+            label={"Tamanho das peças"}
+            value={config.pieces_size}
+            parentChangeHandler={textHandler}
+            info={"100 as peças são grandes\n130 médias\n160 pequenas"}
+          />
+        </NumberWrapper>
         {assetsTitle}
         <ImageField
           field_ref={"final_img"}
@@ -83,3 +88,10 @@ const EditPuzzle = (props) => {
 };
 
 export default EditPuzzle;
+
+const NumberWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+`;

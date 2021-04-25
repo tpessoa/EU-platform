@@ -55,7 +55,7 @@ const EditForm = (props) => {
       newObj.categoryId !== "" &&
       newObj.title !== "" &&
       newObj.description !== "" &&
-      newObj.url !== ""
+      newObj.url !== "" // valid url
     ) {
       validated = true;
     }
