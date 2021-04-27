@@ -10,8 +10,10 @@ import OldImage from "./OldImage";
 const OldImages = (props) => {
   const { linkedObj, inputRef, fetchQuery, setImage } = props;
 
-  const { isLoading, isError, error, data } = useQuery(fetchQuery, () =>
-    axios(`/api/upload/images/${linkedObj}`)
+  const { isLoading, isError, error, data } = useQuery(
+    fetchQuery,
+    () => axios(`/api/upload/images/${linkedObj}`),
+    { refetchOnWindowFocus: false }
   );
 
   if (isLoading) return <Loading />;
@@ -24,11 +26,6 @@ const OldImages = (props) => {
     }
   });
 
-  const setImageObj = (imageId) => {
-    const imageObj = inputRefImagesArr.find((image) => image._id === imageId);
-    setImage(imageObj.image);
-  };
-
   return (
     <Container>
       <p>Imagens antigas</p>
@@ -37,10 +34,9 @@ const OldImages = (props) => {
           return (
             <OldImage
               key={index}
-              imageId={obj._id}
-              imageURL={obj.image.server_path}
+              linkedImgObj={obj}
               fetchQuery={fetchQuery}
-              setImage={setImageObj}
+              setImage={setImage}
             />
           );
         })}
@@ -67,4 +63,5 @@ const OldImagesList = styled.div`
   margin: 0.5rem;
   background-color: #d6e8ff;
   border-radius: 0.5rem;
+  width: 60%;
 `;

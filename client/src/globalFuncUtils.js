@@ -1,9 +1,12 @@
 export const getVideoIDByURL = (videoURL) => {
   const splitLinkArr = videoURL.split("/");
-  const watch = splitLinkArr[3].split("?v=");
-  const id = watch[1];
+  if (splitLinkArr.length === 4) {
+    const watch = splitLinkArr[3].split("?v=");
+    const id = watch[1];
 
-  return id;
+    return id;
+  }
+  return null;
 };
 
 export const getVideoIDbyThumbnailURL = (thumbURL) => {

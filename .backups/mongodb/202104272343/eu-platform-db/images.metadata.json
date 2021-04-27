@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"eu-platform-db.images"}],"uuid":"ff81dec56e964b45b488504bda0c99fb"}

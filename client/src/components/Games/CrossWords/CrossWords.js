@@ -11,13 +11,45 @@ import Button from "../../Input/Button";
 
 import "./style.css";
 
+const formatCrosswordData = (obj) => {
+  const across = obj.across;
+  const down = obj.down;
+
+  const newObj = {
+    across: {},
+    down: {},
+  };
+
+  across.forEach((elem) => {
+    newObj.across[elem.num] = {
+      answer: elem.answer,
+      clue: elem.clue,
+      row: elem.row,
+      col: elem.col,
+    };
+  });
+
+  down.forEach((elem) => {
+    newObj.down[elem.num] = {
+      answer: elem.answer,
+      clue: elem.clue,
+      row: elem.row,
+      col: elem.col,
+    };
+  });
+
+  return newObj;
+};
+
 const CrossWords = () => {
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const gameId = query.get("id");
 
-  const { isLoading, error, data } = useQuery(`getCrossWord_${gameId}`, () =>
-    axios(`/api/games/game/${gameId}`)
+  const { isLoading, error, data } = useQuery(
+    `getCrossWord_${gameId}`,
+    () => axios(`/api/games/game/${gameId}`),
+    { refetchOnWindowFocus: false }
   );
 
   const crossword = useRef();
@@ -53,6 +85,10 @@ const CrossWords = () => {
   if (isLoading) return <Loading />;
   if (error) return <Error error={error} />;
 
+  const formattedCrosswordData = formatCrosswordData(
+    data.data.config.crossword_data
+  );
+
   return (
     <Container>
       <GameTitle>{data.data.title}</GameTitle>
@@ -74,7 +110,7 @@ const CrossWords = () => {
       <CrossWordWrapper>
         {/* <div style={{ width: "30%" }}> */}
         <Crossword
-          data={data.data.config.crossword_data}
+          data={formattedCrosswordData}
           theme={{
             columnBreakpoint: "9999px",
             gridBackground: "#003399",

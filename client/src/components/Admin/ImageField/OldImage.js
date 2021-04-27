@@ -10,10 +10,10 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 const OldImage = (props) => {
-  const { imageId, imageURL, fetchQuery, setImage } = props;
+  const { linkedImgObj, fetchQuery, setImage } = props;
   const queryClient = new useQueryClient();
 
-  const imageNameSplitted = imageURL.split("/");
+  const imageNameSplitted = linkedImgObj.image.server_path.split("/");
   imageNameSplitted.shift();
   imageNameSplitted.shift();
 
@@ -23,10 +23,11 @@ const OldImage = (props) => {
   const imageData = imageNameWithoutDateSplitted.shift();
   const imageName = imageNameWithoutDateSplitted.pop();
 
-  const deleteURL = `/api/upload/images/${imageId}`;
-
   const mutation = useMutation(
-    () => axios.delete(`${deleteURL}`, { data: { imgServerPath: imageURL } }),
+    () =>
+      axios.delete(`/api/upload/images/${linkedImgObj._id}`, {
+        data: linkedImgObj,
+      }),
     {
       onSuccess: () => queryClient.invalidateQueries(fetchQuery),
     }
@@ -38,7 +39,7 @@ const OldImage = (props) => {
 
   return (
     <Container>
-      <ImageNameWrapper onClick={() => setImage(imageId)}>
+      <ImageNameWrapper onClick={() => setImage(linkedImgObj.image)}>
         {imageName}
       </ImageNameWrapper>
       <RemoveWrapper>

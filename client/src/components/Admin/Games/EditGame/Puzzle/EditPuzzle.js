@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import NumberField from "../../../../Input/NumberField";
+import ListField from "../../../../Input/ListField/ListFieldNewNew";
 import ImageField from "../../../ImageField";
 
 import styled from "styled-components";
@@ -50,9 +50,6 @@ const EditPuzzle = (props) => {
   };
 
   const imageHandler = (obj, ref) => {
-    // console.log(obj);
-    // console.log(ref);
-
     const tempAssets = { ...assets };
     tempAssets.images[ref] = obj;
     setAssets(tempAssets);
@@ -63,7 +60,7 @@ const EditPuzzle = (props) => {
     display = (
       <>
         {configTitle}
-        <NumberWrapper>
+        {/* <NumberWrapper>
           <NumberField
             field_ref={"pieces_size"}
             label={"Tamanho das peças"}
@@ -71,7 +68,16 @@ const EditPuzzle = (props) => {
             parentChangeHandler={textHandler}
             info={"100 as peças são grandes\n130 médias\n160 pequenas"}
           />
-        </NumberWrapper>
+        </NumberWrapper> */}
+        <ListWrapper>
+          <ListField
+            field_ref={"pieces_size"}
+            label={"Tamanho das peças"}
+            arr={["150", "200", "300"]}
+            value={config.pieces_size}
+            parentChangeHandler={textHandler}
+          />
+        </ListWrapper>
         {assetsTitle}
         <ImageField
           field_ref={"final_img"}
@@ -94,4 +100,11 @@ const NumberWrapper = styled.div`
   align-items: center;
   justify-content: center;
   width: 30%;
+`;
+
+const ListWrapper = styled.div`
+  width: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

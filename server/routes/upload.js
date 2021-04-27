@@ -133,10 +133,20 @@ router.delete("/images/:id", async (req, res) => {
   try {
     // delete in the server
     const { _id, image } = req.body;
+    // console.log(req);
+
+    console.log(_id);
+    console.log(image);
 
     // variables sanitizer #TODO
     const path = image.server_path;
-    fs.unlinkSync(path);
+
+    // check if file exists
+    fs.access(path, (err) => {
+      if (!err) {
+        fs.unlinkSync(path);
+      }
+    });
 
     // delete in the DB
     let deletedImage = await Images.deleteOne({ _id: _id });
