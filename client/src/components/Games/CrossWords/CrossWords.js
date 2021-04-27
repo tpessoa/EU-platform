@@ -66,7 +66,7 @@ const CrossWords = () => {
   // onCorrect is called with the direction, number, and the correct answer.
   const onCorrect = useCallback((direction, number, answer) => {
     console.log("correto");
-    setWordCorrect(true);
+    // setWordCorrect(true);
   }, []);
 
   // onCellChange is called with the row, column, and character.
