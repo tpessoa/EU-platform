@@ -7,6 +7,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
+import Login from "./components/Login";
+import Register from "./components/Register";
 import Games from "./pages/Games";
 import Videos from "./pages/Videos";
 import Book from "./pages/Book";
@@ -21,6 +23,8 @@ function App() {
       <GlobalStyle />
       <Navbar />
       <Switch>
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
         <Route path="/" exact component={Home} />
         <Route path="/games" component={Games} />
         <Route exact path="/videos" component={Videos} />

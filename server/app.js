@@ -1,8 +1,8 @@
+// const bodyParser = require("body-parser");
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const cors = require("cors");
-var path = require("path");
+const path = require("path");
 
 require("dotenv").config();
 
@@ -13,6 +13,7 @@ const connection_url = "mongodb://db:27017/eu-platform-db";
 
 // Middlewares
 // app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
@@ -35,13 +36,13 @@ const adminRouter = require("./routes/admin");
 const uploadRouter = require("./routes/upload");
 const gamesRouter = require("./routes/games");
 const videosRouter = require("./routes/videos");
-const usersRouter = require("./routes/users");
+const userRouter = require("./routes/user");
 
 app.use("/admin", adminRouter);
 app.use("/upload", uploadRouter);
 app.use("/games", gamesRouter);
 app.use("/videos", videosRouter);
-app.use("/users", usersRouter);
+app.use("/user", userRouter);
 
 // Listener
 app.listen(port, () => {
