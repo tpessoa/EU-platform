@@ -2,12 +2,15 @@ import React from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
+import { Redirect } from "react-router-dom";
 
 import Loading from "../UI/Loading";
 import Error from "../UI/Error";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
-const Login = () => {
+const Login = (props) => {
   const { register, handleSubmit, errors } = useForm();
 
   const mutation = useMutation((obj) =>
@@ -37,24 +40,38 @@ const Login = () => {
     const res = mutation.data.data;
     if (res.token) {
       localStorage.setItem("token", res.token);
+      return <Redirect to="/admin" />;
     }
     displaySave = <p>{res.message}</p>;
   }
 
   return (
     <Container>
+      <h1>Login</h1>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <input
-          type="text"
-          placeholder="Username"
-          {...register("username", { required: true })}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          {...register("password", { required: true })}
-        />
-        <input type="submit" />
+        <InputField>
+          <TextField
+            id="outlined-basic"
+            variant="outlined"
+            label="Username"
+            inputProps={{ ...register("username", { required: true }) }}
+            fullWidth
+          />
+        </InputField>
+        <InputField>
+          <TextField
+            id="outlined-password-input"
+            label="Password"
+            type="password"
+            autoComplete="current-password"
+            variant="outlined"
+            inputProps={{ ...register("password", { required: true }) }}
+            fullWidth
+          />
+        </InputField>
+        <Button type="submit" variant="contained" color="primary">
+          Entrar
+        </Button>
       </Form>
       {displaySave}
     </Container>
@@ -68,7 +85,8 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  min-height: 40vh;
+  min-height: 60vh;
+  width: 100%;
 `;
 
 const Form = styled.form`
@@ -76,4 +94,13 @@ const Form = styled.form`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  width: 30%;
+`;
+
+const InputField = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 1rem;
 `;

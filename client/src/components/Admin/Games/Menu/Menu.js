@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Route, useRouteMatch, useParams } from "react-router-dom";
+import ProtectedRoute from "../../../ProtectedRoute";
 import axios from "axios";
 import styled from "styled-components";
 

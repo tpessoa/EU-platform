@@ -48,6 +48,11 @@ const Navbar = () => {
             <NavItem>
               <NavLink to="/poll">Votações</NavLink>
             </NavItem>
+            {localStorage.getItem("token") && (
+              <NavItem>
+                <NavLink to="/admin">ADMIN</NavLink>
+              </NavItem>
+            )}
           </NavMenu>
         </NavbarContainer>
       </Nav>

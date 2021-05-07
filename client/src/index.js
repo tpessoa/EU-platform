@@ -10,6 +10,3 @@ ReactDOM.render(
   </QueryClientProvider>,
   document.getElementById("root")
 );
-
-//   <React.StrictMode>
-// </React.StrictMode>,

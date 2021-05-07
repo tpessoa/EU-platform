@@ -44,7 +44,7 @@ passport.use(
           return done(null, false, {
             message: "Token not matched",
           });
-        return done(null, { username: user.username });
+        return done(null, user);
       });
     }
   )
@@ -83,7 +83,7 @@ router.get(
     if (!req.user) {
       res.json({ username: "nobody" });
     } else {
-      res.json(req.user);
+      res.json({ id: req.user._id, username: req.user.username });
     }
   }
 );
@@ -92,15 +92,57 @@ router.post("/register", async (req, res) => {
   try {
     const { username, password } = req.body;
     console.log(username, password);
-
-    bcrypt.genSalt(saltRounds, function (err, salt) {
-      bcrypt.hash(password, salt, function (err, hash) {
-        // Store hash in your password DB.
-        console.log(hash);
-      });
-    });
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hash = bcrypt.hashSync(password, salt);
+    // Store hash in your password DB.
+    console.log(hash);
 
     res.send("ok");
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+// get user data to change it
+router.get("/user-data", async (req, res) => {
+  try {
+    const { userId } = req.query;
+    User.findById(userId, (err, user) => {
+      if (err) throw err;
+      if (!user) return res.status(500).send({ message: "user not found" });
+      // decrypt password
+      // if (bcrypt.compareSync("B4c0/\/", hash)) {
+      // }
+      res.send("#todo");
+    });
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.post("/user-edit", async (req, res) => {
+  try {
+    const {
+      userId,
+      username,
+      old_password,
+      new_password,
+      confir_new_password,
+    } = req.body;
+
+    User.findById(userId, (err, user) => {
+      if (err) throw err;
+      if (!user) return res.status(500).send({ message: "user not found" });
+      // decrypt password
+      if (bcrypt.compare(old_password, user.password)) {
+        // change in the db
+      } else {
+        return res.json({ message: "Wrong Password" });
+      }
+    });
+    // res.json({ message: "Right" });
+
+    // res.send("ok");
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
