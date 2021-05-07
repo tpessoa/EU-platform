@@ -7,11 +7,27 @@ import { Redirect } from "react-router-dom";
 
 import Loading from "../UI/Loading";
 import Error from "../UI/Error";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import MainContainer from "../Form/MainContainer";
+import Form from "../Form/Form";
+import Input from "../Form/Input";
+import PrimaryButton from "../Form/PrimaryButton";
+import { Typography } from "@material-ui/core";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+  username: yup.string().required("Username é obrigatório"),
+  password: yup.string().required("Password é obrigatória"),
+});
 
 const Login = (props) => {
-  const { register, handleSubmit, errors } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const mutation = useMutation((obj) =>
     axios({
@@ -28,7 +44,7 @@ const Login = (props) => {
   );
 
   const onSubmit = (data) => {
-    mutation.mutate({ username: data.username, password: data.password });
+    mutation.mutate({ ...data });
   };
 
   let displaySave = "";
@@ -46,55 +62,69 @@ const Login = (props) => {
   }
 
   return (
+    // <Container>
+    //   <h1>Login</h1>
+    //   <Form onSubmit={handleSubmit(onSubmit)}>
+    //     <InputField>
+    //       <TextField
+    //         id="outlined-basic"
+    //         variant="outlined"
+    //         label="Username"
+    //         inputProps={{ ...register("username", { required: true }) }}
+    //         fullWidth
+    //       />
+    //     </InputField>
+    //     <InputField>
+    //       <TextField
+    //         id="outlined-password-input"
+    //         label="Password"
+    //         type="password"
+    //         autoComplete="current-password"
+    //         variant="outlined"
+    //         inputProps={{ ...register("password", { required: true }) }}
+    //         fullWidth
+    //       />
+    //     </InputField>
+    //     <Button type="submit" variant="contained" color="primary">
+    //       Entrar
+    //     </Button>
+    //   </Form>
+    //   {displaySave}
+    // </Container>
     <Container>
-      <h1>Login</h1>
+      <Typography component="h2" variant="h5">
+        Login
+      </Typography>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <InputField>
-          <TextField
-            id="outlined-basic"
-            variant="outlined"
-            label="Username"
-            inputProps={{ ...register("username", { required: true }) }}
-            fullWidth
-          />
-        </InputField>
-        <InputField>
-          <TextField
-            id="outlined-password-input"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            variant="outlined"
-            inputProps={{ ...register("password", { required: true }) }}
-            fullWidth
-          />
-        </InputField>
-        <Button type="submit" variant="contained" color="primary">
-          Entrar
-        </Button>
+        <Input
+          {...register("username")}
+          name="username"
+          type="text"
+          label="Username"
+          error={!!errors.username}
+          helperText={errors?.username?.message}
+        />
+        <Input
+          {...register("password")}
+          name="password"
+          type="password"
+          label="Password Nova"
+          error={!!errors.password}
+          helperText={errors?.password?.message}
+        />
+        <PrimaryButton>Entrar</PrimaryButton>
       </Form>
-      {displaySave}
     </Container>
   );
 };
 
 export default Login;
 
-const Container = styled.div`
+const Container = styled(MainContainer)`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
   min-height: 60vh;
-  width: 100%;
-`;
-
-const Form = styled.form`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 30%;
 `;
 
 const InputField = styled.div`

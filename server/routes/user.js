@@ -122,27 +122,56 @@ router.get("/user-data", async (req, res) => {
 
 router.post("/user-edit", async (req, res) => {
   try {
-    const {
+    const { userId, username, password } = req.body;
+    // encrypt new password
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const new_hash = bcrypt.hashSync(password, salt);
+    User.findOneAndUpdate(
       userId,
-      username,
-      old_password,
-      new_password,
-      confir_new_password,
-    } = req.body;
+      { username: username, password: new_hash },
+      { new: true },
+      function (err, result) {
+        if (err) {
+          res.send(err);
+        } else {
+          const body = {
+            _id: userId,
+            username: username,
+          };
+          // new token
+          const newToken = jwt.sign({ user: body }, process.env.SECRET_KEY);
+          const newObj = {
+            ...result._doc,
+            token: newToken,
+          };
+          res.send(newObj);
+        }
+      }
+    );
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
 
-    User.findById(userId, (err, user) => {
+router.post("/user-verification", async (req, res) => {
+  try {
+    const { userId, password } = req.body;
+    let message = "";
+    User.findById(userId, async (err, user) => {
       if (err) throw err;
       if (!user) return res.status(500).send({ message: "user not found" });
       // decrypt password
-      if (bcrypt.compare(old_password, user.password)) {
-        // change in the db
-      } else {
-        return res.json({ message: "Wrong Password" });
-      }
+      await bcrypt
+        .compare(password, user.password)
+        .then((res) => {
+          message = res;
+        })
+        .catch((e) => {
+          console.log(e);
+          throw new Error(e); // Express will catch this on its own.
+        });
+      return res.json({ message: message });
     });
-    // res.json({ message: "Right" });
-
-    // res.send("ok");
   } catch (e) {
     res.status(500).send({ message: e.message });
   }

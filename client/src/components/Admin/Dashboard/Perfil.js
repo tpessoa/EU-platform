@@ -8,30 +8,44 @@ import Loading from "../../UI/Loading";
 import Error from "../../UI/Error";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import MainContainer from "./Form/MainContainer";
-import Form from "./Form/Form";
-import Input from "./Form/Input";
-import PrimaryButton from "./Form/PrimaryButton";
+import MainContainer from "../../Form/MainContainer";
+import Form from "../../Form/Form";
+import Input from "../../Form/Input";
+import PrimaryButton from "../../Form/PrimaryButton";
 import { Typography } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-const schema = yup.object().shape({
-  username: yup.string().required(),
-  old_password: yup.string(),
-  new_password: yup.string(),
-  confir_new_password: yup.string(),
-});
-
 const Perfil = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm({
-    mode: "onBlur",
-    resolver: yupResolver(schema),
+  const schema = yup.object().shape({
+    username: yup.string().required("Username é obrigatório"),
+    old_password: yup
+      .string("Confirmação da Password antiga é obrigatória")
+      .test(
+        "password_async_validation",
+        "Password incorreta",
+        async (value) => {
+          let flag = false;
+          await axios({
+            method: "post",
+            url: "/api/user/user-verification",
+            data: { userId: userId, password: value },
+          }).then(
+            (res) => {
+              flag = res.data.message;
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+          return flag;
+        }
+      ),
+    new_password: yup.string().required("Password é obrigatória"),
+    confir_new_password: yup
+      .string()
+      .oneOf([yup.ref("new_password"), null], "Passwords não são iguais!")
+      .required("Confirmação da password é obrigatória"),
   });
 
   const mutation = useMutation((obj) =>
@@ -41,9 +55,7 @@ const Perfil = () => {
       data: JSON.stringify({
         userId: userId,
         username: obj.username,
-        old_password: obj.old_password,
-        new_password: obj.new_password,
-        confir_new_password: obj.confir_new_password,
+        password: obj.new_password,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -54,7 +66,7 @@ const Perfil = () => {
   const onSubmit = (data) => {
     mutation.mutate({ ...data });
   };
-  const { data: user } = useQuery(
+  const { data: user, isSuccess: isUser } = useQuery(
     "getUserTokenData",
     () =>
       axios({
@@ -85,12 +97,27 @@ const Perfil = () => {
     }
   );
 
-  // if (isSuccess) {
-  //   console.log(userData);
-  // }
-  // if (isError) {
-  //   console.log("erro");
-  // }
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  let feedback = "";
+  if (mutation.isLoading) {
+    feedback = <Loading />;
+  } else if (mutation.isSuccess) {
+    console.log(mutation.data.data);
+    feedback = <p>Sucesso</p>;
+    // set the new token
+    localStorage.setItem("token", mutation.data.data.token);
+  } else if (mutation.isError) {
+    feedback = <p>Ocorreu um erro</p>;
+  }
+
   return (
     <MainContainer>
       <Typography component="h2" variant="h5">
@@ -113,7 +140,6 @@ const Perfil = () => {
           error={!!errors.old_password}
           helperText={errors?.old_password?.message}
         />
-        {mutation.isSuccess && <p>{mutation.data.data.message}</p>}
         <Input
           {...register("new_password")}
           name="new_password"
@@ -130,6 +156,7 @@ const Perfil = () => {
           error={!!errors.confir_new_password}
           helperText={errors?.confir_new_password?.message}
         />
+        {feedback}
         <PrimaryButton>Guardar</PrimaryButton>
       </Form>
     </MainContainer>
