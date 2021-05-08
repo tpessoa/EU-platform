@@ -17,3 +17,10 @@ export const getVideoIDbyThumbnailURL = (thumbURL) => {
 export const getEmbedURL = (videoId) => {
   return `https://www.youtube.com/embed/${videoId}`;
 };
+
+export const verifyImageFileType = (imageType) => {
+  const arr = imageType.split("/");
+  const type = arr.pop();
+  const suportedTypes = ["jpg", "jpeg", "png"];
+  return suportedTypes.includes(type);
+};

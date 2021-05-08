@@ -38,11 +38,13 @@ const uploadRouter = require("./routes/upload");
 const gamesRouter = require("./routes/games");
 const videosRouter = require("./routes/videos");
 const userRouter = require("./routes/user");
+const pollsRouter = require("./routes/polls");
 
 app.use("/admin", adminRouter);
 app.use("/upload", uploadRouter);
 app.use("/games", gamesRouter);
 app.use("/videos", videosRouter);
+app.use("/polls", pollsRouter);
 app.use("/user", userRouter);
 
 // Listener

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import GlobalStyle from "./globalStyles";
-import ScrollToTop from "./components/scrollToTop";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -18,7 +17,6 @@ import AdminDashboard from "./pages/Admin";
 import VideoGallery from "./components/Videos/VideoGallery";
 
 function App() {
-  const [isAuth, setIsAuth] = useState(false);
   return (
     <Router>
       <GlobalStyle />

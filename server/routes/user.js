@@ -53,14 +53,15 @@ passport.use(
 router.post("/login", (req, res, next) => {
   try {
     const { username, password } = req.body;
-    console.log(username, password);
 
     passport.authenticate("local", (err, user) => {
       if (err) {
         return next(err);
       }
       if (!user) {
-        return res.json({ message: "Username ou Password incorreto(s)!" });
+        return res
+          .status(500)
+          .send({ message: "Username ou Password incorreto(s)!" });
       }
       req.login(user, () => {
         const body = {
@@ -72,7 +73,7 @@ router.post("/login", (req, res, next) => {
       });
     })(req, res, next);
   } catch (e) {
-    res.status(500).send({ message: e.message });
+    return res.status(500).send({ message: e.message });
   }
 });
 

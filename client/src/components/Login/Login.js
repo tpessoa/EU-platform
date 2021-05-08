@@ -44,6 +44,7 @@ const Login = (props) => {
   );
 
   const onSubmit = (data) => {
+    console.log(data);
     mutation.mutate({ ...data });
   };
 
@@ -51,7 +52,9 @@ const Login = (props) => {
   if (mutation.isLoading) {
     displaySave = <Loading />;
   } else if (mutation.isError) {
-    displaySave = <Error error={mutation.error} />;
+    displaySave = (
+      <div style={{ color: "red" }}>{mutation.error.response.data.message}</div>
+    );
   } else if (mutation.isSuccess) {
     const res = mutation.data.data;
     if (res.token) {
@@ -62,36 +65,7 @@ const Login = (props) => {
   }
 
   return (
-    // <Container>
-    //   <h1>Login</h1>
-    //   <Form onSubmit={handleSubmit(onSubmit)}>
-    //     <InputField>
-    //       <TextField
-    //         id="outlined-basic"
-    //         variant="outlined"
-    //         label="Username"
-    //         inputProps={{ ...register("username", { required: true }) }}
-    //         fullWidth
-    //       />
-    //     </InputField>
-    //     <InputField>
-    //       <TextField
-    //         id="outlined-password-input"
-    //         label="Password"
-    //         type="password"
-    //         autoComplete="current-password"
-    //         variant="outlined"
-    //         inputProps={{ ...register("password", { required: true }) }}
-    //         fullWidth
-    //       />
-    //     </InputField>
-    //     <Button type="submit" variant="contained" color="primary">
-    //       Entrar
-    //     </Button>
-    //   </Form>
-    //   {displaySave}
-    // </Container>
-    <Container>
+    <MainContainer>
       <Typography component="h2" variant="h5">
         Login
       </Typography>
@@ -112,9 +86,10 @@ const Login = (props) => {
           error={!!errors.password}
           helperText={errors?.password?.message}
         />
+        {displaySave}
         <PrimaryButton>Entrar</PrimaryButton>
       </Form>
-    </Container>
+    </MainContainer>
   );
 };
 

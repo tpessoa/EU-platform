@@ -19,6 +19,7 @@ const fileFilter = (req, file, cb) => {
   if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
     // store the file
     cb(null, true);
+    // cb(null, true);
   } else {
     // reject the file
     cb(null, false);
@@ -41,21 +42,24 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-/* ONLY for uploading images from games */
-const storageGames = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "content/images/games/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
-  },
-});
-const uploadGames = multer({
-  storage: storageGames,
-  limits: {
-    fileSize: 1024 * 1024 * 10, // accepts 10 MB
-  },
-  fileFilter: fileFilter,
+/**
+ * Simple upload a image to server
+ */
+router.post("/image", upload.single("image"), async (req, res, next) => {
+  try {
+    if (req.file == null) {
+      return res.send("Imagem inválida");
+    }
+    const tempObj = {
+      id: uuidv4(),
+      path: "/api/", // this is needed for loading the image
+      server_path: req.file.path,
+    };
+    res.send(tempObj);
+  } catch (e) {
+    // removeFile(req.file.path);
+    res.status(500).send({ message: e.message });
+  }
 });
 
 /**
@@ -158,3 +162,20 @@ router.delete("/images/:id", async (req, res) => {
 });
 
 module.exports = router;
+
+/* ONLY for uploading images from games */
+// const storageGames = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "content/images/games/");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, new Date().toISOString() + file.originalname);
+//   },
+// });
+// const uploadGames = multer({
+//   storage: storageGames,
+//   limits: {
+//     fileSize: 1024 * 1024 * 10, // accepts 10 MB
+//   },
+//   fileFilter: fileFilter,
+// });

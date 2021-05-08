@@ -1,58 +1,24 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link, Redirect } from "react-router-dom";
+import { Route, useRouteMatch, Link } from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
 
-import { CgGames, CgPoll } from "react-icons/cg";
-import { RiVideoFill } from "react-icons/ri";
-import { FiLogOut } from "react-icons/fi";
-import { FaPoll } from "react-icons/fa";
+import SideMenu from "./SideMenu";
+import Select from "../Poll/Select";
+import Edit from "../Poll/Edit";
 
 const Menu = () => {
+  const { path, url } = useRouteMatch();
   return (
-    <div>
-      <Container>
-        <ButtonCustom
-          variant="contained"
-          color="default"
-          endIcon={<CgGames />}
-          size="large"
-          component={Link}
-          to={"/admin/games"}
-        >
-          Gerir Jogos
-        </ButtonCustom>
-        <ButtonCustom
-          variant="contained"
-          color="default"
-          endIcon={<RiVideoFill />}
-          size="large"
-          component={Link}
-          to={"/admin/videos/menu"}
-        >
-          Gerir Vídeos
-        </ButtonCustom>
-        <ButtonCustom
-          variant="contained"
-          color="default"
-          endIcon={<FaPoll />}
-          size="large"
-          component={Link}
-          to={"/admin/poll/menu"}
-        >
-          Gerir Votações
-        </ButtonCustom>
-        <ButtonCustom
-          variant="contained"
-          color="default"
-          endIcon={<FiLogOut />}
-          size="large"
-        >
-          Logout
-        </ButtonCustom>
-      </Container>
-    </div>
+    <Container>
+      <MenuWrapper>
+        <SideMenu />
+      </MenuWrapper>
+      <ContentWrapper>
+        <Route path={`${url}/poll/categories`} component={() => <Select />} />
+      </ContentWrapper>
+    </Container>
   );
 };
 
@@ -62,11 +28,18 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+`;
+const MenuWrapper = styled.div`
+  align-items: flex-start;
+  justify-content: center;
   flex-direction: column;
 `;
 
-const ButtonWrapper = styled.div`
-  margin: 2rem;
+const ContentWrapper = styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
 `;
 
 const ButtonCustom = styled(Button)`

@@ -12,6 +12,8 @@ import EditCategory from "../../components/Admin/Videos/EditCategory";
 import SelectVideo from "../../components/Admin/Videos/SelectVideo";
 import EditVideo from "../../components/Admin/Videos/EditVideo";
 
+import EditPoll from "../../components/Admin/Poll/Edit";
+
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ptPT } from "@material-ui/core/locale";
 
@@ -36,7 +38,13 @@ const theme = createMuiTheme({
 const Admin = () => {
   return (
     <ThemeProvider theme={theme}>
-      <Route exact path="/admin" component={Dashboard} />
+      <Switch>
+        <Route
+          path="/admin/poll/categories/edit/:pollId"
+          component={() => <EditPoll />}
+        />
+        <Route path="/admin" component={Dashboard} />
+      </Switch>
       <Route
         path="/admin/games"
         component={() => <GameMenu gamesNames={gamesIDsRefs} />}
@@ -59,7 +67,6 @@ const Admin = () => {
         path="/admin/edit/video/:videoId"
         component={() => <EditVideo messages={processInfoMessages} />}
       />
-
       <Switch>
         <Route
           path="/admin/videos/menu"
