@@ -63,6 +63,31 @@ router.post("/image", upload.single("image"), async (req, res, next) => {
 });
 
 /**
+ * Simple image delete
+ */
+router.delete("/image", async (req, res) => {
+  try {
+    // delete in the server
+    const { image } = req.body;
+    // console.log(image);
+
+    // variables sanitizer #TODO
+    const path = image.server_path;
+
+    // check if file exists
+    fs.access(path, (err) => {
+      if (!err) {
+        fs.unlinkSync(path);
+        console.log("image deleted");
+      }
+    });
+    res.send("image deleted " + image.id);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+/**
  * Upload a image to server and keep a reference to that in the database
  */
 router.post(

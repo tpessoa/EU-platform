@@ -5,8 +5,8 @@ import { Route, useRouteMatch, Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 
 import SideMenu from "./SideMenu";
-import Select from "../Poll/Select";
-import Edit from "../Poll/Edit";
+import SelectPoll from "../Poll/Select";
+import SelectWork from "../Works/Select";
 
 const Menu = () => {
   const { path, url } = useRouteMatch();
@@ -16,7 +16,11 @@ const Menu = () => {
         <SideMenu />
       </MenuWrapper>
       <ContentWrapper>
-        <Route path={`${url}/poll/categories`} component={() => <Select />} />
+        <Route
+          path={`${url}/poll/categories`}
+          component={() => <SelectPoll />}
+        />
+        <Route path={`${url}/poll/works`} component={() => <SelectWork />} />
       </ContentWrapper>
     </Container>
   );

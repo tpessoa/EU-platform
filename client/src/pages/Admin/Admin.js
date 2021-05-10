@@ -13,6 +13,7 @@ import SelectVideo from "../../components/Admin/Videos/SelectVideo";
 import EditVideo from "../../components/Admin/Videos/EditVideo";
 
 import EditPoll from "../../components/Admin/Poll/Edit";
+import EditWork from "../../components/Admin/Works/Edit";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ptPT } from "@material-ui/core/locale";
@@ -40,8 +41,12 @@ const Admin = () => {
     <ThemeProvider theme={theme}>
       <Switch>
         <Route
-          path="/admin/poll/categories/edit/:pollId"
+          path="/admin/poll/categories/edit/:id"
           component={() => <EditPoll />}
+        />
+        <Route
+          path="/admin/poll/works/edit/:id"
+          component={() => <EditWork />}
         />
         <Route path="/admin" component={Dashboard} />
       </Switch>

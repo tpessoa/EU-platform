@@ -128,7 +128,7 @@ router.post("/user-edit", async (req, res) => {
     const salt = bcrypt.genSaltSync(saltRounds);
     const new_hash = bcrypt.hashSync(password, salt);
     User.findOneAndUpdate(
-      userId,
+      { _id: userId },
       { username: username, password: new_hash },
       { new: true },
       function (err, result) {

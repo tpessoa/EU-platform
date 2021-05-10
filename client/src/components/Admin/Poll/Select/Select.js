@@ -63,7 +63,7 @@ const Select = () => {
         rows={rows}
         cols={cols}
         editURL={`${url}/edit`}
-        deleteURL={"/api/polls/category"}
+        deleteURL={"/api/polls/delete-poll"}
         fetchQuery={queryStringId}
       />
       <AddBtn url={`${url}/edit`} objId={"createNew"}>

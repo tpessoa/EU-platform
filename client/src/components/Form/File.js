@@ -29,12 +29,13 @@ const useStyles = makeStyles({
 
 const File = forwardRef((props, ref) => {
   const classes = useStyles();
-  const { description, imagepath, uploading } = props;
+  const { description, image } = props;
+  const { imagePath, uploading } = image;
 
   let imageSrc = DefaultImage;
   let newDescription = description + " (sem imagem)";
-  if (imagepath.id !== "defaultImage") {
-    imageSrc = "/api/content/images/2021-04-29T16:54:10.352Z1.jpg";
+  if (imagePath.id !== "defaultImage") {
+    imageSrc = imagePath.path + imagePath.server_path;
     newDescription = description;
   }
   let displayUpload = "";

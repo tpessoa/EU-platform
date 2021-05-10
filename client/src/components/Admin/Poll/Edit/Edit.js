@@ -8,7 +8,8 @@ import styled from "styled-components";
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
 import BackBtn from "../../Buttons/Back";
-import Form from "./Form";
+import AddNewForm from "./AddNewForm";
+import EditForm from "./EditForm";
 
 const Edit = () => {
   const { pollId } = useParams();
@@ -30,6 +31,9 @@ const Edit = () => {
     }
   );
 
+  if (isLoading) return <Loading />;
+  if (isError) return <Error error={error} />;
+
   let gameObj = {};
   if (fetchDataFlag) {
     const tempObj = { ...data.data };
@@ -39,8 +43,6 @@ const Edit = () => {
       description: description,
       thumbnail: thumbnail,
       id: _id,
-      // tempId isn't needed for updating the respectives images ID after saving bc a ID already exists
-      tempId: null,
     };
   } else {
     gameObj = {
@@ -51,25 +53,17 @@ const Edit = () => {
         path: "",
         server_path: "",
       },
-      category_ref_id: 1,
-      category_ref_name: "video",
-      id: null,
-      // this temporary Id is needed for updating the image (in images schema) with the respective ID after saving the category.
-      tempId: "temp_category_image",
     };
   }
-
-  if (isLoading) return <Loading />;
-  if (isError) return <Error error={error} />;
 
   return (
     <Container>
       <BackBtn>Voltar</BackBtn>
-      <Form
-        fields={gameObj}
-        createPoll={!fetchDataFlag}
-        fetchQuery={fetchQuery}
-      />
+      {fetchDataFlag ? (
+        <EditForm fields={gameObj} fetchQuery={fetchQuery} />
+      ) : (
+        <AddNewForm fields={gameObj} fetchQuery={fetchQuery} />
+      )}
     </Container>
   );
 };

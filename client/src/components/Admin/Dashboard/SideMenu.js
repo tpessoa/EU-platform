@@ -117,7 +117,7 @@ const SideMenu = () => {
             button
             className={classes.nested}
             component={Link}
-            to={`${url}/works`}
+            to={`${url}/poll/works`}
           >
             <ListItemIcon>
               <StarBorder />
