@@ -10,21 +10,18 @@ import Error from "../../../UI/Error";
 import FormDIV from "../../../Form/Form";
 import MainContainer from "../../../Form/MainContainer";
 import Input from "../../../Form/Input";
-import File from "../../../Form/File";
 import SaveButton from "../../../Form/PrimaryButton";
 import { Typography, MenuItem } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Select from "../../../Form/SelectInput";
 
-import { usePolls } from "../../../../hooks/usePolls";
-import { updateForm, filesToUploadInfo } from "../../../../globalFuncUtils";
 import { useCategories } from "../../../../hooks/useVideos";
 import * as yup from "yup";
 
 export const schemaCreateNew = yup.object().shape({
   category_id: yup
     .number()
-    .required("categoria de votação é obrigatória")
+    .required("categoria de vídeo é obrigatória")
     .moreThan(-1),
   url: yup.string().required(),
   title: yup.string().required(),
@@ -34,7 +31,7 @@ export const schemaCreateNew = yup.object().shape({
 export const schemaEdit = yup.object().shape({
   category_id: yup
     .number()
-    .required("categoria de votação é obrigatória")
+    .required("categoria de vídeo é obrigatória")
     .moreThan(-1),
   url: yup.string().required(),
   title: yup.string().required(),

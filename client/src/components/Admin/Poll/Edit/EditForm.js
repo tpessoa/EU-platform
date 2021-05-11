@@ -1,201 +1,102 @@
 import React, { useState, useCallback } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import styled from "styled-components";
+import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 
-import Loading from "../../../UI/Loading";
-import Error from "../../../UI/Error";
-import { verifyImageFileType } from "../../../../globalFuncUtils";
-
-import FormDIV from "../../../Form/Form";
+import Form from "../../../Form/Form";
 import MainContainer from "../../../Form/MainContainer";
 import Input from "../../../Form/Input";
-import File from "../../../Form/File";
+import UploadImage from "../../../Form/UploadImage";
 import SaveButton from "../../../Form/PrimaryButton";
-import { Typography } from "@material-ui/core";
+import { Typography, MenuItem } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 
-const schema = yup.object().shape({
+import { uploadImages } from "../../../../hooks/useUpload";
+
+import * as yup from "yup";
+import {
+  getRequiredFileSchema,
+  getOptionalFileSchema,
+} from "../../../Form/data.schemas";
+
+export const schemaCreateNew = yup.object().shape({
   title: yup.string().required(),
   description: yup.string().required(),
-  thumbnail: yup
-    .mixed()
-    // .test("null", "Deve inserir um ficheiro", (value) => {
-    //   if (value.length > 0) return true;
-    //   return false;
-    // })
-    .test(
-      "fileType",
-      "Tipo de ficheiro não suportado, apenas .jpg, .jpeg e .png",
-      (value) => {
-        if (!value.length) return true; // attachment is optional
-        return verifyImageFileType(value[0].type);
-      }
-    )
-    .test("fileSize", "Ficheiro muito grande, 5 MB Máx.", (value) => {
-      if (!value.length) return true; // attachment is optional
-      return value[0].size <= 5 * 1024 * 1024; // 8MB
-    }),
+  thumbnail: getRequiredFileSchema(),
 });
 
-let COUNTER = 0;
+export const schemaEdit = yup.object().shape({
+  title: yup.string().required(),
+  description: yup.string().required(),
+  thumbnail: getOptionalFileSchema(),
+});
 
-const Form = (props) => {
-  const { fields, fetchQuery } = props;
-  const { title, description, thumbnail, id } = fields;
+const EditForm = (props) => {
+  const { fields, createNew } = props;
   const history = useHistory();
 
+  const { _id, title, description, thumbnail, fetchQuery } = fields;
+
+  console.log(fields);
+
   const [uploading, setUploading] = useState(false);
-
-  const queryClient = new useQueryClient();
-  const mutation = useMutation(
-    (obj) => axios.post(`/api/polls/update-poll`, obj),
-    {
-      onSettled: () => queryClient.invalidateQueries(fetchQuery),
-    }
-  );
-
-  const deleteImage = useMutation((variables) =>
-    axios({
-      method: "delete",
-      url: "/api/upload/image",
-      data: { image: variables.image },
-    })
-  );
-
-  const uploadImage = useMutation(
-    (variables) =>
-      axios({
-        method: "post",
-        url: "/api/upload/image",
-        data: variables.formData,
-        headers: {
-          "content-Type": "multipart/form-data",
-        },
-      }),
-    {
-      onSuccess: (result, { userInput, type, size }) => {
-        // console.log(userInput[type]);
-
-        userInput[type] = { ...result.data };
-        if (++COUNTER === size) {
-          COUNTER = 0;
-          // console.log(userInput);
-          setUploading(false);
-          mutation.mutate(userInput);
-        }
-      },
-    }
-  );
-
-  const performImageNormalization = (userInput, arr_types) => {
-    const size = arr_types.length;
-    for (let i = 0; i < size; i++) {
-      const type = arr_types[i];
-      const form = new FormData();
-      form.append("image", userInput[type][0]);
-      uploadImage.mutate({
-        formData: form,
-        userInput: userInput,
-        type: type,
-        size: size,
-      });
-      console.log(fields[type]);
-      // delete previous image from server
-      deleteImage.mutate({ image: fields[type] });
-    }
-  };
-
-  const filesToUploadInfo = (userInput, arr_types) => {
-    let upload = [];
-    let update = [];
-    for (let i = 0; i < arr_types.length; i++) {
-      const type = arr_types[i];
-      if (userInput[type].length) {
-        upload.push(type);
-      } else {
-        update.push(type);
-      }
-    }
-    return { upload, update };
-  };
-
-  const updateForm = (userInput, types) => {
-    for (let i = 0; i < types.length; i++) {
-      const type = types[i];
-      userInput[type] = fields[type];
-    }
-    return userInput;
-  };
-
-  const onSubmit = (userInput) => {
-    let newUserInput = {
-      ...userInput,
-      _id: id,
-    };
-
-    setUploading(true);
-
-    let arr_types = ["thumbnail"];
-
-    const info = filesToUploadInfo(newUserInput, arr_types);
-    const arr_with_types_to_upload = info.upload;
-    const arr_with_types_to_update = info.update;
-
-    newUserInput = updateForm(newUserInput, arr_with_types_to_update);
-
-    // do normalization of submitted user input if there are files to upload
-    // i.e wait for the database upload ALL images
-    if (arr_with_types_to_upload.length > 0) {
-      performImageNormalization(newUserInput, arr_with_types_to_upload);
-    } else {
-      setUploading(false);
-      mutation.mutate(newUserInput);
-    }
-  };
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(createNew ? schemaCreateNew : schemaEdit),
     defaultValues: {
       title: title,
       description: description,
     },
   });
 
-  let displaySave = <SaveButton>Guardar</SaveButton>;
-  if (mutation.isLoading) {
-    displaySave = <Loading />;
-  } else if (mutation.isError) {
-    displaySave = (
-      <>
-        <p>Ocorreu um erro</p>
-        <SaveButton disabled>Guardar</SaveButton>
-        <Error error={mutation.error} />
-      </>
+  const queryClient = new useQueryClient();
+  const mutation = useMutation(
+    (obj) =>
+      axios({
+        method: "post",
+        url: "/api/polls/save-poll",
+        data: obj,
+      }),
+    {
+      onSettled: () => queryClient.invalidateQueries(fetchQuery),
+      onSuccess: (result) => {
+        setUploading(false);
+        console.log(result);
+        history.goBack();
+      },
+    }
+  );
+
+  const onSubmit = async (userInput) => {
+    let newUserInput = { ...userInput };
+    if (!createNew) {
+      newUserInput = {
+        ...userInput,
+        _id: _id,
+      };
+    }
+    setUploading(true);
+    const newUserInputUploaded = await uploadImages(
+      newUserInput,
+      fields,
+      createNew
     );
-  } else if (mutation.isSuccess) {
-    console.log(mutation.data.data);
-    history.goBack();
-  }
+    console.log(newUserInputUploaded);
+    mutation.mutate(newUserInputUploaded);
+  };
 
-  if (deleteImage.isSuccess) {
-    console.log(deleteImage.data.data);
-  }
-
+  let displaySave = <SaveButton>Guardar</SaveButton>;
   return (
     <MainContainer>
       <Typography component="h2" variant="h5">
-        Editar Votação
+        Editar Categoria
       </Typography>
-      <FormDIV onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Input
           {...register("title")}
           name="title"
@@ -213,22 +114,22 @@ const Form = (props) => {
           error={!!errors.description}
           helperText={errors?.description?.message}
         />
-        <File
+        <UploadImage
           {...register("thumbnail")}
           name="thumbnail"
           type="file"
           error={!!errors.thumbnail}
           helperText={errors?.thumbnail?.message}
-          description="Imagem de capa da votação"
+          description="Imagem da votação"
           image={{
             imagePath: thumbnail,
             uploading: uploading,
           }}
         />
         {displaySave}
-      </FormDIV>
+      </Form>
     </MainContainer>
   );
 };
 
-export default Form;
+export default EditForm;

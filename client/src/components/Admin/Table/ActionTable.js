@@ -49,7 +49,7 @@ const ActionTable = (props) => {
                   {row.title}
                 </TableCell>
                 {video && (
-                  <TableCell align="center">
+                  <TableCell>
                     <ImageWrapper>
                       <Image
                         imageObj={row.thumbnail}
@@ -61,7 +61,7 @@ const ActionTable = (props) => {
                   </TableCell>
                 )}
 
-                <TableCell align="center">
+                <TableCell>
                   <ActionsWrapper>
                     {row.actions.map((action, index) => {
                       if (action === "Editar") {

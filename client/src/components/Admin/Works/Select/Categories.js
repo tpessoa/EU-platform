@@ -1,7 +1,4 @@
-import React, { useEffect } from "react";
-import { useQuery } from "react-query";
-import styled from "styled-components";
-import axios from "axios";
+import React from "react";
 
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
@@ -13,7 +10,6 @@ import { usePolls } from "../../../../hooks/usePolls";
 
 const Categories = (props) => {
   const { setPoll } = props;
-  const queryStringId = "getAllPollCategories";
   const polls = usePolls();
 
   if (polls.isLoading) return <Loading />;

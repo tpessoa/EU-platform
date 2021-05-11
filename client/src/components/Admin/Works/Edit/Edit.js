@@ -10,31 +10,17 @@ import Error from "../../../UI/Error";
 import BackBtn from "../../Buttons/Back";
 
 import EditForm from "./EditForm";
+import { useWork } from "../../../../hooks/usePolls";
 
 const Edit = () => {
   const { id } = useParams();
   const fetchDataFlag = id.toString() !== "createNew";
-  const fetchQuery = `get${id}Info`;
-  const { isLoading, isError, error, data } = useQuery(
-    fetchQuery,
-    () =>
-      axios({
-        method: "get",
-        url: "/api/polls/work",
-        params: {
-          id: id,
-        },
-      }),
-    {
-      enabled: fetchDataFlag,
-      refetchOnWindowFocus: false,
-    }
-  );
+  const work = useWork(id, fetchDataFlag);
 
-  if (isLoading) return <Loading />;
-  if (isError) return <Error error={error} />;
+  if (work.isLoading) return <Loading />;
+  if (work.isError) return <Error error={work.error} />;
 
-  let workObj = null;
+  let workObj = {};
   if (!fetchDataFlag) {
     workObj = {
       title: "",
@@ -47,19 +33,17 @@ const Edit = () => {
       poll_id: "",
     };
   } else {
-    workObj = { ...data.data };
+    workObj = { ...work.data };
   }
 
   return (
     <Container>
       <BackBtn>Voltar</BackBtn>
-      {workObj && (
-        <EditForm
-          fields={workObj}
-          createNew={!fetchDataFlag}
-          fetchQuery={fetchQuery}
-        />
-      )}
+      <EditForm
+        fields={workObj}
+        createNew={!fetchDataFlag}
+        fetchQuery={["work", id]}
+      />
     </Container>
   );
 };

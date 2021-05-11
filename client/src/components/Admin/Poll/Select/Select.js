@@ -1,14 +1,12 @@
 import React from "react";
-import { useQuery } from "react-query";
 import { useRouteMatch } from "react-router-dom";
-import axios from "axios";
 import styled from "styled-components";
 
 import Table from "../../Table";
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
-import Edit from "../Edit";
 import AddBtn from "../../Buttons/Add";
+import { usePolls } from "../../../../hooks/usePolls";
 
 const createData = (id, title, thumbnail, actions) => {
   return { id, title, thumbnail, actions };
@@ -42,19 +40,12 @@ const generateRows = (data) => {
 
 const Select = () => {
   const { path, url } = useRouteMatch();
-  const queryStringId = "getAllPollCategories";
-  const { isLoading, isError, error, data } = useQuery(
-    queryStringId,
-    () => axios.get(`/api/polls/all-polls`),
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
+  const polls = usePolls();
 
-  if (isLoading) return <Loading />;
-  if (isError) return <Error error={error} />;
+  if (polls.isLoading) return <Loading />;
+  if (polls.isError) return <Error error={polls.error} />;
 
-  const rows = generateRows(data.data);
+  const rows = generateRows(polls.data);
 
   return (
     <Container>
@@ -64,7 +55,7 @@ const Select = () => {
         cols={cols}
         editURL={`${url}/edit`}
         deleteURL={"/api/polls/delete-poll"}
-        fetchQuery={queryStringId}
+        fetchQuery={"all-polls"}
       />
       <AddBtn url={`${url}/edit`} objId={"createNew"}>
         Adicionar nova categoria

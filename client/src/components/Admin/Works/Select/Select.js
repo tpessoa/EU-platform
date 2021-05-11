@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useRouteMatch } from "react-router-dom";
+import { useRouteMatch, useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import Categories from "./Categories";
@@ -10,6 +10,7 @@ import AddBtn from "../../Buttons/Add";
 const Select = () => {
   const { path, url } = useRouteMatch();
   const [currentPoll, setCurrentPoll] = useState(null);
+  const history = useHistory();
 
   return (
     <Container>

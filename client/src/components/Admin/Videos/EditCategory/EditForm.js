@@ -62,7 +62,11 @@ const EditForm = (props) => {
       }),
     {
       onSettled: () => queryClient.invalidateQueries(fetchQuery),
-      onSuccess: () => history.goBack(),
+      onSuccess: (result) => {
+        setUploading(false);
+        console.log(result);
+        history.goBack();
+      },
     }
   );
 
@@ -83,12 +87,6 @@ const EditForm = (props) => {
     console.log(newUserInputUploaded);
     mutation.mutate(newUserInputUploaded);
   };
-
-  if (mutation.isSuccess) {
-    setUploading(false);
-    console.log(mutation.data);
-    history.goBack();
-  }
 
   // console.log(mutation);
 
@@ -122,7 +120,7 @@ const EditForm = (props) => {
           type="file"
           error={!!errors.thumbnail}
           helperText={errors?.thumbnail?.message}
-          description="Imagem do trabalho"
+          description="Imagem da categoria"
           image={{
             imagePath: thumbnail,
             uploading: uploading,

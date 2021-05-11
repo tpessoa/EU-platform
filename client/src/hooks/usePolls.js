@@ -16,6 +16,17 @@ export const usePolls = () => {
   });
 };
 
+const getPoll = async (pollId) => {
+  const { data } = await axios.get(`/api/polls/poll/${pollId}`);
+  return data;
+};
+export const usePoll = (pollId, flag) => {
+  return useQuery(["poll", pollId], () => getPoll(pollId), {
+    refetchOnWindowFocus: false,
+    enabled: flag,
+  });
+};
+
 /**
  *
  * WORK
@@ -29,6 +40,17 @@ const getAllWorksInPoll = async (pollId) => {
 export const useWorksInPoll = (pollId) => {
   return useQuery(["works", pollId], () => getAllWorksInPoll(pollId), {
     refetchOnWindowFocus: false,
+  });
+};
+
+const getWork = async (workId) => {
+  const { data } = await axios.get(`/api/polls/work/${workId}`);
+  return data;
+};
+export const useWork = (workId, flag) => {
+  return useQuery(["work", workId], () => getWork(workId), {
+    refetchOnWindowFocus: false,
+    enabled: flag,
   });
 };
 

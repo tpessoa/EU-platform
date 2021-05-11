@@ -1,9 +1,10 @@
 import React from "react";
 import { useRouteMatch, Link } from "react-router-dom";
+import styled from "styled-components";
 
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
-
+import Image from "../../Card";
 import { useWorksInPoll, useDeleteWork } from "../../../../hooks/usePolls";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -78,11 +79,18 @@ const Table = (props) => {
                   {row.title}
                 </TableCell>
                 <TableCell>
-                  <Avatar
+                  {/* <Avatar
                     className={classes.large}
                     alt={row.photo.id}
                     src={`${row.photo.path + row.photo.server_path}`}
-                  />
+                  /> */}
+                  <ImageWrapper>
+                    <Image
+                      imageObj={row.photo}
+                      width={"100px"}
+                      height={"100px"}
+                    />
+                  </ImageWrapper>
                 </TableCell>
                 <TableCell>
                   <Button
@@ -108,3 +116,11 @@ const Table = (props) => {
 };
 
 export default Table;
+
+const ImageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;

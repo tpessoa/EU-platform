@@ -25,48 +25,31 @@ router.get("/all-polls", async (req, res) => {
 /**
  * POLL by ID
  */
-router.get("/poll", async (req, res) => {
+router.get("/poll/:id", async (req, res) => {
   try {
-    const { id } = req.query;
-    Poll.findById(id, (err, poll) => {
-      if (err) throw err;
-      if (!poll) return res.status(500).send({ message: "poll not found" });
-      res.send(poll);
-    });
+    const { id } = req.params;
+    const poll = await Poll.findById(id);
+    res.send(poll);
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
 });
 
-router.post("/add-poll", async (req, res) => {
+router.post("/save-poll", async (req, res) => {
   try {
-    console.log(req.body);
     const newPoll = new Poll({
       ...req.body,
     });
-    await newPoll.save();
-    res.send(newPoll);
-  } catch (e) {
-    res.status(500).send({ message: e.message });
-  }
-});
-
-router.post("/update-poll", async (req, res) => {
-  try {
-    const { _id, title, description, thumbnail } = req.body;
-    console.log(req.body);
-    Poll.findOneAndUpdate(
-      { _id: _id },
-      { title: title, description: description, thumbnail: thumbnail },
-      { new: true },
-      function (err, result) {
-        if (err) {
-          res.send(err);
-        } else {
-          res.send(result);
-        }
+    if (req.body._id) {
+      newPoll.isNew = false;
+    }
+    newPoll.save(function (err, saved) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(newPoll);
       }
-    );
+    });
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
@@ -117,14 +100,11 @@ router.get("/all-poll-works/:id", async (req, res) => {
   }
 });
 
-router.get("/work", async (req, res) => {
+router.get("/work/:id", async (req, res) => {
   try {
-    const { id } = req.query;
-    Work.findById(id, (err, work) => {
-      if (err) throw err;
-      if (!work) return res.status(500).send({ message: "work not found" });
-      res.send(work);
-    });
+    const { id } = req.params;
+    const work = await Work.findById(id);
+    res.send(work);
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
