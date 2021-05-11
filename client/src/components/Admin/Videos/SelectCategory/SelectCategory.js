@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import axios from "axios";
+import React from "react";
+import { useLocation, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 
-import { useQuery } from "react-query";
+import { useCategories } from "../../../../hooks/useVideos";
 
 import Table from "../../Table";
 import AddCategory from "../../Buttons/Add";
-import BackBtn from "../../Buttons/Back";
-import Snackbar from "../../../Snackbar";
 
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
@@ -43,40 +40,33 @@ const generateRows = (data) => {
   return tempRows;
 };
 
-const Categories = () => {
-  const queryStringId = "getAllVideoCategories";
-  const { isLoading, isError, error, data } = useQuery(
-    queryStringId,
-    () => axios.get(`/api/videos/categories/type/video`),
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
+const SelectCategory = () => {
+  const { path, url } = useRouteMatch();
+  const categories = useCategories();
 
-  if (isLoading) return <Loading />;
-  if (isError) return <Error error={error} />;
+  if (categories.isLoading) return <Loading />;
+  if (categories.isError) return <Error error={categories.error} />;
 
-  const rows = generateRows(data.data);
+  const rows = generateRows(categories.data);
 
   return (
     <Container>
-      <BackBtn url={"/admin/videos/menu"}>Voltar</BackBtn>
       <Table
         video={true}
         rows={rows}
         cols={cols}
-        editURL={"/admin/edit/category"}
+        editURL={`${url}/edit`}
         deleteURL={"/api/videos/category"}
-        fetchQuery={queryStringId}
+        fetchQuery={"video-categories"}
       />
-      <AddCategory url={"/admin/edit/category"} objId={"createNew"}>
+      <AddCategory url={`${url}/edit`} objId={"createNew"}>
         Adicionar nova categoria
       </AddCategory>
     </Container>
   );
 };
 
-export default Categories;
+export default SelectCategory;
 
 const Container = styled.div`
   display: flex;

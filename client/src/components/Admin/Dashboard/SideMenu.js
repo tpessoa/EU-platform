@@ -78,13 +78,23 @@ const SideMenu = () => {
       </ListItem>
       <Collapse in={openVideos} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItem button className={classes.nested}>
+          <ListItem
+            button
+            className={classes.nested}
+            component={Link}
+            to={`${url}/videos/categories`}
+          >
             <ListItemIcon>
               <StarBorder />
             </ListItemIcon>
             <ListItemText primary="Categorias" />
           </ListItem>
-          <ListItem button className={classes.nested}>
+          <ListItem
+            button
+            className={classes.nested}
+            component={Link}
+            to={`${url}/videos`}
+          >
             <ListItemIcon>
               <StarBorder />
             </ListItemIcon>

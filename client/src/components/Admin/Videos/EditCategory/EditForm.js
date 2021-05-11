@@ -1,140 +1,164 @@
 import React, { useState, useCallback } from "react";
-import styled from "styled-components";
-import axios from "axios";
 import { useMutation, useQueryClient } from "react-query";
+import { useHistory } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
 
-import TextField from "../../../Input/TextField/TextFieldNew";
-import ImageField from "../../ImageField";
-import SaveBtn from "../../Buttons/Save";
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
 
-import GetImages from "../../UploadImage/GetImages";
+import Form from "../../../Form/Form";
+import MainContainer from "../../../Form/MainContainer";
+import Input from "../../../Form/Input";
+import UploadImage from "../../../Form/UploadImage";
+import SaveButton from "../../../Form/PrimaryButton";
+import { Typography, MenuItem } from "@material-ui/core";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Select from "../../../Form/SelectInput";
 
-import Typography from "@material-ui/core/Typography";
+import { schemaCreateNew, schemaEdit } from "./data.schemas";
 
 const EditForm = (props) => {
-  const { fields, createCategory } = props;
+  const { fields, createNew } = props;
+  const history = useHistory();
 
-  const { title, description, thumbnail, fetchQuery, id, tempId } = fields;
+  const { _id, title, description, thumbnail, fetchQuery } = fields;
 
-  const [fieldsUpdated, setFieldsUpdated] = useState(false);
-  const fieldUpdatedHandler = useCallback(() => {
-    if (mutation.isSuccess && createCategory) {
-      console.log("botao inativo");
-      setFieldsUpdated(false);
-    } else {
-      setFieldsUpdated(true);
-    }
-  }, [fields]);
-
-  let URL_str = "";
-  if (createCategory) {
-    URL_str = `/api/videos/categories/add`;
-  } else {
-    URL_str = `/api/videos/categories/${id}`;
-  }
-  const queryClient = new useQueryClient();
-  const mutation = useMutation((obj) => axios.post(URL_str, obj), {
-    onSettled: () => queryClient.invalidateQueries(fetchQuery),
+  const {
+    trigger,
+    unregister,
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(createNew ? schemaCreateNew : schemaEdit),
+    defaultValues: {
+      title: title,
+      description: description,
+    },
   });
 
-  const inputChangeHandler = (userInput, ref) => {
-    // console.log(userInput);
-    // console.log(ref);
-    fields[ref] = userInput;
-
-    fieldUpdatedHandler();
-  };
-
-  const performSave = () => {
-    const newObj = { ...fields };
-    console.log(newObj);
-
-    mutation.mutate(newObj);
-
-    setFieldsUpdated(false);
-  };
-
-  let displaySave = "";
-  if (mutation.isLoading) {
-    displaySave = <Loading />;
-  } else if (mutation.isError) {
-    displaySave = <Error error={mutation.error} />;
-  } else if (mutation.isSuccess) {
-    // if there's a tempId update the id in the images collections
-    let update;
-    if (tempId != null) {
-      // swap tempId for data._id
-      update = (
-        <GetImages tempId={tempId} permanentId={mutation.data.data._id} />
-      );
+  const queryClient = new useQueryClient();
+  const mutation = useMutation(
+    (obj) =>
+      axios({
+        method: "post",
+        url: "/api/videos/add-category",
+        data: obj,
+      }),
+    {
+      onSettled: () => queryClient.invalidateQueries(fetchQuery),
     }
-    displaySave = (
-      <>
-        {update}
-        <SaveBtn
-          clickHandler={performSave}
-          saved={mutation.isSuccess && !fieldsUpdated}
-        >
-          Guardar
-        </SaveBtn>
-      </>
-    );
-  } else {
-    displaySave = (
-      <SaveBtn clickHandler={performSave} saved={false}>
-        Guardar
-      </SaveBtn>
-    );
-  }
+  );
 
+  const uploadFile = async (e) => {
+    trigger("thumbnail_input").then(function (err) {
+      console.log(err);
+    });
+    // if (!!errors.thumbnail_input) {
+    //   console.log("erros");
+    // }
+    // console.log(result);
+    // if (result) {
+    //   console.log(e.target.name);
+    //   console.log(e.target.files[0]);
+    //   const form = new FormData();
+    //   form.append("image", e.target.files[0]);
+    //   uploadImage.mutate({
+    //     formData: form,
+    //     inputField: e.target.name,
+    //   });
+    // }
+  };
+
+  const uploadImages = async (input) => {
+    Object.entries(input).forEach(async ([key, value]) => {
+      // verify input files
+      if (value instanceof FileList) {
+        console.log(key);
+        // verify if its a new or not changed input
+        if (!value.length) {
+          console.log("no file");
+          // verify if values exists in database
+
+          // verify if its updated
+        } else if (value.length) {
+          console.log("file exists");
+          const form = new FormData();
+          form.append("image", value[0]);
+          if (!createNew) {
+            // delete old image
+            // upload new
+          } else {
+            // upload new
+            console.log("uploading");
+            // wait for database
+            await axios({
+              method: "post",
+              url: "/api/upload/image",
+              data: form,
+              headers: {
+                "content-Type": "multipart/form-data",
+              },
+            })
+              .then((res) => {
+                console.log(res.data);
+                input[key] = { ...res.data };
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          }
+        }
+      }
+    });
+    console.log("returning");
+    return input;
+  };
+
+  const onSubmit = async (userInput) => {
+    userInput = await uploadImages(userInput);
+    console.log(userInput);
+    mutation.mutate(userInput);
+  };
+
+  let displaySave = <SaveButton>Guardar</SaveButton>;
   return (
-    <Container>
-      <Wrapper>
-        <Typography variant="h6" gutterBottom>
-          {`Editar categoria ${fields.title}`}
-        </Typography>
-        <TextField
-          field_ref={"title"}
-          label={"Título"}
-          value={title}
-          parentChangeHandler={inputChangeHandler}
+    <MainContainer>
+      <Typography component="h2" variant="h5">
+        Editar Categoria
+      </Typography>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Input
+          {...register("title")}
+          name="title"
+          type="text"
+          label="Título"
+          error={!!errors.title}
+          helperText={errors?.title?.message}
         />
-        <TextField
-          field_ref={"description"}
-          label={"Descrição"}
-          value={description}
-          parentChangeHandler={inputChangeHandler}
+        <Input
+          {...register("description")}
+          name="description"
+          type="text"
+          label="Descrição"
+          multiline
+          error={!!errors.description}
+          helperText={errors?.description?.message}
         />
-        <ImageField
-          field_ref={"thumbnail"}
-          title={"Image do ícon da categoria"}
-          imageObj={thumbnail}
-          parentChangeHandler={inputChangeHandler}
-          linkedObj={tempId ? tempId : id}
+        <UploadImage
+          {...register("thumbnail")}
+          name="thumbnail"
+          type="file"
+          error={!!errors.thumbnail}
+          helperText={errors?.thumbnail?.message}
+          description="Imagem do trabalho"
         />
         {displaySave}
-      </Wrapper>
-    </Container>
+      </Form>
+    </MainContainer>
   );
 };
 
 export default EditForm;
-
-const Container = styled.div`
-  width: 100%;
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-`;
-
-const Wrapper = styled.div`
-  width: 80%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-`;

@@ -136,8 +136,16 @@ router.post("/save-work", async (req, res) => {
     const newWork = new Work({
       ...req.body,
     });
-    await newWork.save();
-    res.send(newWork);
+    if (req.body._id) {
+      newWork.isNew = false;
+    }
+    newWork.save(function (err, saved) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(newWork);
+      }
+    });
   } catch (e) {
     res.status(500).send({ message: e.message });
   }

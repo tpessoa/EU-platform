@@ -18,6 +18,7 @@ import Select from "../../../Form/SelectInput";
 
 import { schemaCreateNew, schemaEdit } from "./data.schemas";
 import { usePolls } from "../../../../hooks/usePolls";
+import { updateForm, filesToUploadInfo } from "../../../../globalFuncUtils";
 
 let COUNTER = 0;
 
@@ -43,6 +44,14 @@ const EditForm = (props) => {
     }
   );
 
+  const deleteImage = useMutation((variables) =>
+    axios({
+      method: "delete",
+      url: "/api/upload/image",
+      data: { image: variables.image },
+    })
+  );
+
   const uploadImage = useMutation(
     (variables) =>
       axios({
@@ -66,7 +75,8 @@ const EditForm = (props) => {
     }
   );
 
-  const performImageNormalization = (userInput, arr_types, size) => {
+  const performImageNormalization = (userInput, arr_types) => {
+    const size = arr_types.length;
     for (let i = 0; i < size; i++) {
       const type = arr_types[i];
       const form = new FormData();
@@ -77,18 +87,44 @@ const EditForm = (props) => {
         type: type,
         size: size,
       });
+      console.log(fields[type]);
+      // delete previous image from server
+      deleteImage.mutate({ image: fields[type] });
     }
   };
 
   const onSubmit = (userInput) => {
     userInput.poll_id = polls.data[userInput.poll_id]._id;
-    console.log(userInput);
+    let newUserInput = "";
+    if (createNew) {
+      newUserInput = {
+        ...userInput,
+      };
+    } else {
+      newUserInput = {
+        ...userInput,
+        _id: _id,
+      };
+    }
 
-    // const arr_data = [userInput.photo[0]];
-    // const arr_types = ["photo"];
-    // const size = arr_data.length;
-    // setUploading(true);
-    // performImageNormalization(userInput, arr_types, size);
+    setUploading(true);
+    const arr_types = ["photo"];
+    const info = filesToUploadInfo(newUserInput, arr_types);
+
+    const arr_with_types_to_upload = info.upload;
+    const arr_with_types_to_update = info.update;
+    newUserInput = updateForm(newUserInput, arr_with_types_to_update, fields);
+
+    // do normalization of submitted user input if there are files to upload
+    // i.e wait for the database upload ALL images
+    if (arr_with_types_to_upload.length > 0 || createNew) {
+      console.log("uploading images");
+      performImageNormalization(newUserInput, arr_with_types_to_upload);
+    } else {
+      console.log("not uploading images");
+      setUploading(false);
+      mutation.mutate(newUserInput);
+    }
   };
 
   let displaySave = <SaveButton>Guardar</SaveButton>;
@@ -107,6 +143,10 @@ const EditForm = (props) => {
     history.goBack();
   }
 
+  const poll_id_index = polls.isSuccess
+    ? polls.data.findIndex((index) => index._id === poll_id)
+    : 0;
+
   const {
     register,
     control,
@@ -118,9 +158,7 @@ const EditForm = (props) => {
     defaultValues: {
       title: title,
       description: description,
-      poll_id: polls.isSuccess
-        ? polls.data.findIndex((index) => index === poll_id)
-        : 0,
+      poll_id: poll_id_index,
     },
   });
 
@@ -178,6 +216,10 @@ const EditForm = (props) => {
           image={{
             imagePath: photo,
             uploading: uploading,
+          }}
+          onChange={(e) => {
+            const value = e.target.value;
+            console.log(e);
           }}
         />
         {displaySave}

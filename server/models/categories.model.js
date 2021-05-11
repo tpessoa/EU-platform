@@ -3,8 +3,6 @@ const Schema = mongoose.Schema;
 
 const categoriesSchema = new Schema(
   {
-    category_ref_id: { type: Number, require: true },
-    category_ref_name: { type: String, require: true },
     title: { type: String, require: true },
     description: String,
     thumbnail: { type: Object, require: true },

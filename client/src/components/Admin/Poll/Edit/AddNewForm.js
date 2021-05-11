@@ -17,7 +17,6 @@ import SaveButton from "../../../Form/PrimaryButton";
 import { Typography } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import UploadImages from "../../../Form/Upload/UploadImages";
 
 const schema = yup.object().shape({
   title: yup.string().required(),

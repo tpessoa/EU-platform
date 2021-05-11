@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Route, useRouteMatch, Link } from "react-router-dom";
+import { Route, useRouteMatch, Link, Switch } from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
 
 import SideMenu from "./SideMenu";
 import SelectPoll from "../Poll/Select";
 import SelectWork from "../Works/Select";
+import SelectCategory from "../Videos/SelectCategory/SelectCategory";
 
 const Menu = () => {
   const { path, url } = useRouteMatch();
@@ -16,11 +17,18 @@ const Menu = () => {
         <SideMenu />
       </MenuWrapper>
       <ContentWrapper>
-        <Route
-          path={`${url}/poll/categories`}
-          component={() => <SelectPoll />}
-        />
-        <Route path={`${url}/poll/works`} component={() => <SelectWork />} />
+        <Switch>
+          <Route
+            path={`${url}/poll/categories`}
+            component={() => <SelectPoll />}
+          />
+          <Route path={`${url}/poll/works`} component={() => <SelectWork />} />
+          <Route
+            path={`${url}/videos/categories`}
+            component={() => <SelectCategory />}
+          />
+          <Route path={`${url}/videos`} component={() => <SelectCategory />} />
+        </Switch>
       </ContentWrapper>
     </Container>
   );

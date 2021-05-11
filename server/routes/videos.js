@@ -5,10 +5,37 @@ let Videos = require("../models/videos.model");
 /**
  * Get all categories
  */
-router.get("/categories", async (req, res) => {
+router.get("/all-categories", async (req, res) => {
   try {
-    let category = await Categories.find({});
+    const categories = await Categories.find({});
+    res.send(categories);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+/**
+ * Get specific category by id
+ */
+router.get("/category/:id", async (req, res) => {
+  try {
+    const category = await Categories.findOne({
+      _id: req.params.id,
+    });
     res.send(category);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.post("/add-category", async (req, res) => {
+  try {
+    console.log(req.body);
+    const newCategory = new Categories({
+      ...req.body,
+    });
+    await newCategory.save();
+    res.send(newCategory);
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
