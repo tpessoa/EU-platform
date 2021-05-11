@@ -31,8 +31,18 @@ const Navbar = (props) => {
           indicatorColor="secondary"
           textColor="primary"
         >
-          <Tab icon={<DashboardIcon />} label="Dashboard" />
-          <Tab icon={<PersonPinIcon />} label="Perfil" />
+          <Tab
+            icon={<DashboardIcon />}
+            label="Dashboard"
+            component={Link}
+            to={"/admin"}
+          />
+          <Tab
+            icon={<PersonPinIcon />}
+            label="Perfil"
+            component={Link}
+            to={"/admin/perfil"}
+          />
           <Tab
             icon={<ExitToAppIcon />}
             label="Logout"

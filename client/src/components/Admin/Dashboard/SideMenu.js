@@ -24,8 +24,12 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import StarBorder from "@material-ui/icons/StarBorder";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
-import YouTubeIcon from "@material-ui/icons/YouTube";
 import PollIcon from "@material-ui/icons/Poll";
+import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import WorkIcon from "@material-ui/icons/Work";
+import CategoryIcon from "@material-ui/icons/Category";
+import YouTubeIcon from "@material-ui/icons/YouTube";
+import SubscriptionsIcon from "@material-ui/icons/Subscriptions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,6 +45,8 @@ const useStyles = makeStyles((theme) => ({
 const SideMenu = () => {
   const { path, url } = useRouteMatch();
   const classes = useStyles();
+
+  const [openGames, setOpenGames] = useState(false);
   const [openVideos, setOpenVideos] = useState(false);
   const [openPolls, setOpenPolls] = useState(false);
 
@@ -71,7 +77,7 @@ const SideMenu = () => {
 
       <ListItem button onClick={handleVideosClick}>
         <ListItemIcon>
-          <YouTubeIcon />
+          <SubscriptionsIcon />
         </ListItemIcon>
         <ListItemText primary="Vídeos" />
         {openVideos ? <ExpandLess /> : <ExpandMore />}
@@ -85,7 +91,7 @@ const SideMenu = () => {
             to={`${url}/videos/categories`}
           >
             <ListItemIcon>
-              <StarBorder />
+              <CategoryIcon />
             </ListItemIcon>
             <ListItemText primary="Categorias" />
           </ListItem>
@@ -96,7 +102,7 @@ const SideMenu = () => {
             to={`${url}/videos`}
           >
             <ListItemIcon>
-              <StarBorder />
+              <YouTubeIcon />
             </ListItemIcon>
             <ListItemText primary="Vídeos" />
           </ListItem>
@@ -119,7 +125,7 @@ const SideMenu = () => {
             to={`${url}/poll/categories`}
           >
             <ListItemIcon>
-              <StarBorder />
+              <CategoryIcon />
             </ListItemIcon>
             <ListItemText primary="Categorias" />
           </ListItem>
@@ -130,7 +136,7 @@ const SideMenu = () => {
             to={`${url}/poll/works`}
           >
             <ListItemIcon>
-              <StarBorder />
+              <WorkIcon />
             </ListItemIcon>
             <ListItemText primary="Trabalhos" />
           </ListItem>

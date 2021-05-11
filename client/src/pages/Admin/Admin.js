@@ -3,13 +3,6 @@ import { Route, Switch } from "react-router-dom";
 
 import Dashboard from "../../components/Admin/Dashboard";
 
-import GameMenu from "../../components/Admin/Games/Menu";
-import EditGame from "../../components/Admin/Games/EditGame";
-
-import VideosMenu from "../../components/Admin/Videos/VideosMenu";
-import EditCategory from "../../components/Admin/Videos/EditCategory";
-import SelectVideo from "../../components/Admin/Videos/SelectVideo";
-
 import EditPoll from "../../components/Admin/Poll/Edit";
 import EditWork from "../../components/Admin/Works/Edit";
 import EditVideoCategory from "../../components/Admin/Videos/EditCategory";
@@ -17,8 +10,6 @@ import EditVideo from "../../components/Admin/Videos/EditVideo";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ptPT } from "@material-ui/core/locale";
-
-import { gamesIDsRefs, processInfoMessages } from "./games/Data";
 
 const theme = createMuiTheme({
   palette: {

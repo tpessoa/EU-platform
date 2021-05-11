@@ -1,77 +1,85 @@
 import React, { useState } from "react";
-import { FaStar } from "react-icons/fa";
-import Modal from "react-modal";
-import PollModal from "../PollModal";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 
-import "./modal.css";
+import FSDialog from "./Dialog";
 
-import {
-  Container,
-  CardWrapper,
-  Card,
-  CardTopInfo,
-  CardBottomInfo,
-  Author,
-  Votes,
-  VoteIcon,
-} from "./PollCard.elements";
+const useStyles = makeStyles({
+  root: {
+    width: 300,
+    margin: "1rem",
+    cursor: "default",
+    textDecoration: "none",
+  },
+  media: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "177.77777777778%", // 16:9
+  },
+  description: {
+    textAlign: "center",
+  },
+});
 
-const customStyles = {
-  content: {},
-};
-Modal.setAppElement(document.getElementById("root"));
+const PollCard = (props) => {
+  const { index, work, setImageOpen, setFormOpen, setSelected } = props;
+  const { title, description, photo } = work;
+  const classes = useStyles();
 
-const PollCard = ({ card }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [updateCard, setUpdateCard] = useState(false);
-
-  const openModal = () => {
-    setIsOpen(true);
+  const handleClick = () => {
+    setImageOpen(true);
   };
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-  const afterOpenModal = () => {
-    console.log("open");
+
+  const handleCardClick = () => {
+    setSelected(index);
   };
 
-  const voteHandler = () => {
-    console.log("vote evaluation");
-    // verify inputs inserted
-    // spinner
-    // display success or failure
-    card.votes = 1000;
-    // close modal
-    setIsOpen(false);
+  const handleBtnClick = () => {
+    setFormOpen(true);
   };
 
   return (
-    <Container>
-      <CardWrapper onClick={openModal}>
-        <Card src={card.img} />
-        <CardTopInfo>{card.title}</CardTopInfo>
-        <CardBottomInfo>
-          <Author>{card.author}</Author>
-          <Votes>
-            <p>{card.votes}</p>
-            <VoteIcon>
-              <FaStar />
-            </VoteIcon>
-          </Votes>
-        </CardBottomInfo>
-      </CardWrapper>
-      <Modal
-        isOpen={isOpen}
-        closeTimeoutMS={500}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-        className="modal"
-        overlayClassName="overlay"
-        id="FORM_MODAL"
-      >
-        <PollModal card={card} />
-      </Modal>
-    </Container>
+    <Card className={classes.root} onClick={handleCardClick}>
+      <CardActionArea onClick={handleClick}>
+        <CardMedia
+          component="img"
+          alt={photo.id}
+          height="250"
+          image={photo.path + photo.server_path}
+          title={title}
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="h2">
+            Lizard
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Lizards are a widespread group of squamate reptiles, with over 6,000
+            species, ranging across all continents except Antarctica
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+      <CardActions>
+        <Button
+          size="large"
+          color="primary"
+          variant="text"
+          fullWidth
+          onClick={handleBtnClick}
+        >
+          Votar
+        </Button>
+        {/* <Button size="small" color="primary">
+          Ampliar
+        </Button> */}
+      </CardActions>
+    </Card>
   );
 };
 

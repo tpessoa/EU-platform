@@ -38,10 +38,8 @@ const Menu = () => {
 export default Menu;
 
 const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
 `;
 const MenuWrapper = styled.div`
   align-items: flex-start;
@@ -51,7 +49,7 @@ const MenuWrapper = styled.div`
 
 const ContentWrapper = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   flex-direction: column;
 `;
 

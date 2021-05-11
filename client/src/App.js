@@ -13,6 +13,7 @@ import Games from "./pages/Games";
 import Videos from "./pages/Videos";
 import Book from "./pages/Book";
 import Poll from "./pages/Poll";
+import Works from "./components/Poll/Works";
 import AdminDashboard from "./pages/Admin";
 import VideoGallery from "./components/Videos/VideoGallery";
 
@@ -28,7 +29,8 @@ function App() {
         <Route exact path="/videos" component={Videos} />
         <Route exact path="/videos/category" component={VideoGallery} />
         <Route path="/book" component={Book} />
-        <Route path="/poll" component={Poll} />
+        <Route path="/polls/:id" component={Works} />
+        <Route path="/polls" component={Poll} />
         <ProtectedRoute path="/admin" component={AdminDashboard} />
         <Route path="/" exact component={Home} />
         <Route path="*" component={() => "404 NOT FOUND"} />
