@@ -34,8 +34,7 @@ const Edit = () => {
   if (isLoading) return <Loading />;
   if (isError) return <Error error={error} />;
 
-  let displayForm = "";
-  let workObj = "";
+  let workObj = null;
   if (!fetchDataFlag) {
     workObj = {
       title: "",
@@ -47,28 +46,20 @@ const Edit = () => {
       },
       poll_id: "",
     };
-    displayForm = (
-      <EditForm
-        fields={workObj}
-        createNew={!fetchDataFlag}
-        fetchQuery={fetchQuery}
-      />
-    );
   } else {
     workObj = { ...data.data };
-    displayForm = (
-      <EditForm
-        fields={workObj}
-        createNew={!fetchDataFlag}
-        fetchQuery={fetchQuery}
-      />
-    );
   }
 
   return (
     <Container>
       <BackBtn>Voltar</BackBtn>
-      {displayForm}
+      {workObj && (
+        <EditForm
+          fields={workObj}
+          createNew={!fetchDataFlag}
+          fetchQuery={fetchQuery}
+        />
+      )}
     </Container>
   );
 };

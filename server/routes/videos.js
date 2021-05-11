@@ -30,11 +30,15 @@ router.get("/category/:id", async (req, res) => {
 
 router.post("/add-category", async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const newCategory = new Categories({
       ...req.body,
     });
+    if (req.body._id) {
+      newCategory.isNew = false;
+    }
     await newCategory.save();
+    console.log(newCategory);
     res.send(newCategory);
   } catch (e) {
     res.status(500).send({ message: e.message });

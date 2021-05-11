@@ -4,9 +4,6 @@ import { useHistory } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 
-import Loading from "../../../UI/Loading";
-import Error from "../../../UI/Error";
-
 import Form from "../../../Form/Form";
 import MainContainer from "../../../Form/MainContainer";
 import Input from "../../../Form/Input";
@@ -14,9 +11,26 @@ import UploadImage from "../../../Form/UploadImage";
 import SaveButton from "../../../Form/PrimaryButton";
 import { Typography, MenuItem } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Select from "../../../Form/SelectInput";
 
-import { schemaCreateNew, schemaEdit } from "./data.schemas";
+import { uploadImages } from "../../../../hooks/useUpload";
+
+import * as yup from "yup";
+import {
+  getRequiredFileSchema,
+  getOptionalFileSchema,
+} from "../../../Form/data.schemas";
+
+export const schemaCreateNew = yup.object().shape({
+  title: yup.string().required(),
+  description: yup.string().required(),
+  thumbnail: getRequiredFileSchema(),
+});
+
+export const schemaEdit = yup.object().shape({
+  title: yup.string().required(),
+  description: yup.string().required(),
+  thumbnail: getOptionalFileSchema(),
+});
 
 const EditForm = (props) => {
   const { fields, createNew } = props;
@@ -24,12 +38,11 @@ const EditForm = (props) => {
 
   const { _id, title, description, thumbnail, fetchQuery } = fields;
 
+  const [uploading, setUploading] = useState(false);
+
   const {
-    trigger,
-    unregister,
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(createNew ? schemaCreateNew : schemaEdit),
@@ -49,79 +62,35 @@ const EditForm = (props) => {
       }),
     {
       onSettled: () => queryClient.invalidateQueries(fetchQuery),
+      onSuccess: () => console.log("success"),
     }
   );
 
-  const uploadFile = async (e) => {
-    trigger("thumbnail_input").then(function (err) {
-      console.log(err);
-    });
-    // if (!!errors.thumbnail_input) {
-    //   console.log("erros");
-    // }
-    // console.log(result);
-    // if (result) {
-    //   console.log(e.target.name);
-    //   console.log(e.target.files[0]);
-    //   const form = new FormData();
-    //   form.append("image", e.target.files[0]);
-    //   uploadImage.mutate({
-    //     formData: form,
-    //     inputField: e.target.name,
-    //   });
-    // }
-  };
-
-  const uploadImages = async (input) => {
-    Object.entries(input).forEach(async ([key, value]) => {
-      // verify input files
-      if (value instanceof FileList) {
-        console.log(key);
-        // verify if its a new or not changed input
-        if (!value.length) {
-          console.log("no file");
-          // verify if values exists in database
-
-          // verify if its updated
-        } else if (value.length) {
-          console.log("file exists");
-          const form = new FormData();
-          form.append("image", value[0]);
-          if (!createNew) {
-            // delete old image
-            // upload new
-          } else {
-            // upload new
-            console.log("uploading");
-            // wait for database
-            await axios({
-              method: "post",
-              url: "/api/upload/image",
-              data: form,
-              headers: {
-                "content-Type": "multipart/form-data",
-              },
-            })
-              .then((res) => {
-                console.log(res.data);
-                input[key] = { ...res.data };
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          }
-        }
-      }
-    });
-    console.log("returning");
-    return input;
-  };
-
   const onSubmit = async (userInput) => {
-    userInput = await uploadImages(userInput);
-    console.log(userInput);
-    mutation.mutate(userInput);
+    let newUserInput = { ...userInput };
+    if (!createNew) {
+      newUserInput = {
+        ...userInput,
+        _id: _id,
+      };
+    }
+    setUploading(true);
+    const newUserInputUploaded = await uploadImages(
+      newUserInput,
+      fields,
+      createNew
+    );
+    console.log(newUserInputUploaded);
+    mutation.mutate(newUserInputUploaded);
   };
+
+  if (mutation.isSuccess) {
+    setUploading(false);
+    console.log(mutation.data);
+    history.goBack();
+  }
+
+  // console.log(mutation);
 
   let displaySave = <SaveButton>Guardar</SaveButton>;
   return (
@@ -154,6 +123,10 @@ const EditForm = (props) => {
           error={!!errors.thumbnail}
           helperText={errors?.thumbnail?.message}
           description="Imagem do trabalho"
+          image={{
+            imagePath: thumbnail,
+            uploading: uploading,
+          }}
         />
         {displaySave}
       </Form>
