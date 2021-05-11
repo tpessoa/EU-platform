@@ -57,12 +57,12 @@ const EditForm = (props) => {
     (obj) =>
       axios({
         method: "post",
-        url: "/api/videos/add-category",
+        url: "/api/videos/save-category",
         data: obj,
       }),
     {
       onSettled: () => queryClient.invalidateQueries(fetchQuery),
-      onSuccess: () => console.log("success"),
+      onSuccess: () => history.goBack(),
     }
   );
 

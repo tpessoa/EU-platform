@@ -7,7 +7,8 @@ import Button from "@material-ui/core/Button";
 import SideMenu from "./SideMenu";
 import SelectPoll from "../Poll/Select";
 import SelectWork from "../Works/Select";
-import SelectCategory from "../Videos/SelectCategory/SelectCategory";
+import SelectCategory from "../Videos/SelectCategory";
+import SelectVideo from "../Videos/SelectVideo";
 
 const Menu = () => {
   const { path, url } = useRouteMatch();
@@ -27,7 +28,7 @@ const Menu = () => {
             path={`${url}/videos/categories`}
             component={() => <SelectCategory />}
           />
-          <Route path={`${url}/videos`} component={() => <SelectCategory />} />
+          <Route path={`${url}/videos`} component={() => <SelectVideo />} />
         </Switch>
       </ContentWrapper>
     </Container>

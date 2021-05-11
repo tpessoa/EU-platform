@@ -5,40 +5,12 @@ import styled from "styled-components";
 import { useCategories } from "../../../../hooks/useVideos";
 
 import Table from "../../Table";
+import { cols, generateRows } from "../../Table/table.utils";
+
 import AddCategory from "../../Buttons/Add";
 
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
-
-const createData = (id, title, thumbnail, actions) => {
-  return { id, title, thumbnail, actions };
-};
-
-const cols = [
-  {
-    name: "Título",
-    align: "left",
-  },
-  {
-    name: "Thumbnail",
-    align: "center",
-  },
-  {
-    name: "Ações",
-    align: "center",
-  },
-];
-
-const actionsCURD = ["Editar", "Eliminar"];
-
-const generateRows = (data) => {
-  const tempRows = [];
-  data.forEach((elem) => {
-    const { _id, title, thumbnail } = elem;
-    tempRows.push(createData(_id, title, thumbnail, actionsCURD));
-  });
-  return tempRows;
-};
 
 const SelectCategory = () => {
   const { path, url } = useRouteMatch();

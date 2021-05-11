@@ -1,74 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router-dom";
-import { useQuery } from "react-query";
-import axios from "axios";
+import { useVideo } from "../../../../hooks/useVideos";
 import styled from "styled-components";
-
-import Back from "../../Buttons/Back";
-import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
+import Loading from "../../../UI/Loading";
+import BackBtn from "../../Buttons/Back";
 import EditForm from "./EditForm";
 
 const EditVideo = () => {
-  const { videoId } = useParams();
-  const fetchDataFlag = videoId.toString() !== "createNew";
-  const catQueryStringId = "getAllVideosCategoriesEditVideo";
-  const videoQueryStringId = "getVideoInfo";
+  const { id } = useParams();
+  const fetchDataFlag = id.toString() !== "createNew";
+  const video = useVideo(id, fetchDataFlag);
 
-  const categoriesQuery = useQuery(
-    catQueryStringId,
-    () => axios.get(`/api/videos/categories`),
-    { refetchOnWindowFocus: false }
-  );
-  const videoInfoQuery = useQuery(
-    videoQueryStringId,
-    () => axios.get(`/api/videos/video/${videoId}`),
-    {
-      enabled: fetchDataFlag,
-      refetchOnWindowFocus: false,
-    }
-  );
-
-  if (categoriesQuery.isLoading || videoInfoQuery.isLoading) return <Loading />;
-  if (categoriesQuery.isError || videoInfoQuery.isError)
-    return <Error error={categoriesQuery.error} />;
-
-  let videoObj = {};
-  if (fetchDataFlag) {
-    const {
-      category_id,
-      title,
-      description,
-      url,
-      _id,
-    } = videoInfoQuery.data.data;
+  let videoObj = null;
+  if (!fetchDataFlag) {
     videoObj = {
-      categoryId: category_id,
-      title: title,
-      description: description,
-      url: url,
-      id: _id,
-    };
-  } else {
-    videoObj = {
-      categoryId: "",
+      category_id: "",
       title: "",
       description: "",
       url: "",
-      id: null,
     };
+  } else {
+    videoObj = { ...video.data };
   }
+
+  if (video.isLoading) return <Loading />;
+  if (video.isError) return <Error error={video.error} />;
+
   return (
     <Container>
-      <EditWrapper>
-        <Back>Voltar</Back>
+      <BackBtn>Voltar</BackBtn>
+      {videoObj && (
         <EditForm
           fields={videoObj}
-          categories={categoriesQuery.data.data}
-          createVideo={!fetchDataFlag}
+          createNew={!fetchDataFlag}
+          fetchQuery={["video", id]}
         />
-      </EditWrapper>
-      {/* {displayRedirect} */}
+      )}
     </Container>
   );
 };
@@ -79,19 +47,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   width: 100%;
   min-height: 60vh;
-`;
-
-const EditWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 80%;
-  margin: 1rem;
-`;
-
-const CategoryWrapper = styled.div`
-  width: 40%;
 `;

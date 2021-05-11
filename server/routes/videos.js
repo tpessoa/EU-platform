@@ -28,7 +28,7 @@ router.get("/category/:id", async (req, res) => {
   }
 });
 
-router.post("/add-category", async (req, res) => {
+router.post("/save-category", async (req, res) => {
   try {
     // console.log(req.body);
     const newCategory = new Categories({
@@ -38,8 +38,38 @@ router.post("/add-category", async (req, res) => {
       newCategory.isNew = false;
     }
     await newCategory.save();
-    console.log(newCategory);
     res.send(newCategory);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+/**
+ * Get all videos in the category
+ */
+router.get("/category-videos/:id", async (req, res) => {
+  try {
+    const videos = await Videos.find({ category_id: req.params.id });
+    res.send(videos);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+/**
+ * Save video
+ */
+router.post("/save-video", async (req, res) => {
+  try {
+    // console.log(req.body);
+    const newVideo = new Videos({
+      ...req.body,
+    });
+    if (req.body._id) {
+      newVideo.isNew = false;
+    }
+    await newVideo.save();
+    res.send(newVideo);
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
