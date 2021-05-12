@@ -83,9 +83,7 @@ router.get("/get_categories_and_videos", async (req, res) => {
   try {
     const categoriesData = [];
 
-    const categoriesArr = await Categories.find({
-      category_ref_name: "video",
-    });
+    const categoriesArr = await Categories.find({});
     // cycle for reading in sequence
     for (const category of categoriesArr) {
       const videosArr = await Videos.find({ category_id: category._id });

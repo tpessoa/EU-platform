@@ -31,6 +31,13 @@ import CategoryIcon from "@material-ui/icons/Category";
 import YouTubeIcon from "@material-ui/icons/YouTube";
 import SubscriptionsIcon from "@material-ui/icons/Subscriptions";
 
+import ExtensionIcon from "@material-ui/icons/Extension";
+import ColorLensIcon from "@material-ui/icons/ColorLens";
+import SearchIcon from "@material-ui/icons/Search";
+import { FaQuestion, FaBrain } from "react-icons/fa";
+import LanguageIcon from "@material-ui/icons/Language";
+import KeyboardIcon from "@material-ui/icons/Keyboard";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -50,6 +57,9 @@ const SideMenu = () => {
   const [openVideos, setOpenVideos] = useState(false);
   const [openPolls, setOpenPolls] = useState(false);
 
+  const handleGamesClick = () => {
+    setOpenGames(!openGames);
+  };
   const handleVideosClick = () => {
     setOpenVideos(!openVideos);
   };
@@ -68,12 +78,97 @@ const SideMenu = () => {
       }
       className={classes.root}
     >
-      <ListItem button>
+      <ListItem button onClick={handleGamesClick}>
         <ListItemIcon>
           <SportsEsportsIcon />
         </ListItemIcon>
         <ListItemText primary="Jogos" />
+        {openGames ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
+      <Collapse in={openGames} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItem
+            button
+            className={classes.nested}
+            component={Link}
+            to={`${url}/games/puzzle`}
+          >
+            <ListItemIcon>
+              <ExtensionIcon />
+            </ListItemIcon>
+            <ListItemText primary="Puzzle" />
+          </ListItem>
+
+          <ListItem
+            button
+            className={classes.nested}
+            component={Link}
+            to={`${url}/games/colorGame`}
+          >
+            <ListItemIcon>
+              <ColorLensIcon />
+            </ListItemIcon>
+            <ListItemText primary="Colorir" />
+          </ListItem>
+
+          <ListItem
+            button
+            className={classes.nested}
+            component={Link}
+            to={`${url}/games/wordSearch`}
+          >
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sopa de Letras" />
+          </ListItem>
+
+          <ListItem
+            button
+            className={classes.nested}
+            component={Link}
+            to={`${url}/games/quiz`}
+          >
+            <ListItemIcon>
+              <FaQuestion />
+            </ListItemIcon>
+            <ListItemText primary="Quiz" />
+          </ListItem>
+          <ListItem
+            button
+            className={classes.nested}
+            component={Link}
+            to={`${url}/games/memoryGame`}
+          >
+            <ListItemIcon>
+              <FaBrain />
+            </ListItemIcon>
+            <ListItemText primary="Memória" />
+          </ListItem>
+          <ListItem
+            button
+            className={classes.nested}
+            component={Link}
+            to={`${url}/games/interactiveMaps`}
+          >
+            <ListItemIcon>
+              <LanguageIcon />
+            </ListItemIcon>
+            <ListItemText primary="Mapas Interativos" />
+          </ListItem>
+          <ListItem
+            button
+            className={classes.nested}
+            component={Link}
+            to={`${url}/games/crossWords`}
+          >
+            <ListItemIcon>
+              <YouTubeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Palavras Cruzadas" />
+          </ListItem>
+        </List>
+      </Collapse>
 
       <ListItem button onClick={handleVideosClick}>
         <ListItemIcon>
@@ -136,7 +231,7 @@ const SideMenu = () => {
             to={`${url}/poll/works`}
           >
             <ListItemIcon>
-              <WorkIcon />
+              <KeyboardIcon />
             </ListItemIcon>
             <ListItemText primary="Trabalhos" />
           </ListItem>

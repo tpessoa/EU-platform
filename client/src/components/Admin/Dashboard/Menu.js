@@ -9,6 +9,7 @@ import SelectPoll from "../Poll/Select";
 import SelectWork from "../Works/Select";
 import SelectCategory from "../Videos/SelectCategory";
 import SelectVideo from "../Videos/SelectVideo";
+import SelectGame from "../Games/SelectGame";
 
 const Menu = () => {
   const { path, url } = useRouteMatch();
@@ -29,6 +30,7 @@ const Menu = () => {
             component={() => <SelectCategory />}
           />
           <Route path={`${url}/videos`} component={() => <SelectVideo />} />
+          <Route path={`${url}/games/:game`} component={() => <SelectGame />} />
         </Switch>
       </ContentWrapper>
     </Container>
