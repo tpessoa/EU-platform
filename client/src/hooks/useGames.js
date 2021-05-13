@@ -15,8 +15,9 @@ const getGame = async (gameId) => {
   const { data } = await axios.get(`/api/games/game/${gameId}`);
   return data;
 };
-export const useGame = (gameId) => {
+export const useGame = (gameId, flag) => {
   return useQuery(["game", gameId], () => getGame(gameId), {
     refetchOnWindowFocus: false,
+    enabled: flag,
   });
 };

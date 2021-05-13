@@ -13,7 +13,7 @@ import EditForm from "./EditForm";
 const EditGame = () => {
   const { type, id } = useParams();
   const fetchDataFlag = id.toString() !== "createNew";
-  const game = useGame(id);
+  const game = useGame(id, fetchDataFlag);
 
   if (game.isLoading) return <Loading />;
   if (game.isError) return <Error error={game.error} />;

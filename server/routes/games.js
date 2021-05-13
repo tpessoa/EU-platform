@@ -20,6 +20,22 @@ router.get("/game/:id", async (req, res) => {
   }
 });
 
+router.post("/save-game", async (req, res) => {
+  try {
+    // console.log(req.body);
+    const newGame = new Games({
+      ...req.body,
+    });
+    if (req.body._id) {
+      newGame.isNew = false;
+    }
+    await newGame.save();
+    res.send(newGame);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
 // /**
 //  * get all games
 //  */
