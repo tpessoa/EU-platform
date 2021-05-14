@@ -1,14 +1,15 @@
 import React, { Children, forwardRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
-
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(1, 0, 0, 0),
     minWidth: 120,
   },
   selectEmpty: {
@@ -25,7 +26,11 @@ const SelectInput = forwardRef((props, ref) => {
   };
 
   return (
-    <FormControl variant="outlined" className={classes.formControl}>
+    <FormControl
+      variant="outlined"
+      error={props.error}
+      className={classes.formControl}
+    >
       <InputLabel id="demo-simple-select-outlined-label">
         {props.label}
       </InputLabel>
@@ -40,7 +45,7 @@ const SelectInput = forwardRef((props, ref) => {
       >
         {props.children}
       </Select>
-      {props.error && <FormHelperText>{props.helper}</FormHelperText>}
+      <FormHelperText>{props.helpertext}</FormHelperText>
     </FormControl>
   );
 });

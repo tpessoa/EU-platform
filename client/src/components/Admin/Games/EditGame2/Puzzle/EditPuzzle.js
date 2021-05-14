@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 import { Controller } from "react-hook-form";
-import UploadImage from "../../../Form/UploadImage";
-import Checkbox from "../../../Form/Checkbox";
-import Input from "../../../Form/Input";
-import { puzzleObj } from "./games.data";
+import UploadImage from "../../../../Form/UploadImage";
+import Checkbox from "../../../../Form/Checkbox";
+import Input from "../../../../Form/Input";
+import { puzzleObj } from "../games.data";
 
 const EditPuzzle = (props) => {
   const {
@@ -13,7 +13,6 @@ const EditPuzzle = (props) => {
     register,
     control,
     watch,
-    clearErrors,
     fields,
     uploading,
   } = props;
@@ -25,7 +24,6 @@ const EditPuzzle = (props) => {
     };
   }
   let time_flag = watch("config.time");
-  console.log(time_flag);
 
   return (
     <>
@@ -47,16 +45,15 @@ const EditPuzzle = (props) => {
         error={!!errors.config?.time}
         helperText={errors?.config?.time?.message}
       />
-      {time_flag && (
-        <Input
-          {...register("config.time_to_complete")}
-          name="config.time_to_complete"
-          type="number"
-          label="Tempo em segundos"
-          error={!!errors.config?.time_to_complete}
-          helperText={errors?.config?.time_to_complete?.message}
-        />
-      )}
+      <Input
+        {...register("config.time_to_complete")}
+        name="config.time_to_complete"
+        type="number"
+        label="Tempo em segundos"
+        error={!!errors.config?.time_to_complete}
+        helperText={errors?.config?.time_to_complete?.message}
+        disabled={!time_flag}
+      />
       <Controller
         name="config.background_puzzle_image"
         control={control}

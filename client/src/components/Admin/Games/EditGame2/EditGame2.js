@@ -34,6 +34,7 @@ const EditGame = () => {
         fields={newGameObj}
         createNew={!fetchDataFlag}
         fetchQuery={["game", id]}
+        game={type}
       />
     </>
   );

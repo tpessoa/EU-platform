@@ -7,7 +7,7 @@ const Input = forwardRef((props, ref) => {
       variant="outlined"
       margin="normal"
       inputRef={ref}
-      fullWidth
+      fullWidth={!props.fullWidth}
       {...props}
     />
   );

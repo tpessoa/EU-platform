@@ -25,8 +25,8 @@ import { usePolls } from "../../../../hooks/usePolls";
 export const schemaCreateNew = yup.object().shape({
   poll_id: yup
     .number()
-    .required("categoria de votação é obrigatória")
-    .moreThan(-1),
+    .moreThan(-1, "Categoria de votação é obrigatória")
+    .required(),
   title: yup.string().required(),
   description: yup.string().required(),
   photo: getRequiredFileSchema(),
@@ -35,7 +35,8 @@ export const schemaCreateNew = yup.object().shape({
 export const schemaEdit = yup.object().shape({
   poll_id: yup
     .number()
-    .required("categoria de votação é obrigatória")
+    .required()
+    .typeError("Categoria de votação é obrigatória")
     .moreThan(-1),
   title: yup.string().required(),
   description: yup.string().required(),
@@ -124,7 +125,7 @@ const EditForm = (props) => {
               label="Categoria de votação"
               {...field}
               error={!!errors.poll_id}
-              helper={"Categoria de votação é obrigatória"}
+              helpertext={errors?.poll_id?.message}
             >
               {polls.isSuccess &&
                 polls.data.map((poll, index) => (

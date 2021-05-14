@@ -6,8 +6,9 @@ import axios from "axios";
 
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
-import EditPuzzle from "./EditPuzzle";
 import BackBtn from "../../Buttons/Back";
+import EditPuzzle from "./Puzzle/EditPuzzle";
+import EditQuiz from "./Quiz/EditQuiz";
 
 import Form from "../../../Form/Form";
 import MainContainer from "../../../Form/MainContainer";
@@ -16,20 +17,19 @@ import UploadImage from "../../../Form/UploadImage";
 import SaveButton from "../../../Form/PrimaryButton";
 import { Typography, MenuItem } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Select from "../../../Form/SelectInput";
-import Checkbox from "../../../Form/Checkbox";
+
+import { setCreateNew, schemaPuzzle, schemaQuiz } from "./games.schemas";
 import { uploadImages } from "../../../../hooks/useUpload";
-import { setCreateNew, schema } from "./games.schemas";
 
 const EditForm = (props) => {
   const history = useHistory();
-  const { fields, createNew, fetchQuery } = props;
+  const { fields, createNew, fetchQuery, game } = props;
   const {
     _id,
+    game_ref_name,
     title,
     description,
     thumbnail,
-    game_ref_name,
     config,
     assets,
   } = fields;
@@ -37,16 +37,10 @@ const EditForm = (props) => {
   const [uploading, setUploading] = useState(false);
   setCreateNew(createNew);
 
-  const {
-    clearErrors,
-    watch,
-    control,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
+  let defVals = {};
+  let gameSchema;
+  if (game === "puzzle") {
+    defVals = {
       title: title,
       description: description,
       config: {
@@ -57,7 +51,32 @@ const EditForm = (props) => {
         time_to_complete: config.time_to_complete,
         time: config.time,
       },
-    },
+    };
+    gameSchema = schemaPuzzle;
+  } else if (game === "quiz") {
+    defVals = {
+      title: title,
+      description: description,
+      config: {
+        questions: config.questions,
+        time: config.timer,
+        time_to_complete: config.time_to_resp_question,
+      },
+    };
+    gameSchema = schemaQuiz;
+  }
+
+  const {
+    register,
+    unregister,
+    watch,
+    control,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(gameSchema),
+    defaultValues: defVals,
   });
 
   const queryClient = new useQueryClient();
@@ -83,12 +102,13 @@ const EditForm = (props) => {
     let newUserInput = { ...userInput, game_ref_name: game_ref_name };
     if (!createNew) {
       newUserInput = {
-        ...userInput,
         _id: _id,
-        game_ref_name: game_ref_name,
+        ...newUserInput,
       };
     }
+    console.log(newUserInput);
     // console.log(newUserInput);
+
     const newUserInputUploaded = await uploadImages(
       newUserInput,
       fields,
@@ -108,6 +128,33 @@ const EditForm = (props) => {
     console.log(newUserInputUploaded);
     mutation.mutate(newUserInputUploaded);
   };
+
+  let displaySpecificForm = "";
+  if (game === "puzzle") {
+    displaySpecificForm = (
+      <EditPuzzle
+        errors={errors}
+        register={register}
+        control={control}
+        watch={watch}
+        fields={fields}
+        uploading={uploading}
+      />
+    );
+  } else if (game === "quiz") {
+    displaySpecificForm = (
+      <EditQuiz
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
+      />
+    );
+  }
   let displaySave = <SaveButton>Guardar</SaveButton>;
   let displayTopLabel = createNew ? "Criar jogo" : `Editar ${title}`;
   return (
@@ -146,15 +193,7 @@ const EditForm = (props) => {
             uploading: uploading,
           }}
         />
-        <EditPuzzle
-          errors={errors}
-          register={register}
-          control={control}
-          watch={watch}
-          clearErrors={clearErrors}
-          fields={fields}
-          uploading={uploading}
-        />
+        {displaySpecificForm}
         {displaySave}
       </Form>
     </MainContainer>

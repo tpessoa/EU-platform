@@ -28,3 +28,19 @@ export const puzzleObj = {
     },
   },
 };
+
+export const quizObj = {
+  game_ref_name: "puzzle",
+  config: {
+    questions: [],
+    time: false,
+    time_to_resp_question: "",
+  },
+  assets: {
+    puzzle_image: {
+      id: "defaultImage",
+      path: "",
+      server_path: "",
+    },
+  },
+};

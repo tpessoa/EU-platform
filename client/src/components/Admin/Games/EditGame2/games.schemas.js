@@ -7,7 +7,7 @@ import {
 let createNew;
 export const setCreateNew = (value) => (createNew = value);
 
-export const schema = yup.object().shape({
+export const schemaPuzzle = yup.object().shape({
   title: yup.string().required(),
   description: yup.string().required(),
   thumbnail: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
@@ -42,4 +42,10 @@ export const schema = yup.object().shape({
   assets: yup.object().shape({
     puzzle_image: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
   }),
+});
+
+export const schemaQuiz = yup.object().shape({
+  title: yup.string().required(),
+  description: yup.string().required(),
+  thumbnail: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
 });
