@@ -9,7 +9,8 @@ import { Controller, useFormContext } from "react-hook-form";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: theme.spacing(3, 0, 2, 0),
+    margin: theme.spacing(1, 0, 1, 0),
+    padding: theme.spacing(0, 1, 0, 1),
   },
 }));
 
@@ -17,7 +18,11 @@ const CheckBox = forwardRef((props, ref) => {
   const classes = useStyles();
 
   return (
-    <FormControl error={props.error} className={classes.formControl} fullWidth>
+    <FormControl
+      error={props.error}
+      className={classes.formControl}
+      fullWidth={!props.fullWidth}
+    >
       {/* <FormLabel component="legend">Pick two</FormLabel> */}
       <FormControlLabel
         control={

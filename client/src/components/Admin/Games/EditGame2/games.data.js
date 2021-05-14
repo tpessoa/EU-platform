@@ -36,11 +36,21 @@ export const quizObj = {
     time: false,
     time_to_resp_question: "",
   },
-  assets: {
-    puzzle_image: {
-      id: "defaultImage",
-      path: "",
-      server_path: "",
+};
+
+export const wordSearchObj = {
+  game_ref_name: "wordSearch",
+  config: {
+    words: [],
+    directions: {
+      down: false,
+      right: false,
+      right_down: false,
+      left_down: false,
     },
+    num_horizontal_cells: "",
+    num_vertical_cells: "",
+    time_to_complete: "",
+    timer: false,
   },
 };

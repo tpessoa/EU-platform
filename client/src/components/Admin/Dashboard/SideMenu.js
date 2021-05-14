@@ -163,7 +163,7 @@ const SideMenu = () => {
             to={`${url}/games/crossWords`}
           >
             <ListItemIcon>
-              <YouTubeIcon />
+              <KeyboardIcon />
             </ListItemIcon>
             <ListItemText primary="Palavras Cruzadas" />
           </ListItem>

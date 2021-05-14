@@ -9,6 +9,7 @@ import Error from "../../../UI/Error";
 import BackBtn from "../../Buttons/Back";
 import EditPuzzle from "./Puzzle/EditPuzzle";
 import EditQuiz from "./Quiz/EditQuiz";
+import EditWordSearch from "./WordSearch/EditWordSearch";
 
 import Form from "../../../Form/Form";
 import MainContainer from "../../../Form/MainContainer";
@@ -18,7 +19,12 @@ import SaveButton from "../../../Form/PrimaryButton";
 import { Typography, MenuItem } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { setCreateNew, schemaPuzzle, schemaQuiz } from "./games.schemas";
+import {
+  setCreateNew,
+  schemaPuzzle,
+  schemaQuiz,
+  schemaWordSearch,
+} from "./games.schemas";
 import { uploadImages } from "../../../../hooks/useUpload";
 
 const EditForm = (props) => {
@@ -37,6 +43,8 @@ const EditForm = (props) => {
   const [uploading, setUploading] = useState(false);
   setCreateNew(createNew);
 
+  // console.log(fields);
+
   let defVals = {};
   let gameSchema;
   if (game === "puzzle") {
@@ -49,7 +57,7 @@ const EditForm = (props) => {
         piece_position_helper: config.piece_position_helper,
         move_pieces_freely: config.move_pieces_freely,
         time_to_complete: config.time_to_complete,
-        time: config.time,
+        directions: config.time,
       },
     };
     gameSchema = schemaPuzzle;
@@ -64,6 +72,20 @@ const EditForm = (props) => {
       },
     };
     gameSchema = schemaQuiz;
+  } else if (game === "wordSearch") {
+    defVals = {
+      title: title,
+      description: description,
+      config: {
+        words: config.words,
+        directions: config.directions,
+        num_horizontal_cells: config.num_horizontal_cells,
+        num_vertical_cells: config.num_vertical_cells,
+        time_to_complete: config.time_to_complete,
+        timer: config.timer,
+      },
+    };
+    gameSchema = schemaWordSearch;
   }
 
   const {
@@ -144,6 +166,19 @@ const EditForm = (props) => {
   } else if (game === "quiz") {
     displaySpecificForm = (
       <EditQuiz
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
+      />
+    );
+  } else if (game === "wordSearch") {
+    displaySpecificForm = (
+      <EditWordSearch
         setValue={setValue}
         errors={errors}
         unregister={unregister}
