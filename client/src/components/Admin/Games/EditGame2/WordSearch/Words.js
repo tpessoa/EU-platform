@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 const Words = (props) => {
   const classes = useStyles();
   const { index, item, control, register, remove } = props;
-  console.log(item.word);
   return (
     <div className={classes.root}>
       <Controller

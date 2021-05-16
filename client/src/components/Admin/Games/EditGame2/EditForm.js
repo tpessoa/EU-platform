@@ -10,6 +10,7 @@ import BackBtn from "../../Buttons/Back";
 import EditPuzzle from "./Puzzle/EditPuzzle";
 import EditQuiz from "./Quiz/EditQuiz";
 import EditWordSearch from "./WordSearch/EditWordSearch";
+import EditMemory from "./Memory/EditMemory";
 
 import Form from "../../../Form/Form";
 import MainContainer from "../../../Form/MainContainer";
@@ -19,13 +20,10 @@ import SaveButton from "../../../Form/PrimaryButton";
 import { Typography, MenuItem } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import {
-  setCreateNew,
-  schemaPuzzle,
-  schemaQuiz,
-  schemaWordSearch,
-} from "./games.schemas";
 import { uploadImages } from "../../../../hooks/useUpload";
+import { setCreateNew } from "./games.schemas";
+import { getDefValues, getSchemas } from "./games.getData";
+import EditInteractiveMaps from "./InteractiveMaps/EditInteractiveMaps";
 
 const EditForm = (props) => {
   const history = useHistory();
@@ -42,51 +40,8 @@ const EditForm = (props) => {
 
   const [uploading, setUploading] = useState(false);
   setCreateNew(createNew);
-
-  // console.log(fields);
-
-  let defVals = {};
-  let gameSchema;
-  if (game === "puzzle") {
-    defVals = {
-      title: title,
-      description: description,
-      config: {
-        pieces_size: config.pieces_size,
-        background_puzzle_image: config.background_puzzle_image,
-        piece_position_helper: config.piece_position_helper,
-        move_pieces_freely: config.move_pieces_freely,
-        time_to_complete: config.time_to_complete,
-        directions: config.time,
-      },
-    };
-    gameSchema = schemaPuzzle;
-  } else if (game === "quiz") {
-    defVals = {
-      title: title,
-      description: description,
-      config: {
-        questions: config.questions,
-        time: config.timer,
-        time_to_complete: config.time_to_resp_question,
-      },
-    };
-    gameSchema = schemaQuiz;
-  } else if (game === "wordSearch") {
-    defVals = {
-      title: title,
-      description: description,
-      config: {
-        words: config.words,
-        directions: config.directions,
-        num_horizontal_cells: config.num_horizontal_cells,
-        num_vertical_cells: config.num_vertical_cells,
-        time_to_complete: config.time_to_complete,
-        timer: config.timer,
-      },
-    };
-    gameSchema = schemaWordSearch;
-  }
+  let defVals = getDefValues(game, fields);
+  let gameSchema = getSchemas(game);
 
   const {
     register,
@@ -147,6 +102,16 @@ const EditForm = (props) => {
       createNew
     );
 
+    if (game_ref_name === "memory") {
+      for (let i = 0; i < newUserInput.assets.front_cards.length; i++) {
+        newUserInputUploaded.assets.front_cards[i] = await uploadImages(
+          newUserInput.assets.front_cards[i],
+          fields.assets.front_cards[i],
+          createNew
+        );
+      }
+    }
+
     console.log(newUserInputUploaded);
     mutation.mutate(newUserInputUploaded);
   };
@@ -163,19 +128,7 @@ const EditForm = (props) => {
         uploading={uploading}
       />
     );
-  } else if (game === "quiz") {
-    displaySpecificForm = (
-      <EditQuiz
-        setValue={setValue}
-        errors={errors}
-        unregister={unregister}
-        register={register}
-        control={control}
-        watch={watch}
-        obj={fields}
-        uploading={uploading}
-      />
-    );
+  } else if (game === "colorGame") {
   } else if (game === "wordSearch") {
     displaySpecificForm = (
       <EditWordSearch
@@ -189,8 +142,53 @@ const EditForm = (props) => {
         uploading={uploading}
       />
     );
+  } else if (game === "quiz") {
+    displaySpecificForm = (
+      <EditQuiz
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
+      />
+    );
+  } else if (game === "memory") {
+    displaySpecificForm = (
+      <EditMemory
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
+      />
+    );
+  } else if (game === "interactiveMaps") {
+    displaySpecificForm = (
+      <EditInteractiveMaps
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
+      />
+    );
+  } else if (game === "crossWords") {
   }
-  let displaySave = <SaveButton>Guardar</SaveButton>;
+
+  let displaySave = mutation.isLoading ? (
+    <Loading />
+  ) : (
+    <SaveButton>Guardar</SaveButton>
+  );
   let displayTopLabel = createNew ? "Criar jogo" : `Editar ${title}`;
   return (
     <MainContainer>

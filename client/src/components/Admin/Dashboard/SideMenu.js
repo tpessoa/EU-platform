@@ -103,7 +103,7 @@ const SideMenu = () => {
             button
             className={classes.nested}
             component={Link}
-            to={`${url}/games/colorGame`}
+            to={`${url}/games/color`}
           >
             <ListItemIcon>
               <ColorLensIcon />
@@ -138,7 +138,7 @@ const SideMenu = () => {
             button
             className={classes.nested}
             component={Link}
-            to={`${url}/games/memoryGame`}
+            to={`${url}/games/memory`}
           >
             <ListItemIcon>
               <FaBrain />

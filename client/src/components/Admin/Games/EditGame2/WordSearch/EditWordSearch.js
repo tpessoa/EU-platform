@@ -11,6 +11,11 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     margin: theme.spacing(2, 0, 2, 0),
     padding: theme.spacing(0, 1, 0, 1),
+    display: "grid",
+    placeItems: "center",
+  },
+  directions: {
+    display: "inline-block",
   },
   words: {
     margin: theme.spacing(2, 0, 2, 0),
@@ -34,20 +39,16 @@ const EditWordSearch = (props) => {
     uploading,
   } = props;
 
-  // const {
-  //   fields: fieldsDirections,
-  //   append: appendDirection,
-  //   remove: removeDirection,
-  // } = useFieldArray({
-  //   control,
-  //   name: "config.directions",
-  // });
   let time_flag = watch("config.timer");
+
+  console.log(obj);
 
   const { fields, append, remove, swap } = useFieldArray({
     control,
     name: "config.words",
   });
+
+  console.log(fields);
 
   let displayWords = fields.map((item, index) => (
     <Words
@@ -66,42 +67,48 @@ const EditWordSearch = (props) => {
         <Typography variant="h6" gutterBottom align="center">
           Direções das palavras
         </Typography>
-        <Controller
-          name="config.directions.down"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => <CheckBox {...field} label="Down" />}
-          error={!!errors.config?.directions?.down}
-          helperText={errors?.config?.directions?.down?.message}
-          fullWidth={true}
-        />
-        <Controller
-          name="config.directions.right"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => <CheckBox {...field} label="Right" />}
-          error={!!errors.config?.directions?.right}
-          helperText={errors?.config?.directions?.right?.message}
-          fullWidth={true}
-        />
-        <Controller
-          name="config.directions.right_down"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => <CheckBox {...field} label="Right Down" />}
-          error={!!errors.config?.directions?.right_down}
-          helperText={errors?.config?.directions?.right_down?.message}
-          fullWidth={true}
-        />
-        <Controller
-          name="config.directions.left_down"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => <CheckBox {...field} label="Left Down" />}
-          error={!!errors.config?.directions?.left_down}
-          helperText={errors?.config?.directions?.left_down?.message}
-          fullWidth={true}
-        />
+        <div className={classes.directions}>
+          <Controller
+            name="config.directions.down"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <CheckBox {...field} label="Down" fullWidth={true} />
+            )}
+            error={!!errors.config?.directions?.down}
+            helperText={errors?.config?.directions?.down?.message}
+          />
+          <Controller
+            name="config.directions.right"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <CheckBox {...field} label="Right" fullWidth={true} />
+            )}
+            error={!!errors.config?.directions?.right}
+            helperText={errors?.config?.directions?.right?.message}
+          />
+          <Controller
+            name="config.directions.right_down"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <CheckBox {...field} label="Right Down" fullWidth={true} />
+            )}
+            error={!!errors.config?.directions?.right_down}
+            helperText={errors?.config?.directions?.right_down?.message}
+          />
+          <Controller
+            name="config.directions.left_down"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <CheckBox {...field} label="Left Down" fullWidth={true} />
+            )}
+            error={!!errors.config?.directions?.left_down}
+            helperText={errors?.config?.directions?.left_down?.message}
+          />
+        </div>
       </Paper>
       <Paper className={classes.words}>
         <Typography variant="h6" gutterBottom align="center">
@@ -132,27 +139,7 @@ const EditWordSearch = (props) => {
         error={!!errors.config?.num_vertical_cells}
         helperText={errors?.config?.num_vertical_cells?.message}
       />
-      {/* <Controller
-        name="config.timer"
-        control={control}
-        rules={{ required: true }}
-        render={({ field }) => (
-          <CheckBox {...field} label="Tempo para terminar o jogo" />
-        )}
-        error={!!errors.config?.timer}
-        helperText={errors?.config?.timer?.message}
-        fullWidth={false}
-      />
-      <Input
-        {...register("config.time_to_complete")}
-        name="config.time_to_complete"
-        type="number"
-        label="Tempo em segundos"
-        error={!!errors.config?.time_to_complete}
-        helperText={errors?.config?.time_to_complete?.message}
-        disabled={!time_flag}
-        fullWidth={false}
-      /> */}
+
       <CheckboxInput
         register={register}
         control={control}

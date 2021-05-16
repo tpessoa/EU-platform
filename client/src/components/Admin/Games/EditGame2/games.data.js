@@ -6,8 +6,8 @@ export const gameObj = {
     path: "",
     server_path: "",
   },
-  age: { min: "", max: "" },
-  difficulty: "",
+  // age: { min: "", max: "" },
+  // difficulty: "",
 };
 
 export const puzzleObj = {
@@ -29,13 +29,9 @@ export const puzzleObj = {
   },
 };
 
-export const quizObj = {
-  game_ref_name: "puzzle",
-  config: {
-    questions: [],
-    time: false,
-    time_to_resp_question: "",
-  },
+export const colorGameObj = {
+  game_ref_name: "colorGame",
+  config: {},
 };
 
 export const wordSearchObj = {
@@ -53,4 +49,44 @@ export const wordSearchObj = {
     time_to_complete: "",
     timer: false,
   },
+};
+
+export const quizObj = {
+  game_ref_name: "quiz",
+  config: {
+    questions: [],
+    time: false,
+    time_to_resp_question: "",
+  },
+};
+
+export const memoryObj = {
+  game_ref_name: "memory",
+  config: {
+    destroy_card: false,
+    timer: false,
+    time_to_complete: "",
+    max_attempts: "",
+    total_images: "",
+  },
+  assets: {
+    back_card: {
+      id: "defaultImage",
+      path: "",
+      server_path: "",
+    },
+    front_cards: [],
+  },
+};
+
+export const interactiveMapsObj = {
+  game_ref_name: "interactiveMaps",
+  config: {
+    questions: [],
+  },
+};
+
+export const crossWordsObj = {
+  game_ref_name: "crossWords",
+  config: {},
 };
