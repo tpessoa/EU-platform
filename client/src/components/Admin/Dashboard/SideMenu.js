@@ -103,7 +103,7 @@ const SideMenu = () => {
             button
             className={classes.nested}
             component={Link}
-            to={`${url}/games/color`}
+            to={`${url}/games/colorGame`}
           >
             <ListItemIcon>
               <ColorLensIcon />

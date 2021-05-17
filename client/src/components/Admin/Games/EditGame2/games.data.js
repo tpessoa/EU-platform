@@ -18,7 +18,7 @@ export const puzzleObj = {
     piece_position_helper: true,
     move_pieces_freely: true,
     time: false,
-    time_to_complete: null,
+    time_to_complete: 0,
   },
   assets: {
     puzzle_image: {
@@ -31,7 +31,22 @@ export const puzzleObj = {
 
 export const colorGameObj = {
   game_ref_name: "colorGame",
-  config: {},
+  config: {
+    colors: [],
+    sensibility: 50,
+  },
+  assets: {
+    colored_img: {
+      id: "defaultImage",
+      path: "",
+      server_path: "",
+    },
+    blank_img: {
+      id: "defaultImage",
+      path: "",
+      server_path: "",
+    },
+  },
 };
 
 export const wordSearchObj = {
@@ -39,14 +54,14 @@ export const wordSearchObj = {
   config: {
     words: [],
     directions: {
-      down: false,
-      right: false,
+      down: true,
+      right: true,
       right_down: false,
       left_down: false,
     },
     num_horizontal_cells: "",
     num_vertical_cells: "",
-    time_to_complete: "",
+    time_to_complete: 0,
     timer: false,
   },
 };
@@ -65,7 +80,7 @@ export const memoryObj = {
   config: {
     destroy_card: false,
     timer: false,
-    time_to_complete: "",
+    time_to_complete: 0,
     max_attempts: "",
     total_images: "",
   },
@@ -88,5 +103,10 @@ export const interactiveMapsObj = {
 
 export const crossWordsObj = {
   game_ref_name: "crossWords",
-  config: {},
+  config: {
+    crossword_data: {
+      across: [],
+      down: [],
+    },
+  },
 };

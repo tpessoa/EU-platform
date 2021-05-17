@@ -12,6 +12,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import Input from "../../../../Form/Input";
+import ButtonForm from "../../../../Form/ButtonForm";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -82,6 +83,7 @@ const EditQuiz = (props) => {
         remove={remove}
         swap={swap}
         totalQuests={fields.length}
+        error={errors.config?.questions && errors.config?.questions[index]}
       />
     );
   });
@@ -89,13 +91,13 @@ const EditQuiz = (props) => {
   return (
     <div className={classes.root}>
       {displayQuestions}
-      <Button
-        variant="contained"
-        color="secondary"
+      <ButtonForm
         onClick={() => append(emptyQuestion)}
+        error={errors?.config?.questions}
+        helpertext={errors?.config?.questions?.message}
       >
         Adicionar questão
-      </Button>
+      </ButtonForm>
     </div>
   );
 };

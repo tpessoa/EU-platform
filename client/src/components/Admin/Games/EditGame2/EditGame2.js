@@ -31,6 +31,7 @@ const EditGame = () => {
   if (type === "puzzle") {
     emptyObj = puzzleObj;
   } else if (type === "colorGame") {
+    emptyObj = colorGameObj;
   } else if (type === "wordSearch") {
     emptyObj = wordSearchObj;
   } else if (type === "quiz") {

@@ -26,6 +26,18 @@ export const getDefValues = (game, fields) => {
       },
     };
   } else if (game === "colorGame") {
+    defValues = {
+      title: title,
+      description: description,
+      config: {
+        colors: config.colors,
+        sensibility: config.sensibility,
+      },
+      assets: {
+        colored_img: config.colored_img,
+        blank_img: config.blank_img,
+      },
+    };
   } else if (game === "wordSearch") {
     defValues = {
       title: title,
@@ -73,6 +85,16 @@ export const getDefValues = (game, fields) => {
       },
     };
   } else if (game === "crossWords") {
+    defValues = {
+      title: title,
+      description: description,
+      config: {
+        crossword_data: {
+          across: config.crossword_data.across,
+          down: config.crossword_data.down,
+        },
+      },
+    };
   }
   return defValues;
 };

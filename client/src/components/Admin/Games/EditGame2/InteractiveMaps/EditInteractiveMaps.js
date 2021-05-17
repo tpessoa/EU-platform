@@ -4,6 +4,7 @@ import Question from "./Question";
 import { makeStyles } from "@material-ui/core/styles";
 import { useFieldArray } from "react-hook-form";
 import { Button, Typography } from "@material-ui/core";
+import ButtonForm from "../../../../Form/ButtonForm";
 
 const emptyQuestion = {
   question: "",
@@ -22,7 +23,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     justifyContent: "center",
   },
-  button: {},
+  headingQuestions: { margin: theme.spacing(2, 0, 1, 0) },
+  errorMessage: { color: "#ff0000", marginBottom: theme.spacing(1) },
 }));
 
 const EditInteractiveMaps = (props) => {
@@ -66,23 +68,29 @@ const EditInteractiveMaps = (props) => {
         remove={remove}
         swap={swap}
         totalQuests={fields.length}
+        error={errors.config?.questions && errors.config?.questions[index]}
       />
     );
   });
 
   return (
     <div className={classes.root}>
-      <Typography variant="h6" gutterBottom align="center">
+      <Typography
+        variant="h6"
+        gutterBottom
+        align="center"
+        className={classes.headingQuestions}
+      >
         Questões aleatórias
       </Typography>
       {displayQuestions}
-      <Button
-        variant="contained"
-        color="secondary"
+      <ButtonForm
         onClick={() => append(emptyQuestion)}
+        error={errors?.config?.questions}
+        helpertext={errors?.config?.questions?.message}
       >
         Adicionar questão
-      </Button>
+      </ButtonForm>
     </div>
   );
 };

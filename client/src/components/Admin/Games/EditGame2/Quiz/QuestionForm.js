@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { Controller } from "react-hook-form";
-import Input from "../../../../Form/Input";
+import Input from "../../../../Form/InputNotPaper";
 import SelectInput from "../../../../Form/SelectInput";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -25,13 +25,22 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
   },
   margin: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(0),
   },
 }));
 
 const QuestionForm = (props) => {
   const classes = useStyles();
-  const { index, item, control, register, remove, swap, totalQuests } = props;
+  const {
+    index,
+    item,
+    control,
+    register,
+    remove,
+    swap,
+    totalQuests,
+    error,
+  } = props;
 
   let upBtn = "";
   if (index - 1 >= 0) {
@@ -62,6 +71,10 @@ const QuestionForm = (props) => {
   return (
     <Paper elevation={3} className={classes.paper}>
       <Typography variant="h6" gutterBottom align="center">
+        <div>
+          {upBtn}
+          {downBtn}
+        </div>
         Questão {index + 1}
         <IconButton
           aria-label="delete"
@@ -70,48 +83,46 @@ const QuestionForm = (props) => {
         >
           <DeleteIcon />
         </IconButton>
-        {upBtn}
-        {downBtn}
       </Typography>
       <Input
         {...register(`config.questions.${index}.question`)}
         defaultValue={`${item.question}`} // make sure to set up defaultValue
         type="text"
         label="Questão"
-        // error={!!errors.config?.pieces_size}
-        // helperText={errors?.config?.pieces_size?.message}
+        error={!!error?.question}
+        helperText={error?.question?.message}
       />
       <Input
         {...register(`config.questions.${index}.answers.answer1`)}
         defaultValue={`${item.answers.answer1}`}
         type="text"
         label="Resposta 1"
-        // error={!!errors.config?.pieces_size}
-        // helperText={errors?.config?.pieces_size?.message}
+        error={!!error?.answers?.answer1}
+        helperText={error?.answers?.answer1?.message}
       />
       <Input
         {...register(`config.questions.${index}.answers.answer2`)}
         defaultValue={`${item.answers.answer2}`}
         type="text"
         label="Resposta 2"
-        // error={!!errors.config?.pieces_size}
-        // helperText={errors?.config?.pieces_size?.message}
+        error={!!error?.answers?.answer2}
+        helperText={error?.answers?.answer2?.message}
       />
       <Input
         {...register(`config.questions.${index}.answers.answer3`)}
         defaultValue={`${item.answers.answer3}`}
         type="text"
         label="Resposta 3"
-        // error={!!errors.config?.pieces_size}
-        // helperText={errors?.config?.pieces_size?.message}
+        error={!!error?.answers?.answer3}
+        helperText={error?.answers?.answer3?.message}
       />
       <Input
         {...register(`config.questions.${index}.answers.answer4`)}
         defaultValue={`${item.answers.answer4}`}
         type="text"
         label="Resposta 4"
-        // error={!!errors.config?.pieces_size}
-        // helperText={errors?.config?.pieces_size?.message}
+        error={!!error?.answers?.answer4}
+        helperText={error?.answers?.answer4?.message}
       />
       <Controller
         name={`config.questions.${index}.right_answer`}
@@ -122,8 +133,8 @@ const QuestionForm = (props) => {
           <SelectInput
             label="Resposta correta"
             {...field}
-            // error={!!errors.poll_id}
-            // helpertext={errors?.poll_id?.message}
+            error={!!error?.right_answer}
+            helpertext={error?.right_answer?.message}
           >
             <MenuItem value={0}>Resposta 1</MenuItem>
             <MenuItem value={1}>Resposta 2</MenuItem>
@@ -137,8 +148,8 @@ const QuestionForm = (props) => {
         defaultValue={`${item.justification}`}
         type="text"
         label="Justificação"
-        // error={!!errors.config?.pieces_size}
-        // helperText={errors?.config?.pieces_size?.message}
+        error={!!error?.justification}
+        helperText={error?.justification?.message}
       />
     </Paper>
   );

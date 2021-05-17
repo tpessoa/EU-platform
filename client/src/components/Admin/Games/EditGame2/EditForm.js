@@ -24,6 +24,8 @@ import { uploadImages } from "../../../../hooks/useUpload";
 import { setCreateNew } from "./games.schemas";
 import { getDefValues, getSchemas } from "./games.getData";
 import EditInteractiveMaps from "./InteractiveMaps/EditInteractiveMaps";
+import EditCrossWords from "./CrossWords/EditCrossWords";
+import EditColorGame from "./ColorGame/EditColorGame";
 
 const EditForm = (props) => {
   const history = useHistory();
@@ -42,6 +44,9 @@ const EditForm = (props) => {
   setCreateNew(createNew);
   let defVals = getDefValues(game, fields);
   let gameSchema = getSchemas(game);
+
+  // console.log(defVals);
+  // console.log(config);
 
   const {
     register,
@@ -76,6 +81,7 @@ const EditForm = (props) => {
 
   const onSubmit = async (userInput) => {
     // setUploading(true);
+    // console.log(userInput.config.colors);
     let newUserInput = { ...userInput, game_ref_name: game_ref_name };
     if (!createNew) {
       newUserInput = {
@@ -84,7 +90,6 @@ const EditForm = (props) => {
       };
     }
     console.log(newUserInput);
-    // console.log(newUserInput);
 
     const newUserInputUploaded = await uploadImages(
       newUserInput,
@@ -124,11 +129,23 @@ const EditForm = (props) => {
         register={register}
         control={control}
         watch={watch}
-        fields={fields}
+        obj={fields}
         uploading={uploading}
       />
     );
   } else if (game === "colorGame") {
+    displaySpecificForm = (
+      <EditColorGame
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
+      />
+    );
   } else if (game === "wordSearch") {
     displaySpecificForm = (
       <EditWordSearch
@@ -182,6 +199,18 @@ const EditForm = (props) => {
       />
     );
   } else if (game === "crossWords") {
+    displaySpecificForm = (
+      <EditCrossWords
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
+      />
+    );
   }
 
   let displaySave = mutation.isLoading ? (

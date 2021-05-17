@@ -13,8 +13,10 @@ import DefaultImage from "../../assets/images/defaultImage.jpg";
 
 import Loading from "../UI/Loading";
 
-const useStyles = makeStyles({
-  root: {},
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(1, 0, 1, 0),
+  },
   media: {
     display: "flex",
     alignItems: "center",
@@ -24,7 +26,7 @@ const useStyles = makeStyles({
   description: {
     textAlign: "center",
   },
-});
+}));
 
 const UploadImage = forwardRef((props, ref) => {
   const classes = useStyles();

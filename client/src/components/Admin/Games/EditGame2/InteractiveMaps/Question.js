@@ -1,7 +1,7 @@
 import React from "react";
 import { IconButton, MenuItem, Paper, Typography } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import Input from "../../../../Form/Input";
+import Input from "../../../../Form/InputNotPaper";
 import { Controller } from "react-hook-form";
 import { makeStyles } from "@material-ui/core/styles";
 import SelectInput from "../../../../Form/SelectInput";
@@ -11,10 +11,7 @@ import { countriesData } from "../../../../../pages/Admin/games/RightAnswersData
 const useStyles = makeStyles((theme) => ({
   paper: {
     margin: theme.spacing(2, 0, 2, 0),
-    padding: theme.spacing(0, 1, 0, 1),
-  },
-  heading: {
-    textAlign: "center",
+    padding: theme.spacing(0, 1, 1, 1),
   },
   margin: {
     margin: theme.spacing(1),
@@ -23,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Question = (props) => {
   const classes = useStyles();
-  const { index, item, control, register, remove, swap, totalQuests } = props;
+  const { index, item, control, register, remove, error } = props;
 
   return (
     <Paper elevation={3} className={classes.paper}>
@@ -42,8 +39,8 @@ const Question = (props) => {
         defaultValue={`${item.question}`} // make sure to set up defaultValue
         type="text"
         label="Questão"
-        // error={!!errors.config?.pieces_size}
-        // helperText={errors?.config?.pieces_size?.message}
+        error={!!error?.question}
+        helperText={error?.question?.message}
       />
       <Controller
         name={`config.questions.${index}.right_answer`}
@@ -54,8 +51,8 @@ const Question = (props) => {
           <SelectInput
             label="Resposta correta"
             {...field}
-            // error={!!errors.poll_id}
-            // helpertext={errors?.poll_id?.message}
+            error={!!error?.right_answer}
+            helpertext={error?.right_answer?.message}
           >
             {countriesData.map((countrieObj, index) => (
               <MenuItem key={index} value={index}>
@@ -70,8 +67,8 @@ const Question = (props) => {
         defaultValue={`${item.justification}`}
         type="text"
         label="Justificação"
-        // error={!!errors.config?.pieces_size}
-        // helperText={errors?.config?.pieces_size?.message}
+        error={!!error?.justification}
+        helperText={error?.justification?.message}
       />
     </Paper>
   );

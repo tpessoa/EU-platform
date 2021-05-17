@@ -6,6 +6,7 @@ import CheckBox from "../../../../Form/Checkbox";
 import { Button, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CheckboxInput from "../../../../Form/CheckboxInput";
+import ButtonForm from "../../../../Form/ButtonForm";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     display: "grid",
     placeItems: "center",
   },
+  button: {},
 }));
 
 const EditWordSearch = (props) => {
@@ -58,6 +60,7 @@ const EditWordSearch = (props) => {
       remove={remove}
       swap={swap}
       control={control}
+      error={errors.config?.words && errors.config?.words[index]}
     />
   ));
 
@@ -115,13 +118,15 @@ const EditWordSearch = (props) => {
           Palavras
         </Typography>
         {displayWords}
-        <Button
-          variant="contained"
-          color="secondary"
+        <ButtonForm
+          fullWidth={true}
+          className={classes.button}
           onClick={() => append({ word: "" })}
+          error={errors?.config?.words}
+          helpertext={errors?.config?.words?.message}
         >
           Adicionar espaço para palavra
-        </Button>
+        </ButtonForm>
       </Paper>
       <Input
         {...register("config.num_horizontal_cells")}
