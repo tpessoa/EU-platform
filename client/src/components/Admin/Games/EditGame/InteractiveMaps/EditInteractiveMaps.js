@@ -1,144 +1,98 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React from "react";
+import { interactiveMapsObj } from "../games.data";
+import Question from "./Question";
+import { makeStyles } from "@material-ui/core/styles";
+import { useFieldArray } from "react-hook-form";
+import { Button, Typography } from "@material-ui/core";
+import ButtonForm from "../../../../Form/ButtonForm";
 
-import QuestionForm from "./QuestionForm";
-import CheckboxField from "../../../../Input/CheckboxField";
-import NumberField from "../../../../Input/NumberField";
-
-var emptyObj = {
-  assets: {
-    images: {},
-  },
-  config: {
-    questions: [],
-    countries_names_visible: null,
-  },
+const emptyQuestion = {
+  question: "",
+  right_answer: "",
+  justification: "",
 };
 
-var emptyConfig = {
-  questions: [],
-  countries_names_visible: null,
-};
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    width: 220,
+  },
+  root: {
+    justifyContent: "center",
+  },
+  headingQuestions: { margin: theme.spacing(2, 0, 1, 0) },
+  errorMessage: { color: "#ff0000", marginBottom: theme.spacing(1) },
+}));
 
-const EditGame = (props) => {
+const EditInteractiveMaps = (props) => {
+  const classes = useStyles();
+
   const {
-    createGame,
-    generateArray,
-    config,
-    setConfig,
-    assets,
-    setAssets,
-    configTitle,
-    assetsTitle,
+    createNew,
+    errors,
+    unregister,
+    register,
+    setValue,
+    control,
+    watch,
+    obj,
+    uploading,
   } = props;
 
-  const [loadedComplete, setLoadedComplete] = useState(false);
-  const [update, setUpdate] = useState(false);
-
-  useEffect(() => {
-    if (createGame) {
-      setConfig({ ...emptyConfig });
-    }
-    setLoadedComplete(true);
-  }, []);
-
-  const addQuestion = () => {
-    const tempConfig = { ...config };
-    tempConfig.questions.push("addedQuestion");
-    setConfig(tempConfig);
-  };
-
-  const updatedQuestionObj = (obj, ref) => {
-    const tempConfig = { ...config };
-    tempConfig.questions[ref] = { ...obj };
-    setConfig(tempConfig);
-  };
-
-  const deleteQuestionHandler = (objRef) => {
-    const tempConfig = { ...config };
-    tempConfig.questions.splice(objRef, 1);
-    setConfig(tempConfig);
-    setUpdate(true);
-  };
-
-  let displayQuestions = "";
-  if (loadedComplete) {
-    displayQuestions = config.questions.map((obj, index) => {
-      return (
-        <QuestionForm
-          key={index}
-          questionRef={index}
-          title={"Questão " + (index + 1)}
-          questionInfo={obj}
-          questionChanged={updatedQuestionObj}
-          createNew={createGame}
-          deleteQuestion={deleteQuestionHandler}
-          update={update}
-          setUpdate={setUpdate}
-        />
-      );
-    });
+  if (createNew) {
+    obj = {
+      ...obj,
+      ...interactiveMapsObj,
+    };
   }
 
+  const { fields, append, remove, swap } = useFieldArray({
+    control,
+    name: "config.questions",
+  });
+
+  // const watchResult = watch("config.questions");
+  // console.log(watchResult);
+
+  let displayQuestions = fields.map((item, index) => {
+    return (
+      <Question
+        key={item.id}
+        index={index}
+        item={item}
+        register={register}
+        control={control}
+        remove={remove}
+        swap={swap}
+        totalQuests={fields.length}
+        error={errors.config?.questions && errors.config?.questions[index]}
+      />
+    );
+  });
+
   return (
-    <Container>
-      <p>{configTitle}</p>
-      <ContainerWrapper>
-        <ContentWrapper>
-          {displayQuestions}
-          <button onClick={addQuestion}>Adicionar Questão</button>
-        </ContentWrapper>
-      </ContainerWrapper>
-    </Container>
+    <div className={classes.root}>
+      <Typography
+        variant="h6"
+        gutterBottom
+        align="center"
+        className={classes.headingQuestions}
+      >
+        Questões aleatórias
+      </Typography>
+      {displayQuestions}
+      <ButtonForm
+        onClick={() => append(emptyQuestion)}
+        error={errors?.config?.questions}
+        helpertext={errors?.config?.questions?.message}
+      >
+        Adicionar questão
+      </ButtonForm>
+    </div>
   );
 };
 
-export default EditGame;
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin: 2rem;
-  width: 100%;
-`;
-
-const ContainerWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
-  width: 90%;
-`;
-
-const ContentWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 90%;
-`;
-
-const TimeContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60%;
-`;
-
-const TimeCheckboxContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30%;
-`;
-const TimeValueCheckboxContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 70%;
-`;
+export default EditInteractiveMaps;

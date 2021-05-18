@@ -1,110 +1,99 @@
 import React, { useState, useEffect } from "react";
 
-import ListField from "../../../../Input/ListField/ListFieldNewNew";
-import ImageField from "../../../ImageField";
-
-import styled from "styled-components";
-
-const emptyPuzzleConfig = {
-  pieces_size: "",
-};
-
-const emptyPuzzleAssets = {
-  images: {
-    final_img: {
-      id: "defaultImage",
-      path: "",
-      server_path: "",
-    },
-  },
-};
+import { Controller } from "react-hook-form";
+import UploadImage from "../../../../Form/UploadImage";
+import Checkbox from "../../../../Form/Checkbox";
+import Input from "../../../../Form/Input";
+import { puzzleObj } from "../games.data";
 
 const EditPuzzle = (props) => {
-  const {
-    id,
-    createGame,
-    config,
-    assets,
-    setConfig,
-    setAssets,
-    configTitle,
-    assetsTitle,
-  } = props;
+  const { createNew, errors, register, control, watch, obj, uploading } = props;
 
-  const [loadedCompleted, setLoadedCompleted] = useState(false);
-
-  useEffect(() => {
-    if (createGame) {
-      setConfig({ ...emptyPuzzleConfig });
-      setAssets({ ...emptyPuzzleAssets });
-    }
-    setLoadedCompleted(true);
-  }, []);
-
-  const textHandler = (userInput, ref) => {
-    // console.log(ev.target.value);
-    // console.log(ref);
-    const tempConfig = { ...config };
-    tempConfig[ref] = parseInt(userInput);
-    setConfig(tempConfig);
-  };
-
-  const imageHandler = (obj, ref) => {
-    const tempAssets = { ...assets };
-    tempAssets.images[ref] = obj;
-    setAssets(tempAssets);
-  };
-
-  let display = "";
-  if (loadedCompleted) {
-    display = (
-      <>
-        {configTitle}
-        {/* <NumberWrapper>
-          <NumberField
-            field_ref={"pieces_size"}
-            label={"Tamanho das peças"}
-            value={config.pieces_size}
-            parentChangeHandler={textHandler}
-            info={"100 as peças são grandes\n130 médias\n160 pequenas"}
-          />
-        </NumberWrapper> */}
-        <ListWrapper>
-          <ListField
-            field_ref={"pieces_size"}
-            label={"Tamanho das peças"}
-            arr={["150", "200", "300"]}
-            value={config.pieces_size}
-            parentChangeHandler={textHandler}
-          />
-        </ListWrapper>
-        {assetsTitle}
-        <ImageField
-          field_ref={"final_img"}
-          title={"Image do puzzle"}
-          imageObj={assets.images.final_img}
-          parentChangeHandler={imageHandler}
-          linkedObj={id}
-        />
-      </>
-    );
+  if (createNew) {
+    obj = {
+      ...obj,
+      ...puzzleObj,
+    };
   }
+  let time_flag = watch("config.time");
 
-  return <>{display}</>;
+  return (
+    <>
+      <Input
+        {...register("config.pieces_size")}
+        name="config.pieces_size"
+        type="number"
+        label="Tamanho das peças"
+        error={!!errors.config?.pieces_size}
+        helperText={errors?.config?.pieces_size?.message}
+      />
+      <Controller
+        name="config.time"
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <Checkbox {...field} label="Tempo para terminar o jogo" />
+        )}
+        error={!!errors.config?.time}
+        helperText={errors?.config?.time?.message}
+      />
+      <Input
+        {...register("config.time_to_complete")}
+        name="config.time_to_complete"
+        type="number"
+        label="Tempo em segundos"
+        error={!!errors.config?.time_to_complete}
+        helperText={errors?.config?.time_to_complete?.message}
+        disabled={!time_flag}
+      />
+      <Controller
+        name="config.background_puzzle_image"
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <Checkbox {...field} label="Background com image do puzzle" />
+        )}
+        error={!!errors.config?.background_puzzle_image}
+        helperText={errors?.config?.background_puzzle_image?.message}
+      />
+      <Controller
+        name="config.piece_position_helper"
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <Checkbox
+            {...field}
+            label="Ajuda com as marcas das peças no tabuleiro"
+          />
+        )}
+        error={!!errors.config?.piece_position_helper}
+        helperText={errors?.config?.piece_position_helper?.message}
+      />
+      <Controller
+        name="config.move_pieces_freely"
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <Checkbox {...field} label="Mover peças livremente pelo tabuleiro" />
+        )}
+        error={!!errors.config?.move_pieces_freely}
+        helperText={errors?.config?.move_pieces_freely?.message}
+      />
+
+      <UploadImage
+        {...register("assets.puzzle_image")}
+        name="assets.puzzle_image"
+        type="file"
+        error={!!errors.assets?.puzzle_image}
+        helperText={errors?.assets?.puzzle_image?.message}
+        description="Imagem do Puzzle"
+        image={{
+          imagePath: obj.assets.puzzle_image,
+          uploading: uploading,
+        }}
+      />
+    </>
+  );
 };
 
 export default EditPuzzle;
-
-const NumberWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30%;
-`;
-
-const ListWrapper = styled.div`
-  width: 30%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;

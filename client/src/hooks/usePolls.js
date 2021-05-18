@@ -11,7 +11,7 @@ const getAllPolls = async () => {
   return data;
 };
 export const usePolls = () => {
-  return useQuery("all-polls", () => getAllPolls(), {
+  return useQuery("polls", () => getAllPolls(), {
     refetchOnWindowFocus: false,
   });
 };

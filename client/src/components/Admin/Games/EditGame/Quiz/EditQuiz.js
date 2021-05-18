@@ -1,187 +1,105 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React, { useState } from "react";
+import { quizObj } from "../games.data";
+import QuestionForm from "./QuestionForm";
+import { makeStyles } from "@material-ui/core/styles";
+import { Controller, useFieldArray } from "react-hook-form";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@material-ui/core";
+import Input from "../../../../Form/Input";
+import ButtonForm from "../../../../Form/ButtonForm";
 
-import QuizQuestionForm from "./QuizQuestionForm";
-import CheckboxField from "../../../../Input/CheckboxField";
-import NumberField from "../../../../Input/NumberField";
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    width: 220,
+  },
+  root: {
+    justifyContent: "center",
+  },
+}));
 
-var emptyObj = {
-  assets: {
-    images: {},
+const emptyQuestion = {
+  question: "",
+  answers: {
+    answer1: "",
+    answer2: "",
+    answer3: "",
+    answer4: "",
   },
-  config: {
-    questions: [],
-    timer: false,
-    time_to_resp_question: "",
-  },
+  right_answer: "",
+  justification: "",
 };
 
-var emptyConfig = {
-  questions: [],
-  time_to_resp_question: "",
-};
-
-const EditGame = (props) => {
+const EditQuiz = (props) => {
+  const classes = useStyles();
   const {
-    createGame,
-    generateArray,
-    config,
-    setConfig,
-    assets,
-    setAssets,
-    configTitle,
-    assetsTitle,
+    createNew,
+    errors,
+    unregister,
+    register,
+    setValue,
+    control,
+    watch,
+    obj,
+    uploading,
   } = props;
 
-  const [loadedComplete, setLoadedComplete] = useState(false);
-  const [update, setUpdate] = useState(false);
-  const [timerActive, setTimerActive] = useState(false);
-
-  useEffect(() => {
-    if (createGame) {
-      setConfig({ ...emptyConfig });
-    }
-    setLoadedComplete(true);
-  }, []);
-
-  const addQuestion = () => {
-    const tempConfig = { ...config };
-    // console.log(tempConfig);
-    tempConfig.questions.push("addedQuestion");
-    setConfig(tempConfig);
-  };
-
-  const updatedQuestionObj = (obj, ref) => {
-    // console.log(obj);
-    // console.log(ref);
-
-    const tempConfig = { ...config };
-    tempConfig.questions[ref] = { ...obj };
-    setConfig(tempConfig);
-  };
-
-  const deleteQuestionHandler = (objRef) => {
-    const tempConfig = { ...config };
-    tempConfig.questions.splice(objRef, 1);
-    setConfig(tempConfig);
-    setUpdate(true);
-  };
-
-  let displayQuestions = "";
-  if (loadedComplete) {
-    displayQuestions = config.questions.map((obj, index) => {
-      return (
-        <QuizQuestionForm
-          key={index}
-          questionRef={index}
-          title={"Questão " + (index + 1)}
-          questionInfo={obj}
-          questionChanged={updatedQuestionObj}
-          createNew={createGame}
-          deleteQuestion={deleteQuestionHandler}
-          update={update}
-          setUpdate={setUpdate}
-        />
-      );
-    });
+  if (createNew) {
+    obj = {
+      ...obj,
+      ...quizObj,
+    };
   }
 
-  const numberHandler = (userInput, ref) => {
-    // console.log(ev.target.value);
-    // console.log(ref);
+  let time_flag = watch("config.time");
 
-    const tempConfig = { ...config };
-    tempConfig[ref] = parseInt(userInput);
-    setConfig(tempConfig);
-  };
+  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
+    {
+      control,
+      name: "config.questions",
+    }
+  );
 
-  const timerHandler = (flag, ref) => {
-    const tempConfig = { ...config };
-    tempConfig[ref] = flag;
-    setConfig(tempConfig);
+  // const watchResult = watch("config.questions");
+  // console.log(watchResult);
 
-    setTimerActive(flag);
-  };
+  let displayQuestions = fields.map((item, index) => {
+    return (
+      <QuestionForm
+        key={item.id}
+        index={index}
+        item={item}
+        register={register}
+        control={control}
+        remove={remove}
+        swap={swap}
+        totalQuests={fields.length}
+        error={errors.config?.questions && errors.config?.questions[index]}
+      />
+    );
+  });
 
   return (
-    <Container>
-      <p>{configTitle}</p>
-      <ContainerWrapper>
-        <ContentWrapper>
-          {displayQuestions}
-          <button onClick={addQuestion}>Adicionar Questão</button>
-        </ContentWrapper>
-      </ContainerWrapper>
-      <TimeContainer>
-        <TimeCheckboxContainer>
-          <CheckboxField
-            field_ref={"timer"}
-            value={config.timer}
-            description={"Ativar"}
-            setHandler={timerHandler}
-          />
-        </TimeCheckboxContainer>
-
-        <TimeValueCheckboxContainer>
-          <NumberField
-            disabled={!timerActive}
-            field_ref={"time_to_resp_question"}
-            label={"Tempo para responder a cada questão (segundos)"}
-            value={config.time_to_resp_question}
-            parentChangeHandler={numberHandler}
-          />
-        </TimeValueCheckboxContainer>
-      </TimeContainer>
-    </Container>
+    <div className={classes.root}>
+      {displayQuestions}
+      <ButtonForm
+        onClick={() => append(emptyQuestion)}
+        error={errors?.config?.questions}
+        helpertext={errors?.config?.questions?.message}
+      >
+        Adicionar questão
+      </ButtonForm>
+    </div>
   );
 };
 
-export default EditGame;
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin: 2rem;
-  width: 100%;
-`;
-
-const ContainerWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
-  width: 90%;
-`;
-
-const ContentWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 90%;
-`;
-
-const TimeContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60%;
-`;
-
-const TimeCheckboxContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30%;
-`;
-const TimeValueCheckboxContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 70%;
-`;
+export default EditQuiz;

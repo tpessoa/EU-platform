@@ -22,31 +22,10 @@ import {
 } from "../../../Form/data.schemas";
 import { usePolls } from "../../../../hooks/usePolls";
 
-export const schemaCreateNew = yup.object().shape({
-  poll_id: yup
-    .number()
-    .moreThan(-1, "Categoria de votação é obrigatória")
-    .required(),
-  title: yup.string().required(),
-  description: yup.string().required(),
-  photo: getRequiredFileSchema(),
-});
-
-export const schemaEdit = yup.object().shape({
-  poll_id: yup
-    .number()
-    .required()
-    .typeError("Categoria de votação é obrigatória")
-    .moreThan(-1),
-  title: yup.string().required(),
-  description: yup.string().required(),
-  photo: getOptionalFileSchema(),
-});
-
 const EditForm = (props) => {
   const { fields, createNew, fetchQuery } = props;
   const history = useHistory();
-  const { _id, poll_id, title, description, photo } = fields;
+  const { _id, poll_id, title, author, description, photo } = fields;
   const polls = usePolls();
 
   const [uploading, setUploading] = useState(false);
@@ -55,16 +34,29 @@ const EditForm = (props) => {
     ? polls.data.findIndex((index) => index._id === poll_id)
     : -1;
 
+  const schema = yup.object().shape({
+    poll_id: yup
+      .number()
+      .required()
+      .typeError("Categoria de votação é obrigatória")
+      .moreThan(-1),
+    title: yup.string().required(),
+    author: yup.string().required(),
+    description: yup.string().required(),
+    photo: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
+  });
+
   const {
     control,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(createNew ? schemaCreateNew : schemaEdit),
+    resolver: yupResolver(schema),
     defaultValues: {
       poll_id: poll_id_index,
       title: title,
+      author: author,
       description: description,
     },
   });
@@ -89,11 +81,16 @@ const EditForm = (props) => {
 
   const onSubmit = async (userInput) => {
     userInput.poll_id = polls.data[userInput.poll_id]._id;
-    let newUserInput = { ...userInput };
+    let newUserInput = {};
     if (!createNew) {
       newUserInput = {
         ...userInput,
         _id: _id,
+      };
+    } else {
+      newUserInput = {
+        ...userInput,
+        votes: [],
       };
     }
     setUploading(true);
@@ -152,6 +149,15 @@ const EditForm = (props) => {
           multiline
           error={!!errors.description}
           helperText={errors?.description?.message}
+        />
+        <Input
+          {...register("author")}
+          name="author"
+          type="text"
+          label="Autor"
+          multiline
+          error={!!errors.author}
+          helperText={errors?.author?.message}
         />
         <UploadImage
           {...register("photo")}

@@ -1,7 +1,8 @@
 const router = require("express").Router();
 let Work = require("../models/work.model");
 let Poll = require("../models/poll.model");
-const { route } = require("./upload");
+const bcrypt = require("bcryptjs");
+const saltRounds = 10;
 
 router.route("/").get((req, res) => {
   res.send("JOGOS");
@@ -143,6 +144,39 @@ router.delete("/delete-work/:id", async (req, res) => {
       }
     });
     // delete image
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.post("/vote", async (req, res) => {
+  try {
+    // verify email
+    const work = await Work.findById(req.body.workId);
+    // const voteExists = work.votes.findIndex(
+    //   (vote) => vote.email === encryptedEmail
+    // );
+    let flagExists = false;
+    for (const vote of work.votes) {
+      let res = await bcrypt.compare(req.body.email, vote.email);
+      if (res) flagExists = true;
+    }
+    // if email not exists in the work votes yet
+    if (!flagExists) {
+      // encrypt
+      const salt = bcrypt.genSaltSync(saltRounds);
+      const hash = bcrypt.hashSync(req.body.email, salt);
+      const encryptedEmail = hash;
+      // store
+      work.votes.push({
+        email: encryptedEmail,
+      });
+      await work.save();
+      res.send(work);
+    } else {
+      console.log("user already voted");
+      res.status(500).send({ message: "Este email já votou neste trabalho!" });
+    }
   } catch (e) {
     res.status(500).send({ message: e.message });
   }

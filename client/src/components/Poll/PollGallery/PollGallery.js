@@ -19,7 +19,7 @@ const PollGallery = ({ pollList }) => {
   console.log(polls.data);
   return (
     <Container>
-      <h1>Categorias</h1>
+      <TextWrapper>Categorias</TextWrapper>
       <GalleryWrapper>
         {polls.data.map((poll, index) => (
           <Card key={index} num={index} info={poll} />
@@ -40,8 +40,9 @@ const Container = styled.div`
   }
 `;
 
-const TextWrapper = styled.div`
+const TextWrapper = styled.h1`
   text-align: center;
+  margin-bottom: 1rem;
 `;
 
 const GalleryWrapper = styled.div`

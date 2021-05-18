@@ -1,242 +1,195 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React from "react";
+import Input from "../../../../Form/Input";
+import { Controller, useFieldArray } from "react-hook-form";
+import CheckBox from "../../../../Form/Checkbox";
+import { Button, Paper, Typography, MenuItem } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import CheckboxInput from "../../../../Form/CheckboxInput";
+import Select from "../../../../Form/SelectInput";
+import UploadImage from "../../../../Form/UploadImage";
+import FrontCards from "./FrontCards";
 
-import Switch from "../../../../Input/Switch";
-import NumberField from "../../../../Input/NumberField";
-import ListField from "../../../../Input/ListField/ListFieldNewNew";
-import ImageField from "../../../ImageField";
-
-const imageSlotsHandler = (arr, obj) => {
-  const tempArr = [...arr];
-  // add slots
-  if (tempArr.length < obj) {
-    const slots = obj - tempArr.length;
-    for (let i = 0; i < slots; i++) {
-      tempArr.push({ ...emptyImageObj });
-    }
-  }
-
-  // remove slots
-  else {
-    const slots = tempArr.length - obj;
-    for (let i = 0; i < slots; i++) {
-      tempArr.pop();
-    }
-  }
-
-  return tempArr;
-};
-const total_images_arr = [3, 6, 8, 10];
-
-const emptyMemoryConfig = {
-  destroy_card: false,
-  time_to_complete: null,
-  max_attempts: null,
-  total_images: 0,
-};
-
-const emptyImageObj = {
+const totalImagesArr = [3, 6, 8, 10];
+const emptyImage = {
   id: "defaultImage",
   path: "",
   server_path: "",
 };
 
-const emptyMemoryAssets = {
-  images: {
-    back_card: emptyImageObj,
-    front_cards: imageSlotsHandler(
-      [],
-      total_images_arr[emptyMemoryConfig.total_images]
-    ),
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    margin: theme.spacing(2, 0, 2, 0),
+    padding: theme.spacing(0, 1, 0, 1),
+    display: "grid",
+    placeItems: "center",
   },
-};
+  directions: {
+    display: "inline-block",
+  },
+  words: {
+    margin: theme.spacing(2, 0, 2, 0),
+    padding: theme.spacing(2),
+    display: "grid",
+    placeItems: "center",
+  },
+}));
 
 const EditMemory = (props) => {
   const {
-    id,
-    createGame,
-    config,
-    assets,
-    setConfig,
-    setAssets,
-    configTitle,
-    assetsTitle,
+    createNew,
+    errors,
+    unregister,
+    register,
+    setValue,
+    control,
+    watch,
+    obj,
+    uploading,
   } = props;
 
-  const [loadedCompleted, setLoadedCompleted] = useState(false);
-  const [switchers, setSwitchers] = useState({
-    time_to_complete: true,
-    max_attempts: null,
+  const [numCards, setNumCards] = React.useState(
+    totalImagesArr.findIndex((i) => i === obj.assets.front_cards.length)
+  );
+
+  console.log(obj);
+
+  const timer = watch("config.timer");
+  const total_images = watch("config.total_images");
+  const { fields, append, remove, swap } = useFieldArray({
+    control,
+    name: "assets.front_cards",
   });
+  console.log(fields);
+  console.log(total_images);
+  const val = totalImagesArr[total_images];
+  // if (val < fields.length) {
+  //   for (let i = 0; i < fields.length - val; i++) {
+  //     console.log("sub");
+  //   }
+  // }
+  // if (val > fields.length) {
+  //   for (let i = 0; i < val - fields.length; i++) {
+  //     console.log("add");
+  //     append({ pair: emptyImage });
+  //   }
+  // }
 
-  useEffect(() => {
-    if (createGame) {
-      setConfig({ ...emptyMemoryConfig });
-      setAssets({ ...emptyMemoryAssets });
-    }
-    setLoadedCompleted(true);
-  }, []);
+  // remove();
+  // for (let i = 0; i < val; i++) {
+  //   append({ pair: emptyImage });
+  // }
 
-  const textHandler = (userInput, ref) => {
-    // console.log(ev.target.value);
-    // console.log(ref);
-    const tempConfig = { ...config };
-    tempConfig[ref] = parseInt(userInput);
-    setConfig(tempConfig);
+  const handleChange = (event) => {
+    // remove or add assets front_cards
+    append({ pair: { ...emptyImage } });
+    append({ pair: { ...emptyImage } });
+    append({ pair: { ...emptyImage } });
+    append({ pair: { ...emptyImage } });
+    append({ pair: { ...emptyImage } });
+    append({ pair: { ...emptyImage } });
+    setNumCards(event.target.value);
   };
 
-  const imageHandler = (obj, ref) => {
-    console.log(obj);
-    console.log(ref);
+  let displayFrontCards = fields.map((item, index) => (
+    <FrontCards
+      key={item.id}
+      index={index}
+      item={item}
+      remove={remove}
+      swap={swap}
+      control={control}
+      uploading={uploading}
+      register={register}
+      errors={errors}
+      total_cards={fields.length}
+    />
+  ));
 
-    const tempAssets = { ...assets };
-    if (ref === "back_card") {
-      tempAssets.images[ref] = obj;
-    } else {
-      const splited = ref.split("_");
-      const cardIndex = splited.pop();
-      const joined = splited.join("_");
-      console.log(tempAssets.images);
-      console.log(joined);
-      tempAssets.images[joined][cardIndex] = obj;
-    }
-    setAssets(tempAssets);
-  };
+  return (
+    <>
+      <CheckboxInput
+        register={register}
+        control={control}
+        textName={"config.time_to_complete"}
+        textLabel={"Tempo em segundos"}
+        checkboxName={"config.timer"}
+        checkboxLabel={"Tempo para terminar o jogo"}
+        disabled={!timer}
+        error={!!errors.config?.time_to_complete}
+        helperText={errors?.config?.time_to_complete?.message}
+      />
+      <Input
+        {...register("config.max_attempts")}
+        name="config.max_attempts"
+        type="number"
+        label="Tentativas máximas"
+        error={!!errors.config?.max_attempts}
+        helperText={errors?.config?.max_attempts?.message}
+      />
+      <Controller
+        name="config.destroy_card"
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <CheckBox {...field} label="Destruir par no fim de descoberto" />
+        )}
+        error={!!errors.config?.destroy_card}
+        helperText={errors?.config?.destroy_card?.message}
+      />
+      <UploadImage
+        {...register("assets.back_card")}
+        name="assets.back_card"
+        type="file"
+        error={!!errors.assets?.back_card}
+        helperText={errors?.assets?.back_card?.message}
+        description="Imagem da carta virada"
+        image={{
+          imagePath: obj.assets.back_card,
+          uploading: uploading,
+        }}
+      />
+      <Typography variant="h6" gutterBottom align="center">
+        Pares de cartas do jogo
+      </Typography>
+      <Controller
+        name="config.total_images"
+        control={control}
+        defaultValue={false}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <Select
+            label="Número de cartas"
+            {...field}
+            error={!!errors.config?.total_images}
+            helpertext={errors?.config?.total_images?.message}
+          >
+            {totalImagesArr.map((num, index) => (
+              <MenuItem key={index} value={index}>
+                {num}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
+      />
 
-  const changeHandler = (obj, ref) => {
-    // console.log(obj);
-    // console.log(ref);
-    const tempConfig = { ...config };
-
-    // populate assets with images slots
-    if (ref === "total_images") {
-      const tempAssets = { ...assets };
-      tempAssets.images.front_cards = imageSlotsHandler(
-        tempAssets.images.front_cards,
-        obj
-      );
-    }
-    if (ref === "time_to_complete" || ref === "max_attempts") {
-      tempConfig[ref] = parseInt(obj);
-    } else {
-      tempConfig[ref] = obj;
-    }
-
-    setConfig(tempConfig);
-  };
-
-  const switcherHandler = (obj, ref) => {
-    const splited = ref.split("_");
-    splited.pop();
-    const joined = splited.join("_");
-    // console.log(joined);
-
-    // if is desactivated
-    const tempConfig = { ...config };
-    if (!obj) {
-      tempConfig[joined] = null;
-    }
-    // set switchers
-    const tempSwitchers = { ...switchers };
-    tempSwitchers[joined] = obj;
-
-    setSwitchers(tempSwitchers);
-    setConfig(tempConfig);
-  };
-
-  let display = "";
-  if (loadedCompleted) {
-    display = (
-      <>
-        {configTitle}
-        <SwitchComponentWrapper>
-          <Switch
-            field_ref={"destroy_card"}
-            label={"Destroir o par de cartas depois de descoberto"}
-            value={config.destroy_card}
-            switchHandler={changeHandler}
-          />
-        </SwitchComponentWrapper>
-        <SwitchComponentWrapper>
-          <Switch
-            field_ref={"time_to_complete_switcher"}
-            label={"Tempo para completar o jogo"}
-            value={switchers.time_to_complete}
-            switchHandler={switcherHandler}
-          />
-          <NumberFieldWrapper>
-            <NumberField
-              disabled={!switchers.time_to_complete}
-              field_ref={"time_to_complete"}
-              label={"Segundos"}
-              value={config.time_to_complete}
-              parentChangeHandler={changeHandler}
-            />
-          </NumberFieldWrapper>
-        </SwitchComponentWrapper>
-        <SwitchComponentWrapper>
-          <Switch
-            field_ref={"max_attempts_switcher"}
-            label={"Tentativas máximas"}
-            value={switchers.max_attempts}
-            switchHandler={switcherHandler}
-          />
-          <NumberFieldWrapper>
-            <NumberField
-              disabled={!switchers.max_attempts}
-              field_ref={"max_attempts"}
-              label={"Segundos"}
-              value={config.max_attempts}
-              parentChangeHandler={changeHandler}
-            />
-          </NumberFieldWrapper>
-        </SwitchComponentWrapper>
-        <NumberFieldWrapper>
-          <ListField
-            arr={total_images_arr}
-            field_ref={"total_images"}
-            label={"Pares de imagens do jogo"}
-            value={config.total_images}
-            parentChangeHandler={changeHandler}
-          />
-        </NumberFieldWrapper>
-        {assetsTitle}
-        <ImageField
-          title={"Imagem da carta virada"}
-          field_ref={"back_card"}
-          imageObj={assets.images.back_card}
-          parentChangeHandler={imageHandler}
-          linkedObj={id}
-        />
-        {assets.images.front_cards.map((image, index) => (
-          <ImageField
-            title={"Image do par " + (index + 1)}
-            key={index}
-            field_ref={`front_cards_${index}`}
-            imageObj={image}
-            parentChangeHandler={imageHandler}
-            linkedObj={id}
-          />
-        ))}
-      </>
-    );
-  }
-
-  return <>{display}</>;
+      {displayFrontCards}
+      {/* <Button
+        variant="contained"
+        color="secondary"
+        onClick={() =>
+          append({
+            pair: {
+              id: "defaultImage",
+              path: "",
+              server_path: "",
+            },
+          })
+        }
+      >
+        Acrescentar Par
+      </Button> */}
+    </>
+  );
 };
 
 export default EditMemory;
-
-const Container = styled.div``;
-
-const SwitchComponentWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  /* justify-content: flex-start; */
-  justify-content: center;
-  width: 100%;
-`;
-
-const NumberFieldWrapper = styled.div`
-  width: 30%;
-`;

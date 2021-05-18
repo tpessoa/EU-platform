@@ -1,343 +1,265 @@
-import React, { useState, useCallback, useEffect } from "react";
-import styled from "styled-components";
-import axios from "axios";
+import React, { useState, useCallback } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { useHistory } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
 
-import TextField from "../../../Input/TextField/TextFieldNew";
-import ListField from "../../../Input/ListField";
-import NumberField from "../../../Input/NumberField";
-import ImageField from "../../ImageField";
-import SaveBtn from "../../Buttons/Save";
 import Loading from "../../../UI/Loading";
 import Error from "../../../UI/Error";
-import GetImages from "../../UploadImage/GetImages";
-
-import EditColorGame from "./ColorGame/EditColorGame";
+import BackBtn from "../../Buttons/Back";
 import EditPuzzle from "./Puzzle/EditPuzzle";
 import EditQuiz from "./Quiz/EditQuiz";
 import EditWordSearch from "./WordSearch/EditWordSearch";
 import EditMemory from "./Memory/EditMemory";
+
+import Form from "../../../Form/Form";
+import MainContainer from "../../../Form/MainContainer";
+import Input from "../../../Form/Input";
+import UploadImage from "../../../Form/UploadImage";
+import SaveButton from "../../../Form/PrimaryButton";
+import { Typography, MenuItem } from "@material-ui/core";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+import { uploadImages } from "../../../../hooks/useUpload";
+import { setCreateNew } from "./games.schemas";
+import { getDefValues, getSchemas } from "./games.getData";
 import EditInteractiveMaps from "./InteractiveMaps/EditInteractiveMaps";
 import EditCrossWords from "./CrossWords/EditCrossWords";
-
-import Typography from "@material-ui/core/Typography";
-
-const generateArray = (min, max) => {
-  const tempArr = [];
-  for (let i = min; i <= max; i++) {
-    tempArr.push(i);
-  }
-  return tempArr;
-};
+import EditColorGame from "./ColorGame/EditColorGame";
 
 const EditForm = (props) => {
-  const { gamesNames, fields, game, createGame, fetchQuery } = props;
+  const history = useHistory();
+  const { fields, createNew, fetchQuery, game } = props;
   const {
+    _id,
+    game_ref_name,
     title,
     description,
     thumbnail,
-    age,
-    difficulty,
     config,
     assets,
-    id,
-    tempId,
   } = fields;
 
-  let URL_str = "";
-  const gameObj = gamesNames.find((elem) => elem.game_ref_name === game);
-  if (createGame) {
-    URL_str = `/api/games/add/${game}/${gameObj.game_ref_id}`;
-  } else {
-    URL_str = `/api/games/${game}/${fields.id}`;
-  }
+  const [uploading, setUploading] = useState(false);
+  setCreateNew(createNew);
+  let defVals = getDefValues(game, fields);
+  let gameSchema = getSchemas(game);
 
-  const queryClient = new useQueryClient();
-  const mutation = useMutation((obj) => axios.post(URL_str, obj), {
-    onSuccess: () => queryClient.invalidateQueries(fetchQuery),
+  // console.log(defVals);
+  // console.log(config);
+
+  const {
+    register,
+    unregister,
+    watch,
+    control,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(gameSchema),
+    defaultValues: defVals,
   });
 
-  const [curConfig, setCurConfig] = useState(config);
-  const [curAssets, setCurAssets] = useState(assets);
-
-  useEffect(() => {
-    fieldUpdatedHandler();
-  }, [curConfig || curAssets]);
-
-  const [fieldsUpdated, setFieldsUpdated] = useState(false);
-  const fieldUpdatedHandler = useCallback(() => {
-    if (mutation.isSuccess && createGame) {
-      console.log("botao inativo");
-      setFieldsUpdated(false);
-    } else {
-      setFieldsUpdated(true);
+  const queryClient = new useQueryClient();
+  const mutation = useMutation(
+    (obj) =>
+      axios({
+        method: "post",
+        url: "/api/games/save-game",
+        data: obj,
+      }),
+    {
+      onSettled: () => queryClient.invalidateQueries(fetchQuery),
+      onSuccess: (result) => {
+        setUploading(false);
+        // console.log(result);
+        history.goBack();
+      },
     }
-  }, [fields]);
+  );
 
-  let displayGameEdit = "";
-  const configTitle = "Configurações específicas";
-  const assetsTitle = "Images específicas";
-  if (game === "colorGame") {
-    displayGameEdit = (
-      <EditColorGame
-        id={tempId ? tempId : id}
-        createGame={createGame}
-        config={curConfig}
-        assets={curAssets}
-        setConfig={setCurConfig}
-        setAssets={setCurAssets}
-        configTitle={configTitle}
-        assetsTitle={assetsTitle}
-      />
+  const onSubmit = async (userInput) => {
+    // setUploading(true);
+    // console.log(userInput.config.colors);
+    let newUserInput = { ...userInput, game_ref_name: game_ref_name };
+    if (!createNew) {
+      newUserInput = {
+        _id: _id,
+        ...newUserInput,
+      };
+    }
+    console.log(newUserInput);
+
+    const newUserInputUploaded = await uploadImages(
+      newUserInput,
+      fields,
+      createNew
     );
-  } else if (game === "puzzle") {
-    displayGameEdit = (
+    newUserInputUploaded.config = await uploadImages(
+      newUserInput.config,
+      fields.config,
+      createNew
+    );
+    newUserInputUploaded.assets = await uploadImages(
+      newUserInput.assets,
+      fields.assets,
+      createNew
+    );
+
+    if (game_ref_name === "memory") {
+      for (let i = 0; i < newUserInput.assets.front_cards.length; i++) {
+        newUserInputUploaded.assets.front_cards[i] = await uploadImages(
+          newUserInput.assets.front_cards[i],
+          fields.assets.front_cards[i],
+          createNew
+        );
+      }
+    }
+
+    console.log(newUserInputUploaded);
+    mutation.mutate(newUserInputUploaded);
+  };
+
+  let displaySpecificForm = "";
+  if (game === "puzzle") {
+    displaySpecificForm = (
       <EditPuzzle
-        id={tempId ? tempId : id}
-        createGame={createGame}
-        config={curConfig}
-        assets={curAssets}
-        setConfig={setCurConfig}
-        setAssets={setCurAssets}
-        configTitle={configTitle}
-        assetsTitle={assetsTitle}
+        errors={errors}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
       />
     );
-  } else if (game === "quiz") {
-    displayGameEdit = (
-      <EditQuiz
-        generateArray={generateArray}
-        createGame={createGame}
-        config={curConfig}
-        assets={curAssets}
-        setConfig={setCurConfig}
-        setAssets={setCurAssets}
-        configTitle={configTitle}
-        assetsTitle={assetsTitle}
+  } else if (game === "colorGame") {
+    displaySpecificForm = (
+      <EditColorGame
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
       />
     );
   } else if (game === "wordSearch") {
-    displayGameEdit = (
+    displaySpecificForm = (
       <EditWordSearch
-        createGame={createGame}
-        config={curConfig}
-        assets={curAssets}
-        setConfig={setCurConfig}
-        setAssets={setCurAssets}
-        configTitle={configTitle}
-        assetsTitle={assetsTitle}
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
       />
     );
-  } else if (game === "memoryGame") {
-    displayGameEdit = (
+  } else if (game === "quiz") {
+    displaySpecificForm = (
+      <EditQuiz
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
+      />
+    );
+  } else if (game === "memory") {
+    displaySpecificForm = (
       <EditMemory
-        id={tempId ? tempId : id}
-        createGame={createGame}
-        config={curConfig}
-        assets={curAssets}
-        setConfig={setCurConfig}
-        setAssets={setCurAssets}
-        configTitle={configTitle}
-        assetsTitle={assetsTitle}
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
       />
     );
   } else if (game === "interactiveMaps") {
-    displayGameEdit = (
+    displaySpecificForm = (
       <EditInteractiveMaps
-        createGame={createGame}
-        config={curConfig}
-        assets={curAssets}
-        setConfig={setCurConfig}
-        setAssets={setCurAssets}
-        configTitle={configTitle}
-        assetsTitle={assetsTitle}
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
       />
     );
   } else if (game === "crossWords") {
-    displayGameEdit = (
+    displaySpecificForm = (
       <EditCrossWords
-        createGame={createGame}
-        config={curConfig}
-        assets={curAssets}
-        setConfig={setCurConfig}
-        setAssets={setCurAssets}
-        configTitle={configTitle}
-        assetsTitle={assetsTitle}
+        setValue={setValue}
+        errors={errors}
+        unregister={unregister}
+        register={register}
+        control={control}
+        watch={watch}
+        obj={fields}
+        uploading={uploading}
       />
     );
   }
 
-  const performSave = () => {
-    const newObj = { ...fields };
-    newObj.config = { ...curConfig };
-    newObj.assets = { ...curAssets };
-
-    console.log(newObj);
-
-    // validate fields
-
-    mutation.mutate(newObj);
-
-    setFieldsUpdated(false);
-  };
-
-  const inputChangeHandler = (userInput, ref) => {
-    // console.log(userInput);
-    // console.log(ref);
-    if (ref.includes("age")) {
-      const age_type = ref.split("_")[1];
-      fields.age[age_type] = userInput;
-    } else {
-      fields[ref] = userInput;
-    }
-
-    fieldUpdatedHandler();
-  };
-
-  let displaySave = "";
-  if (mutation.isLoading) {
-    displaySave = <Loading />;
-  } else if (mutation.isError) {
-    displaySave = <Error error={mutation.error} />;
-  } else if (mutation.isSuccess) {
-    // if there's a tempId update the id in the images collections
-    let update;
-    if (tempId != null) {
-      // swap tempId for data._id
-      update = (
-        <GetImages tempId={tempId} permanentId={mutation.data.data._id} />
-      );
-    }
-    displaySave = (
-      <>
-        {update}
-        <SaveBtn
-          clickHandler={performSave}
-          saved={mutation.isSuccess && !fieldsUpdated}
-        >
-          Guardar
-        </SaveBtn>
-      </>
-    );
-  } else {
-    displaySave = (
-      <SaveBtn clickHandler={performSave} saved={false}>
-        Guardar
-      </SaveBtn>
-    );
-  }
-
+  let displaySave = mutation.isLoading ? (
+    <Loading />
+  ) : (
+    <SaveButton>Guardar</SaveButton>
+  );
+  let displayTopLabel = createNew ? "Criar jogo" : `Editar ${title}`;
   return (
-    <Container>
-      <Wrapper>
-        <Typography variant="h6" gutterBottom>
-          {`Editar ${gameObj.game_name}`}
-        </Typography>
-        <TextField
-          field_ref={"title"}
-          label={"Título"}
-          value={title}
-          parentChangeHandler={inputChangeHandler}
+    <MainContainer>
+      <BackBtn>Voltar</BackBtn>
+      <Typography component="h2" variant="h5">
+        {displayTopLabel}
+      </Typography>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Input
+          {...register("title")}
+          name="title"
+          type="text"
+          label="Título"
+          error={!!errors.title}
+          helperText={errors?.title?.message}
         />
-        <TextField
-          field_ref={"description"}
-          label={"Descrição"}
-          value={description}
-          parentChangeHandler={inputChangeHandler}
+        <Input
+          {...register("description")}
+          name="description"
+          type="text"
+          label="Descrição"
+          multiline
+          error={!!errors.description}
+          helperText={errors?.description?.message}
         />
-        <ImageField
-          title={`Thumbnail do jogo`}
-          field_ref={"thumbnail"}
-          imageObj={thumbnail}
-          parentChangeHandler={inputChangeHandler}
-          linkedObj={tempId ? tempId : id}
+        <UploadImage
+          {...register("thumbnail")}
+          name="thumbnail"
+          type="file"
+          error={!!errors.thumbnail}
+          helperText={errors?.thumbnail?.message}
+          description={`Thumbnail ${title}`}
+          image={{
+            imagePath: thumbnail,
+            uploading: uploading,
+          }}
         />
-        <AgeContainer>
-          <AgeWrapper>
-            <NumberField
-              field_ref={"age_min"}
-              label={"Idade Mínima"}
-              value={age.min}
-              parentChangeHandler={inputChangeHandler}
-            />
-          </AgeWrapper>
-          <AgeWrapper>
-            <NumberField
-              field_ref={"age_max"}
-              label={"Idade Máxima"}
-              value={age.max}
-              parentChangeHandler={inputChangeHandler}
-            />
-          </AgeWrapper>
-        </AgeContainer>
-        <ListWrapper>
-          <ListField
-            field_ref={"difficulty"}
-            label={"Dificuldade"}
-            arr={["fácil", "média", "difícil"]}
-            value={difficulty}
-            parentChangeHandler={inputChangeHandler}
-          />
-        </ListWrapper>
-        {/* SPECIFIC GAME SELECTION */}
-        {displayGameEdit}
-      </Wrapper>
-      {displaySave}
-    </Container>
+        {displaySpecificForm}
+        {displaySave}
+      </Form>
+    </MainContainer>
   );
 };
 
 export default EditForm;
-
-const Container = styled.div`
-  width: 100%;
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-`;
-
-const Wrapper = styled.div`
-  width: 80%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-`;
-
-const AgeContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-`;
-
-const AgeWrapper = styled.div`
-  width: 30%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-const ListWrapper = styled.div`
-  width: 30%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const SpecificGameField = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const UtilsWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-
-  margin: 2rem 0;
-`;

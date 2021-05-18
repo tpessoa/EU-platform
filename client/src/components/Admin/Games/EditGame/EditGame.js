@@ -1,96 +1,69 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useLocation, useHistory, Redirect } from "react-router-dom";
-import { useQuery } from "react-query";
-import axios from "axios";
+import React from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
-
 import BackBtn from "../../Buttons/Back";
-import Loading from "../../../UI/Loading";
+
 import Error from "../../../UI/Error";
+import Loading from "../../../UI/Loading";
+import { useGame } from "../../../../hooks/useGames";
+
+import {
+  gameObj,
+  puzzleObj,
+  colorGameObj,
+  wordSearchObj,
+  quizObj,
+  memoryObj,
+  interactiveMapsObj,
+  crossWordsObj,
+} from "./games.data";
 import EditForm from "./EditForm";
 
-const EditGame = (props) => {
-  const { gamesNames } = props;
-  const { gameType, gameId } = useParams();
+const EditGame = () => {
+  const { type, id } = useParams();
+  const fetchDataFlag = id.toString() !== "createNew";
+  const game = useGame(id, fetchDataFlag);
 
-  const fetchDataFlag = gameId.toString() !== "createNew";
-  const fetchQuery = `get${gameId}InfoById"`;
-  const { isLoading, isError, error, data } = useQuery(
-    fetchQuery,
-    () => axios(`/api/games/game/${gameId}`),
-    {
-      enabled: fetchDataFlag,
-      refetchOnWindowFocus: false,
-    }
-  );
-  if (isLoading) return <Loading />;
-  if (isError) return <Error error={error} />;
+  if (game.isLoading) return <Loading />;
+  if (game.isError) return <Error error={game.error} />;
 
-  let gameObj = {};
-  if (fetchDataFlag) {
-    const tempObj = { ...data.data };
-    const {
-      title,
-      description,
-      thumbnail,
-      age,
-      difficulty,
-      config,
-      assets,
-      _id,
-    } = tempObj;
+  let emptyObj = {};
+  if (type === "puzzle") {
+    emptyObj = puzzleObj;
+  } else if (type === "colorGame") {
+    emptyObj = colorGameObj;
+  } else if (type === "wordSearch") {
+    emptyObj = wordSearchObj;
+  } else if (type === "quiz") {
+    emptyObj = quizObj;
+  } else if (type === "memory") {
+    emptyObj = memoryObj;
+  } else if (type === "interactiveMaps") {
+    emptyObj = interactiveMapsObj;
+  } else if (type === "crossWords") {
+    emptyObj = crossWordsObj;
+  }
 
-    gameObj = {
-      title: title,
-      description: description,
-      thumbnail: thumbnail,
-      age: age,
-      difficulty: difficulty,
-      config: config,
-      assets: assets,
-      id: _id,
-      // tempId isn't needed for updating the respectives images ID after saving bcz a ID already exists
-      tempId: null,
+  let newGameObj = null;
+  if (!fetchDataFlag) {
+    newGameObj = {
+      ...gameObj,
+      ...emptyObj,
     };
   } else {
-    gameObj = {
-      title: "",
-      description: "",
-      thumbnail: {
-        id: "defaultImage",
-        path: "",
-        server_path: "",
-      },
-      age: { min: "", max: "" },
-      difficulty: "",
-      config: { null: null },
-      assets: { null: null },
-      id: null,
-      // this temporary Id is needed for updating the image (in images schema) with the respective ID after saving the game.
-      tempId: "temp_game_image",
-    };
+    newGameObj = { ...game.data };
   }
 
   return (
-    <Container>
-      <BackBtn>Voltar</BackBtn>
+    <>
       <EditForm
-        gamesNames={gamesNames}
-        fields={gameObj}
-        game={gameType}
-        createGame={!fetchDataFlag}
-        fetchQuery={fetchQuery}
+        fields={newGameObj}
+        createNew={!fetchDataFlag}
+        fetchQuery={["game", id]}
+        game={type}
       />
-    </Container>
+    </>
   );
 };
 
 export default EditGame;
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-`;

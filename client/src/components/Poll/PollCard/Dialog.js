@@ -8,6 +8,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
+import { IconButton } from "@material-ui/core";
+import CancelIcon from "@material-ui/icons/Cancel";
 
 const useStyles = makeStyles({
   content: {
@@ -41,18 +43,23 @@ const FSDialog = (props) => {
         maxWidth={"lg"}
       >
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Sair
-          </Button>
+          <IconButton
+            aria-label="delete"
+            className={classes.closeBtn}
+            onClick={handleClose}
+            color="primary"
+          >
+            <CancelIcon />
+          </IconButton>
         </DialogActions>
         {/* <DialogTitle id="alert-dialog-title">{title}</DialogTitle> */}
         <DialogContent className={classes.content}>
           <ImageWrapper>
             <Image src={photo.path + photo.server_path} alt={photo.id} />
           </ImageWrapper>
-          <DialogContentText id="alert-dialog-description">
+          {/* <DialogContentText id="alert-dialog-description">
             {description}
-          </DialogContentText>
+          </DialogContentText> */}
           {/* <DialogActions>
             <Button onClick={handleClose} color="primary" autoFocus>
               Votar

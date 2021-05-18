@@ -8,6 +8,7 @@ import Loading from "../../UI/Loading";
 import PollCard from "../PollCard";
 import Dialog from "../PollCard/Dialog";
 import DialogForm from "../DialogForm";
+import BackBtn from "../../../components/Admin/Buttons/Back";
 
 const Works = () => {
   const { id } = useParams();
@@ -24,33 +25,35 @@ const Works = () => {
   }
 
   // console.log(works.data);
-  console.log(openDialog);
 
   return (
-    <Container>
-      {!works.data.length ? (
-        <h1>Categoria ainda sem trabalhos</h1>
-      ) : (
-        <GalleryWrapper>
-          {works.data.map((work, index) => (
-            <PollCard
-              key={index}
-              index={index}
-              work={work}
-              setImageOpen={setOpenDialog}
-              setFormOpen={setOpenForm}
-              setSelected={setSelected}
-            />
-          ))}
-        </GalleryWrapper>
-      )}
-      {openDialog && (
-        <Dialog obj={works.data[selected]} setOpenDialog={setOpenDialog} />
-      )}
-      {openForm && (
-        <DialogForm obj={works.data[selected]} setOpenForm={setOpenForm} />
-      )}
-    </Container>
+    <>
+      <BackBtn>Voltar</BackBtn>
+      <Container>
+        {!works.data.length ? (
+          <h1>Categoria ainda sem trabalhos</h1>
+        ) : (
+          <GalleryWrapper>
+            {works.data.map((work, index) => (
+              <PollCard
+                key={index}
+                index={index}
+                work={work}
+                setImageOpen={setOpenDialog}
+                setFormOpen={setOpenForm}
+                setSelected={setSelected}
+              />
+            ))}
+          </GalleryWrapper>
+        )}
+        {openDialog && (
+          <Dialog obj={works.data[selected]} setOpenDialog={setOpenDialog} />
+        )}
+        {openForm && (
+          <DialogForm obj={works.data[selected]} setOpenForm={setOpenForm} />
+        )}
+      </Container>
+    </>
   );
 };
 

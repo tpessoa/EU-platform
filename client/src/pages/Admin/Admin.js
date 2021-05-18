@@ -7,7 +7,7 @@ import EditPoll from "../../components/Admin/Poll/Edit";
 import EditWork from "../../components/Admin/Works/Edit";
 import EditVideoCategory from "../../components/Admin/Videos/EditCategory";
 import EditVideo from "../../components/Admin/Videos/EditVideo";
-import EditGame from "../../components/Admin/Games/EditGame2";
+import EditGame from "../../components/Admin/Games/EditGame";
 
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { ptPT } from "@material-ui/core/locale";
@@ -51,33 +51,6 @@ const Admin = () => {
         />
         <Route path="/admin" component={Dashboard} />
       </Switch>
-      {/* <Route
-        path="/admin/games"
-        component={() => <GameMenu gamesNames={gamesIDsRefs} />}
-      />
-      <Route
-        exact
-        path="/admin/edit/game/:gameType/:gameId"
-        component={() => <EditGame gamesNames={gamesIDsRefs} />}
-      />
-      <Route
-        path="/admin/edit/category/:catId"
-        component={() => <EditCategory messages={processInfoMessages} />}
-      />
-      <Route
-        path="/admin/edit/video/:videoId"
-        component={() => <EditVideo messages={processInfoMessages} />}
-      />
-      <Switch>
-        <Route
-          path="/admin/videos/menu"
-          component={() => <VideosMenu messages={processInfoMessages} />}
-        />
-        <Route
-          path="/admin/videos"
-          component={() => <SelectVideo messages={processInfoMessages} />}
-        />
-      </Switch> */}
     </ThemeProvider>
   );
 };

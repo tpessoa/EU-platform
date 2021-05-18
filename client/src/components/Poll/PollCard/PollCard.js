@@ -8,8 +8,6 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
-import FSDialog from "./Dialog";
-
 const useStyles = makeStyles({
   root: {
     width: 300,
@@ -26,11 +24,14 @@ const useStyles = makeStyles({
   description: {
     textAlign: "center",
   },
+  image: {
+    cursor: "zoom-in",
+  },
 });
 
 const PollCard = (props) => {
   const { index, work, setImageOpen, setFormOpen, setSelected } = props;
-  const { title, description, photo } = work;
+  const { title, description, photo, author, votes } = work;
   const classes = useStyles();
 
   const handleClick = () => {
@@ -49,6 +50,7 @@ const PollCard = (props) => {
     <Card className={classes.root} onClick={handleCardClick}>
       <CardActionArea onClick={handleClick}>
         <CardMedia
+          className={classes.image}
           component="img"
           alt={photo.id}
           height="250"
@@ -56,12 +58,17 @@ const PollCard = (props) => {
           title={title}
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            Lizard
+          <Typography gutterBottom variant="h5" component="h2" align="center">
+            {title}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+            Autor: {author}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Descrição: {description}
+          </Typography>
+          <Typography variant="h6" component="h4">
+            Votos: {votes.length}
           </Typography>
         </CardContent>
       </CardActionArea>

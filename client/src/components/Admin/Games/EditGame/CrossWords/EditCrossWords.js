@@ -1,163 +1,123 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { useFieldArray } from "react-hook-form";
+import { Button, Typography } from "@material-ui/core";
+import { crossWordsObj } from "../games.data";
+import CrossWord from "./CrossWord";
+import ButtonForm from "../../../../Form/ButtonForm";
 
-import CrossWordForm from "./CrossWordDataForm";
-
-var emptyObj = {
-  assets: {
-    images: {},
-  },
-  config: {},
+const emptyWord = {
+  num: "",
+  clue: "",
+  answer: "",
+  row: "",
+  col: "",
 };
 
-var emptyConfig = {
-  crossword_data: {
-    across: [],
-    down: [],
+const useStyles = makeStyles((theme) => ({
+  root: {
+    justifyContent: "center",
   },
-};
+  errorMessage: { color: "#ff0000", marginBottom: theme.spacing(1) },
+}));
 
 const EditCrossWords = (props) => {
+  const classes = useStyles();
+
   const {
-    createGame,
-    config,
-    setConfig,
-    assets,
-    setAssets,
-    configTitle,
-    assetsTitle,
+    createNew,
+    errors,
+    unregister,
+    register,
+    setValue,
+    control,
+    watch,
+    obj,
+    uploading,
   } = props;
 
-  const [loadedComplete, setLoadedComplete] = useState(false);
-  const [update, setUpdate] = useState(false);
-
-  useEffect(() => {
-    if (createGame) {
-      setConfig({ ...emptyConfig });
-    }
-    setLoadedComplete(true);
-  }, []);
-
-  const addQuestion = (direction) => {
-    const tempConfig = { ...config };
-    if (direction === "across") {
-      tempConfig.crossword_data.across.push("addedQuestion");
-    } else if (direction === "down") {
-      tempConfig.crossword_data.down.push("addedQuestion");
-    }
-    setConfig(tempConfig);
-  };
-
-  const updatedWordObj = (obj, ref) => {
-    const objRefIndex = ref.split("_")[0];
-    const objRefType = ref.split("_")[1];
-
-    const tempConfig = { ...config };
-    tempConfig.crossword_data[objRefType][objRefIndex] = { ...obj };
-    setConfig(tempConfig);
-  };
-
-  const deleteWordHandler = (objRef) => {
-    const objRefIndex = objRef.split("_")[0];
-    const objRefType = objRef.split("_")[1];
-
-    const tempConfig = { ...config };
-    tempConfig.crossword_data[objRefType].splice(objRefIndex, 1);
-    setConfig(tempConfig);
-    setUpdate(true);
-  };
-
-  let displayHorizontal = "";
-  if (loadedComplete) {
-    displayHorizontal = config.crossword_data.across.map((word, index) => {
-      return (
-        <CrossWordForm
-          key={index}
-          wordRef={`${index}_across`}
-          title={"Palavra " + (index + 1)}
-          wordInfo={word}
-          wordChanged={updatedWordObj}
-          createNew={createGame}
-          deleteWord={deleteWordHandler}
-          update={update}
-          setUpdate={setUpdate}
-        />
-      );
-    });
+  if (createNew) {
+    obj = {
+      ...obj,
+      ...crossWordsObj,
+    };
   }
-  let displayVertical = "";
-  if (loadedComplete) {
-    displayVertical = config.crossword_data.down.map((word, index) => {
-      return (
-        <CrossWordForm
-          key={index}
-          wordRef={`${index}_down`}
-          title={"Palavra " + (index + 1)}
-          wordInfo={word}
-          wordChanged={updatedWordObj}
-          createNew={createGame}
-          deleteWord={deleteWordHandler}
-          update={update}
-          setUpdate={setUpdate}
-        />
-      );
-    });
-  }
+
+  const {
+    fields: across_fields,
+    append: across_append,
+    remove: across_remove,
+    swap: across_swap,
+  } = useFieldArray({
+    control,
+    name: "config.crossword_data.across",
+  });
+
+  const {
+    fields: down_fields,
+    append: down_append,
+    remove: down_remove,
+    swap: down_swap,
+  } = useFieldArray({
+    control,
+    name: "config.crossword_data.down",
+  });
+
+  const displayAcross = across_fields.map((item, index) => {
+    return (
+      <CrossWord
+        key={item.id}
+        index={index}
+        item={item}
+        register={register}
+        control={control}
+        remove={across_remove}
+        swap={across_swap}
+        direction={"across"}
+        error={
+          errors.config?.crossword_data?.across &&
+          errors.config?.crossword_data?.across[index]
+        }
+      />
+    );
+  });
+  const displayDown = down_fields.map((item, index) => (
+    <CrossWord
+      key={item.id}
+      index={index}
+      item={item}
+      register={register}
+      control={control}
+      remove={down_remove}
+      swap={down_swap}
+      direction={"down"}
+      error={
+        errors.config?.crossword_data?.down &&
+        errors.config?.crossword_data?.down[index]
+      }
+    />
+  ));
 
   return (
-    <Container>
-      <p>{configTitle}</p>
-      <ContainerWrapper>
-        <ContentWrapper>
-          <p>Questões Horizontais</p>
-          <WordsWrapper>{displayHorizontal}</WordsWrapper>
-          <button onClick={() => addQuestion("across")}>
-            Adicionar Palavra Horizontal
-          </button>
-          <p>Questões Verticais</p>
-          <WordsWrapper>{displayVertical}</WordsWrapper>
-          <button onClick={() => addQuestion("down")}>
-            Adicionar Palavra Vertical
-          </button>
-        </ContentWrapper>
-      </ContainerWrapper>
-    </Container>
+    <>
+      {displayAcross}
+      <ButtonForm
+        onClick={() => across_append(emptyWord)}
+        error={errors?.config?.crossword_data?.across}
+        helpertext={errors?.config?.crossword_data?.across?.message}
+      >
+        Adicionar palavra na horizontal
+      </ButtonForm>
+      {displayDown}
+      <ButtonForm
+        onClick={() => across_append(emptyWord)}
+        error={errors?.config?.crossword_data?.down}
+        helpertext={errors?.config?.crossword_data?.down?.message}
+      >
+        Adicionar palavra na vertical
+      </ButtonForm>
+    </>
   );
 };
 
 export default EditCrossWords;
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin: 2rem;
-  width: 100%;
-`;
-
-const ContainerWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
-  width: 90%;
-`;
-
-const ContentWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 90%;
-`;
-
-const WordsWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin: 1rem;
-`;

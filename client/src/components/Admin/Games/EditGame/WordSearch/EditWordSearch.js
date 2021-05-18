@@ -1,214 +1,163 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React from "react";
+import Input from "../../../../Form/Input";
+import Words from "./Words";
+import { Controller, useFieldArray } from "react-hook-form";
+import CheckBox from "../../../../Form/Checkbox";
+import { Button, Paper, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import CheckboxInput from "../../../../Form/CheckboxInput";
+import ButtonForm from "../../../../Form/ButtonForm";
 
-import NumberField from "../../../../Input/NumberField";
-import TextField from "../../../../Input/TextField/TextField2";
-import CheckboxField from "../../../../Input/CheckboxField";
-import Word from "./Word";
-
-import Paper from "@material-ui/core/Paper";
-
-const emptyWordSearchConfig = {
-  words: [],
-  directions: [
-    {
-      direction: "Down",
-      checked: true,
-    },
-    {
-      direction: "Right",
-      checked: true,
-    },
-    {
-      direction: "Right-Down",
-      checked: false,
-    },
-    {
-      direction: "Left-Down",
-      checked: false,
-    },
-  ],
-  num_horizontal_cells: "",
-  num_vertical_cells: "",
-  time_to_complete: "",
-  timer: false,
-};
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    margin: theme.spacing(2, 0, 2, 0),
+    padding: theme.spacing(0, 1, 0, 1),
+    display: "grid",
+    placeItems: "center",
+  },
+  directions: {
+    display: "inline-block",
+  },
+  words: {
+    margin: theme.spacing(2, 0, 2, 0),
+    padding: theme.spacing(2),
+    display: "grid",
+    placeItems: "center",
+  },
+  button: {},
+}));
 
 const EditWordSearch = (props) => {
-  const { createGame, config, setConfig } = props;
-  const [loadedCompleted, setLoadedCompleted] = useState(false);
-  const [timerActive, setTimerActive] = useState(false);
-  const [addedWord, setAddedWord] = useState("");
+  const classes = useStyles();
+  const {
+    createNew,
+    errors,
+    unregister,
+    register,
+    setValue,
+    control,
+    watch,
+    obj,
+    uploading,
+  } = props;
 
-  useEffect(() => {
-    if (createGame) {
-      setConfig({ ...emptyWordSearchConfig });
-    }
-    setLoadedCompleted(true);
-  }, []);
+  let time_flag = watch("config.timer");
 
-  const directionsHandler = (checkedFlag, ref) => {
-    console.log(ref);
-    const tempConfig = { ...config };
-    const directionObj = tempConfig.directions.find(
-      (obj) => obj.direction === ref
-    );
-    directionObj.checked = checkedFlag;
-    setConfig(tempConfig);
-  };
+  console.log(obj);
 
-  const numberHandler = (userInput, ref) => {
-    const tempConfig = { ...config };
-    tempConfig[ref] = parseInt(userInput);
-    setConfig(tempConfig);
-  };
+  const { fields, append, remove, swap } = useFieldArray({
+    control,
+    name: "config.words",
+  });
 
-  const timerHandler = (flag, ref) => {
-    console.log(flag);
-    console.log(ref);
-    const tempConfig = { ...config };
-    tempConfig[ref] = flag;
-    setConfig(tempConfig);
+  console.log(fields);
 
-    setTimerActive(flag);
-  };
+  let displayWords = fields.map((item, index) => (
+    <Words
+      key={item.id}
+      index={index}
+      item={item}
+      remove={remove}
+      swap={swap}
+      control={control}
+      error={errors.config?.words && errors.config?.words[index]}
+    />
+  ));
 
-  const deleteWord = (wordIndex) => {
-    const tempConfig = { ...config };
-    tempConfig.words.splice(wordIndex, 1);
-    setConfig(tempConfig);
-  };
+  return (
+    <>
+      <Paper className={classes.paper}>
+        <Typography variant="h6" gutterBottom align="center">
+          Direções das palavras
+        </Typography>
+        <div className={classes.directions}>
+          <Controller
+            name="config.directions.down"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <CheckBox {...field} label="Down" fullWidth={true} />
+            )}
+            error={!!errors.config?.directions?.down}
+            helperText={errors?.config?.directions?.down?.message}
+          />
+          <Controller
+            name="config.directions.right"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <CheckBox {...field} label="Right" fullWidth={true} />
+            )}
+            error={!!errors.config?.directions?.right}
+            helperText={errors?.config?.directions?.right?.message}
+          />
+          <Controller
+            name="config.directions.right_down"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <CheckBox {...field} label="Right Down" fullWidth={true} />
+            )}
+            error={!!errors.config?.directions?.right_down}
+            helperText={errors?.config?.directions?.right_down?.message}
+          />
+          <Controller
+            name="config.directions.left_down"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <CheckBox {...field} label="Left Down" fullWidth={true} />
+            )}
+            error={!!errors.config?.directions?.left_down}
+            helperText={errors?.config?.directions?.left_down?.message}
+          />
+        </div>
+      </Paper>
+      <Paper className={classes.words}>
+        <Typography variant="h6" gutterBottom align="center">
+          Palavras
+        </Typography>
+        {displayWords}
+        <ButtonForm
+          fullWidth={true}
+          className={classes.button}
+          onClick={() => append({ word: "" })}
+          error={errors?.config?.words}
+          helpertext={errors?.config?.words?.message}
+        >
+          Adicionar espaço para palavra
+        </ButtonForm>
+      </Paper>
+      <Input
+        {...register("config.num_horizontal_cells")}
+        name="config.num_horizontal_cells"
+        type="number"
+        label="Número de células Horizontais"
+        error={!!errors.config?.num_horizontal_cells}
+        helperText={errors?.config?.num_horizontal_cells?.message}
+      />
+      <Input
+        {...register("config.num_vertical_cells")}
+        name="config.num_vertical_cells"
+        type="number"
+        label="Número de células Horizontais"
+        error={!!errors.config?.num_vertical_cells}
+        helperText={errors?.config?.num_vertical_cells?.message}
+      />
 
-  const addWordHandler = () => {
-    const tempConfig = { ...config };
-    tempConfig.words.push(addedWord);
-    setConfig(tempConfig);
-    setAddedWord("");
-  };
-
-  let display = "";
-  if (loadedCompleted) {
-    display = (
-      <>
-        <WordsContainer>
-          <h3>Palavras</h3>
-          {config.words.map((word, index) => {
-            return (
-              <Word
-                key={index}
-                word={word}
-                index={index}
-                deleteHandler={deleteWord}
-              />
-            );
-          })}
-          <AddWordContainer>
-            <TextField
-              label={"Nova Palavra"}
-              value={addedWord}
-              parentChangeHandler={(word) => setAddedWord(word)}
-            />
-            <button onClick={addWordHandler}>Adicionar Palavra</button>
-          </AddWordContainer>
-        </WordsContainer>
-        <CheckboxesContainer>
-          <h3>Direções</h3>
-          {config.directions.map((obj, index) => {
-            return (
-              <CheckboxField
-                field_ref={obj.direction}
-                key={index}
-                value={obj.checked}
-                description={obj.direction}
-                setHandler={directionsHandler}
-              />
-            );
-          })}
-        </CheckboxesContainer>
-        <NumberField
-          field_ref={"num_horizontal_cells"}
-          label={"Número de células Horizontais"}
-          value={config.num_horizontal_cells}
-          parentChangeHandler={numberHandler}
-        />
-        <NumberField
-          field_ref={"num_vertical_cells"}
-          label={"Número de células Verticais"}
-          value={config.num_vertical_cells}
-          parentChangeHandler={numberHandler}
-        />
-        <TimeContainer>
-          <TimeCheckboxContainer>
-            <CheckboxField
-              field_ref={"timer"}
-              value={config.timer}
-              description={"Ativar"}
-              setHandler={timerHandler}
-            />
-          </TimeCheckboxContainer>
-
-          <TimeValueCheckboxContainer>
-            <NumberField
-              disabled={!timerActive}
-              field_ref={"time_to_complete"}
-              label={"Tempo para completar o jogo (segundos)"}
-              value={config.time_to_complete}
-              parentChangeHandler={numberHandler}
-            />
-          </TimeValueCheckboxContainer>
-        </TimeContainer>
-      </>
-    );
-  }
-
-  return <>{display}</>;
+      <CheckboxInput
+        register={register}
+        control={control}
+        textName={"config.time_to_complete"}
+        textLabel={"Tempo em segundos"}
+        checkboxName={"config.timer"}
+        checkboxLabel={"Tempo para terminar o jogo"}
+        disabled={!time_flag}
+        error={!!errors.config?.time_to_complete}
+        helperText={errors?.config?.time_to_complete?.message}
+      />
+    </>
+  );
 };
 
 export default EditWordSearch;
-
-const CheckboxesContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 60%;
-`;
-
-const WordsContainer = styled(Paper)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 60%;
-  padding: 1rem;
-  margin: 1rem;
-`;
-
-const AddWordContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 90%;
-`;
-
-const TimeContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-`;
-
-const TimeCheckboxContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30%;
-`;
-const TimeValueCheckboxContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 70%;
-`;
