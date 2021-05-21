@@ -30,7 +30,14 @@ const useStyles = makeStyles({
 });
 
 const PollCard = (props) => {
-  const { index, work, setImageOpen, setFormOpen, setSelected } = props;
+  const {
+    index,
+    work,
+    setImageOpen,
+    setFormOpen,
+    setSelected,
+    enableVote,
+  } = props;
   const { title, description, photo, author, votes } = work;
   const classes = useStyles();
 
@@ -72,20 +79,22 @@ const PollCard = (props) => {
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions>
-        <Button
-          size="large"
-          color="primary"
-          variant="text"
-          fullWidth
-          onClick={handleBtnClick}
-        >
-          Votar
-        </Button>
-        {/* <Button size="small" color="primary">
-          Ampliar
-        </Button> */}
-      </CardActions>
+      {enableVote && (
+        <CardActions>
+          <Button
+            size="large"
+            color="primary"
+            variant="text"
+            fullWidth
+            onClick={handleBtnClick}
+          >
+            Votar
+          </Button>
+          {/* <Button size="small" color="primary">
+              Ampliar
+            </Button> */}
+        </CardActions>
+      )}
     </Card>
   );
 };

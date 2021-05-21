@@ -17,11 +17,12 @@ export const getDefValues = (game, fields) => {
       title: title,
       description: description,
       config: {
+        timer: config.timer,
+        time_to_complete: config.time_to_complete,
         pieces_size: config.pieces_size,
         background_puzzle_image: config.background_puzzle_image,
         piece_position_helper: config.piece_position_helper,
         move_pieces_freely: config.move_pieces_freely,
-        time_to_complete: config.time_to_complete,
         directions: config.time,
       },
     };
@@ -57,8 +58,8 @@ export const getDefValues = (game, fields) => {
       description: description,
       config: {
         questions: config.questions,
-        time: config.timer,
-        time_to_complete: config.time_to_resp_question,
+        timer: config.timer,
+        time_to_resp_question: config.time_to_resp_question,
       },
     };
   } else if (game === "memory") {

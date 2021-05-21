@@ -15,7 +15,7 @@ const EditPuzzle = (props) => {
       ...puzzleObj,
     };
   }
-  let time_flag = watch("config.time");
+  let time_flag = watch("config.timer");
 
   return (
     <>
@@ -28,14 +28,14 @@ const EditPuzzle = (props) => {
         helperText={errors?.config?.pieces_size?.message}
       />
       <Controller
-        name="config.time"
+        name="config.timer"
         control={control}
         rules={{ required: true }}
         render={({ field }) => (
           <Checkbox {...field} label="Tempo para terminar o jogo" />
         )}
-        error={!!errors.config?.time}
-        helperText={errors?.config?.time?.message}
+        error={!!errors.config?.timer}
+        helperText={errors?.config?.timer?.message}
       />
       <Input
         {...register("config.time_to_complete")}

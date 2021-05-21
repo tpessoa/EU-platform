@@ -40,7 +40,7 @@ const gamesList = [
     name: "Quiz",
   },
   {
-    url: "/games/memoryGame",
+    url: "/games/memory",
     icon: <FaBrain />,
     name: "Memória",
   },

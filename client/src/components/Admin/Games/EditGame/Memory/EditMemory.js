@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Input from "../../../../Form/Input";
 import { Controller, useFieldArray } from "react-hook-form";
 import CheckBox from "../../../../Form/Checkbox";
@@ -59,51 +59,47 @@ const EditMemory = (props) => {
     control,
     name: "assets.front_cards",
   });
-  console.log(fields);
-  console.log(total_images);
-  const val = totalImagesArr[total_images];
-  // if (val < fields.length) {
-  //   for (let i = 0; i < fields.length - val; i++) {
-  //     console.log("sub");
-  //   }
-  // }
-  // if (val > fields.length) {
-  //   for (let i = 0; i < val - fields.length; i++) {
-  //     console.log("add");
-  //     append({ pair: emptyImage });
-  //   }
-  // }
 
-  // remove();
-  // for (let i = 0; i < val; i++) {
-  //   append({ pair: emptyImage });
-  // }
+  if (timer) {
+    setValue("max_attempts", 0);
+  }
 
-  const handleChange = (event) => {
-    // remove or add assets front_cards
-    append({ pair: { ...emptyImage } });
-    append({ pair: { ...emptyImage } });
-    append({ pair: { ...emptyImage } });
-    append({ pair: { ...emptyImage } });
-    append({ pair: { ...emptyImage } });
-    append({ pair: { ...emptyImage } });
-    setNumCards(event.target.value);
-  };
+  useEffect(() => {
+    console.log(createNew);
+    if (createNew) {
+      // generate 10 upload images fields
+      const tempArr = [];
+      const limitNum = 10;
+      for (let i = 0; i < limitNum; i++) {
+        tempArr.push({ pair: { ...emptyImage } });
+      }
+      append(tempArr);
+    }
+  }, []);
 
-  let displayFrontCards = fields.map((item, index) => (
-    <FrontCards
-      key={item.id}
-      index={index}
-      item={item}
-      remove={remove}
-      swap={swap}
-      control={control}
-      uploading={uploading}
-      register={register}
-      errors={errors}
-      total_cards={fields.length}
-    />
-  ));
+  let counter = 0;
+  let displayFrontCards = fields.map((item, index) => {
+    counter++;
+    let disabled = false;
+    if (counter > totalImagesArr[total_images]) {
+      disabled = true;
+    }
+    return (
+      <FrontCards
+        key={item.id}
+        index={index}
+        item={item}
+        remove={remove}
+        swap={swap}
+        control={control}
+        uploading={uploading}
+        register={register}
+        errors={errors}
+        total_cards={fields.length}
+        setValue={setValue}
+      />
+    );
+  });
 
   return (
     <>
@@ -125,6 +121,7 @@ const EditMemory = (props) => {
         label="Tentativas máximas"
         error={!!errors.config?.max_attempts}
         helperText={errors?.config?.max_attempts?.message}
+        disabled={timer}
       />
       <Controller
         name="config.destroy_card"
@@ -171,23 +168,7 @@ const EditMemory = (props) => {
           </Select>
         )}
       />
-
       {displayFrontCards}
-      {/* <Button
-        variant="contained"
-        color="secondary"
-        onClick={() =>
-          append({
-            pair: {
-              id: "defaultImage",
-              path: "",
-              server_path: "",
-            },
-          })
-        }
-      >
-        Acrescentar Par
-      </Button> */}
     </>
   );
 };

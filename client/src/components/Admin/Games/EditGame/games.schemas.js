@@ -25,23 +25,16 @@ export const schemaPuzzle = yup.object().shape({
     background_puzzle_image: yup.boolean(),
     piece_position_helper: yup.boolean(),
     move_pieces_freely: yup.boolean(),
-    time: yup.boolean(),
-    time_to_complete: yup.number().when("time", {
+    timer: yup.boolean(),
+    time_to_complete: yup.number().when("timer", {
       is: true,
       then: yup
         .number()
-        .nullable(true)
-        .transform((_, val) => (val === val ? val : null))
-        .when("time", {
-          is: true,
-          then: yup
-            .number()
-            .min(0)
-            .max(3 * 60) // 3 min
-            .required(
-              "O tempo deve ser superior a 0 segundos e inferior a 200 segundos"
-            ),
-        }),
+        .min(0)
+        .max(3 * 60) // 3 min
+        .required(
+          "O tempo deve ser superior a 0 segundos e inferior a 200 segundos"
+        ),
     }),
   }),
   assets: yup.object().shape({
@@ -126,6 +119,17 @@ export const schemaQuiz = yup.object().shape({
       )
       .min(1, questionsRequiredMsg)
       .required(),
+    timer: yup.boolean(),
+    time_to_resp_question: yup.number().when("timer", {
+      is: true,
+      then: yup
+        .number()
+        .min(0)
+        .max(3 * 60) // 3 min
+        .required(
+          "O tempo deve ser superior a 0 segundos e inferior a 200 segundos"
+        ),
+    }),
   }),
 });
 
@@ -134,9 +138,9 @@ export const schemaMemory = yup.object().shape({
   description: yup.string().required(),
   thumbnail: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
   config: yup.object().shape({
-    // destroy_card: yup.bool(),
-    // max_attempts: yup.number().required(),
-    // total_images: yup.number().required(),
+    destroy_card: yup.bool(),
+    max_attempts: yup.number(),
+    total_images: yup.number(),
     timer: yup.boolean(),
     time_to_complete: yup.number().when("timer", {
       is: true,

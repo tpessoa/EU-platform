@@ -6,6 +6,7 @@ const pollSchema = new Schema(
     title: { type: String, require: true },
     description: { type: String, require: true },
     thumbnail: { type: Object, require: true },
+    ended: { type: Boolean, require: true },
   },
   { collection: "polls" }
 );

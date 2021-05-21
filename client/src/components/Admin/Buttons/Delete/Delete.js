@@ -9,7 +9,6 @@ import Error from "../../../UI/Error";
 
 const Delete = (props) => {
   const { deleteURL, fetchQuery } = props;
-
   const queryClient = new useQueryClient();
   const mutation = useMutation(() => axios.delete(`${deleteURL}`), {
     onSuccess: () => queryClient.invalidateQueries(fetchQuery),

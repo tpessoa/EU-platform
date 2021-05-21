@@ -83,7 +83,7 @@ const MapChart = (props) => {
   }, [currQuestion]);
 
   const userPickHandler = (country) => {
-    const rightAnswerObj = countriesData[currQuestion.rightAnswer];
+    const rightAnswerObj = countriesData[currQuestion.right_answer];
     const userCountryNamePT = countriesData.find(
       (elem) => elem.code === country
     );
@@ -138,7 +138,7 @@ const MapChart = (props) => {
                 }
                 // always paint the correct answer (country) in the color green
                 else if (
-                  countriesData[currQuestion.rightAnswer].code === ISO_A3
+                  countriesData[currQuestion.right_answer].code === ISO_A3
                 ) {
                   mapState = colorRightAnswer;
                 }

@@ -80,8 +80,8 @@ const EditForm = (props) => {
   );
 
   const onSubmit = async (userInput) => {
-    // setUploading(true);
-    // console.log(userInput.config.colors);
+    setUploading(true);
+    console.log(userInput.config.colors);
     let newUserInput = { ...userInput, game_ref_name: game_ref_name };
     if (!createNew) {
       newUserInput = {
@@ -183,6 +183,7 @@ const EditForm = (props) => {
         watch={watch}
         obj={fields}
         uploading={uploading}
+        createNew={createNew}
       />
     );
   } else if (game === "interactiveMaps") {

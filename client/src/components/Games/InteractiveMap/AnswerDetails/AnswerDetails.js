@@ -6,7 +6,7 @@ import { countriesData } from "../../../../pages/Admin/games/RightAnswersData";
 const ContryDetails = (props) => {
   const { selectedCountry, currQuestion } = props;
 
-  const rightCountryAnswerObj = countriesData[currQuestion.rightAnswer];
+  const rightCountryAnswerObj = countriesData[currQuestion.right_answer];
 
   let outside_info = null;
   if (selectedCountry === "outside") {

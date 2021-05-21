@@ -35,9 +35,11 @@ const UploadImage = forwardRef((props, ref) => {
 
   let imageSrc = DefaultImage;
   let newDescription = description + " (sem imagem)";
-  if (imagePath.id !== "defaultImage") {
-    imageSrc = imagePath.path + imagePath.server_path;
-    newDescription = description;
+  if (imagePath) {
+    if (imagePath.id !== "defaultImage") {
+      imageSrc = imagePath.path + imagePath.server_path;
+      newDescription = description;
+    }
   }
   let displayUpload = "";
   if (uploading) {

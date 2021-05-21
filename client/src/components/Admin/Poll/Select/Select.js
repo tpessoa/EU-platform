@@ -55,7 +55,7 @@ const Select = () => {
         cols={cols}
         editURL={`${url}/edit`}
         deleteURL={"/api/polls/delete-poll"}
-        fetchQuery={"all-polls"}
+        fetchQuery={"polls"}
       />
       <AddBtn url={`${url}/edit`} objId={"createNew"}>
         Adicionar nova categoria

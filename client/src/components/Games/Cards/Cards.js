@@ -8,6 +8,7 @@ import Error from "../../UI/Error";
 
 import GameCard from "../GameCard";
 import { CardsSection, CardsWrapper, CardsHeading } from "./Cards.elements";
+import { useGames } from "../../../hooks/useGames";
 
 const getCurrentGameObj = (arr, name) => {
   return arr.find((elem) => elem.game_ref_name === name);
@@ -17,20 +18,18 @@ const Cards = (props) => {
   const { gamesInfo } = props;
   const { game } = useParams();
 
-  const { isLoading, error, data } = useQuery("getGamesOfCurrentType", () =>
-    axios(`/api/games/${getCurrentGameObj(gamesInfo, game).game_ref_id}`)
-  );
+  const games = useGames(game);
 
-  if (isLoading) return <Loading />;
-  if (error) return <Error error={error} />;
+  if (games.isLoading) return <Loading />;
+  if (games.error) return <Error error={games.error} />;
 
   return (
     <CardsSection>
-      <CardsHeading>
+      {/* <CardsHeading>
         {getCurrentGameObj(gamesInfo, game).game_name}
-      </CardsHeading>
+      </CardsHeading> */}
       <CardsWrapper>
-        {data.data.map((obj, index) => (
+        {games.data.map((obj, index) => (
           <GameCard key={index} gameInfo={obj} />
         ))}
       </CardsWrapper>

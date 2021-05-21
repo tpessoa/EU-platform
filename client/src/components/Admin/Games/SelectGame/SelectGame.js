@@ -25,7 +25,7 @@ const SelectGameType = () => {
         rows={rows}
         cols={cols}
         editURL={`${url}/edit`}
-        deleteURL={"/api/games/game"}
+        deleteURL={"/api/games/delete-game"}
         fetchQuery={["games", game]}
       />
       <AddBtn url={`${url}/edit`} objId={"createNew"}>

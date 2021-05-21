@@ -20,6 +20,7 @@ const FrontCards = (props) => {
     uploading,
     errors,
     total_cards,
+    setValue,
   } = props;
 
   return (

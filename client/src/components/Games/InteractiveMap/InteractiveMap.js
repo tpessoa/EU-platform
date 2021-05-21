@@ -11,6 +11,7 @@ import styled from "styled-components";
 
 import Loading from "../../UI/Loading";
 import Error from "../../UI/Error";
+import { useGame } from "../../../hooks/useGames";
 
 const InteractiveMap = () => {
   const [country, setCountry] = useState(null);
@@ -25,36 +26,29 @@ const InteractiveMap = () => {
   const query = new URLSearchParams(search);
   const gameId = query.get("id");
 
-  const { isLoading, error, data } = useQuery(
-    `getInteractiveMap_${gameId}`,
-    () =>
-      axios(`/api/games/game/${gameId}`, {
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-      })
-  );
+  const game = useGame(gameId);
 
-  if (isLoading) return <Loading />;
-  if (error) return <Error error={error} />;
+  if (game.isLoading) return <Loading />;
+  if (game.error) return <Error error={game.error} />;
 
   return (
     <Container>
       <Question
-        questions={data.data.config.questions}
+        questions={game.data.config.questions}
         setCurrentQuestion={setCurrentQuestion}
       />
       <MainGameWrapper>
         <MapWrapper>
           <MapChart
             setCountry={setCountry}
-            currQuestion={data.data.config.questions[currentQuestion]}
+            currQuestion={game.data.config.questions[currentQuestion]}
           />
         </MapWrapper>
         <QuestionInfoWrapper>
           {country != null && currentQuestion != null && (
             <AnswerDetails
               selectedCountry={country}
-              currQuestion={data.data.config.questions[currentQuestion]}
+              currQuestion={game.data.config.questions[currentQuestion]}
             />
           )}
         </QuestionInfoWrapper>

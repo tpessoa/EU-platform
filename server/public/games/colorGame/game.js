@@ -147,13 +147,12 @@ class playGame extends Phaser.Scene {
   loadFromDB(response) {
     const formatColorsCode = (arr) => {
       const formattedArr = [];
-      arr.forEach((elem) => {
-        const splitArr = elem.split("#");
+      for (const colorObj of arr) {
+        const splitArr = colorObj.code.split("#");
         const code = splitArr[1];
         const formattedColorCode = "0x" + code;
         formattedArr.push(formattedColorCode);
-      });
-
+      }
       return formattedArr;
     };
 
@@ -162,7 +161,7 @@ class playGame extends Phaser.Scene {
     DB_title = response.data.title;
 
     const config = response.data.config;
-    const assets = response.data.assets.images;
+    const assets = response.data.assets;
 
     DB_game_colors = formatColorsCode(config.colors);
     lineLimitColorUser = config.sensibility;

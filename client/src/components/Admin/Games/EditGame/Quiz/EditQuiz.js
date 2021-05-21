@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core";
 import Input from "../../../../Form/Input";
 import ButtonForm from "../../../../Form/ButtonForm";
+import CheckboxInput from "../../../../Form/CheckboxInput";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -60,7 +61,7 @@ const EditQuiz = (props) => {
     };
   }
 
-  let time_flag = watch("config.time");
+  let timer = watch("config.timer");
 
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
     {
@@ -90,9 +91,20 @@ const EditQuiz = (props) => {
 
   return (
     <div className={classes.root}>
+      <CheckboxInput
+        register={register}
+        control={control}
+        textName={"config.time_to_resp_question"}
+        textLabel={"Tempo em segundos"}
+        checkboxName={"config.timer"}
+        checkboxLabel={"Tempo para responder a cada pergunta"}
+        disabled={!timer}
+        error={!!errors.config?.time_to_resp_question}
+        helperText={errors?.config?.time_to_resp_question?.message}
+      />
       {displayQuestions}
       <ButtonForm
-        onClick={() => append(emptyQuestion)}
+        onClick={() => append({ ...emptyQuestion })}
         error={errors?.config?.questions}
         helpertext={errors?.config?.questions?.message}
       >

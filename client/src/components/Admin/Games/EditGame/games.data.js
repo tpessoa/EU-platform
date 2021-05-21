@@ -17,7 +17,7 @@ export const puzzleObj = {
     background_puzzle_image: true,
     piece_position_helper: true,
     move_pieces_freely: true,
-    time: false,
+    timer: false,
     time_to_complete: 0,
   },
   assets: {
@@ -81,8 +81,9 @@ export const memoryObj = {
     destroy_card: false,
     timer: false,
     time_to_complete: 0,
-    max_attempts: "",
-    total_images: "",
+    max_attempts: 0,
+    total_images: 0,
+    default_images: 3,
   },
   assets: {
     back_card: {
