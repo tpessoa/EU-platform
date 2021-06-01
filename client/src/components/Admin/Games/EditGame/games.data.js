@@ -70,8 +70,8 @@ export const quizObj = {
   game_ref_name: "quiz",
   config: {
     questions: [],
-    time: false,
-    time_to_resp_question: "",
+    timer: false,
+    time_to_resp_question: 0,
   },
 };
 

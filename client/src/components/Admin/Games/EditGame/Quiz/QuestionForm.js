@@ -31,16 +31,8 @@ const useStyles = makeStyles((theme) => ({
 
 const QuestionForm = (props) => {
   const classes = useStyles();
-  const {
-    index,
-    item,
-    control,
-    register,
-    remove,
-    swap,
-    totalQuests,
-    error,
-  } = props;
+  const { index, item, control, register, remove, swap, totalQuests, error } =
+    props;
 
   let upBtn = "";
   if (index - 1 >= 0) {
@@ -93,36 +85,36 @@ const QuestionForm = (props) => {
         helperText={error?.question?.message}
       />
       <Input
-        {...register(`config.questions.${index}.answers.answer1`)}
-        defaultValue={`${item.answers.answer1}`}
+        {...register(`config.questions.${index}.answer1`)}
+        defaultValue={`${item.answer1}`}
         type="text"
         label="Resposta 1"
-        error={!!error?.answers?.answer1}
-        helperText={error?.answers?.answer1?.message}
+        error={!!error?.answer1}
+        helperText={error?.answer1?.message}
       />
       <Input
-        {...register(`config.questions.${index}.answers.answer2`)}
-        defaultValue={`${item.answers.answer2}`}
+        {...register(`config.questions.${index}.answer2`)}
+        defaultValue={`${item.answer2}`}
         type="text"
         label="Resposta 2"
-        error={!!error?.answers?.answer2}
-        helperText={error?.answers?.answer2?.message}
+        error={!!error?.answer2}
+        helperText={error?.answer2?.message}
       />
       <Input
-        {...register(`config.questions.${index}.answers.answer3`)}
-        defaultValue={`${item.answers.answer3}`}
+        {...register(`config.questions.${index}.answer3`)}
+        defaultValue={`${item.answer3}`}
         type="text"
         label="Resposta 3"
-        error={!!error?.answers?.answer3}
-        helperText={error?.answers?.answer3?.message}
+        error={!!error?.answer3}
+        helperText={error?.answer3?.message}
       />
       <Input
-        {...register(`config.questions.${index}.answers.answer4`)}
-        defaultValue={`${item.answers.answer4}`}
+        {...register(`config.questions.${index}.answer4`)}
+        defaultValue={`${item.answer4}`}
         type="text"
         label="Resposta 4"
-        error={!!error?.answers?.answer4}
-        helperText={error?.answers?.answer4?.message}
+        error={!!error?.answer4}
+        helperText={error?.answer4?.message}
       />
       <Controller
         name={`config.questions.${index}.right_answer`}

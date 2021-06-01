@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Route, useRouteMatch, Link } from "react-router-dom";
+import { Route, useRouteMatch, Link, useLocation } from "react-router-dom";
 
 import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
@@ -8,7 +8,7 @@ import Button from "@material-ui/core/Button";
 import { CgGames, CgPoll } from "react-icons/cg";
 import { RiVideoFill } from "react-icons/ri";
 import { FiLogOut } from "react-icons/fi";
-import { FaPoll } from "react-icons/fa";
+import { FaLastfmSquare, FaPoll } from "react-icons/fa";
 
 import { makeStyles } from "@material-ui/core/styles";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -51,19 +51,43 @@ const useStyles = makeStyles((theme) => ({
 
 const SideMenu = () => {
   const { path, url } = useRouteMatch();
+  const location = useLocation();
   const classes = useStyles();
+  const curLoc = location.pathname.split("/");
+  // console.log(curLoc);
+  const type = curLoc[3];
+  let gamesOpenInfo, videosOpenInfo, pollOpenInfo;
+  if (type === "games") {
+    gamesOpenInfo = true;
+    videosOpenInfo = false;
+    pollOpenInfo = false;
+  } else if (type === "videos") {
+    gamesOpenInfo = false;
+    videosOpenInfo = true;
+    pollOpenInfo = false;
+  } else if (type === "poll") {
+    gamesOpenInfo = false;
+    videosOpenInfo = false;
+    pollOpenInfo = true;
+  }
 
-  const [openGames, setOpenGames] = useState(false);
-  const [openVideos, setOpenVideos] = useState(false);
-  const [openPolls, setOpenPolls] = useState(false);
+  const [openGames, setOpenGames] = useState(gamesOpenInfo);
+  const [openVideos, setOpenVideos] = useState(videosOpenInfo);
+  const [openPolls, setOpenPolls] = useState(pollOpenInfo);
 
   const handleGamesClick = () => {
     setOpenGames(!openGames);
+    setOpenVideos(false);
+    setOpenPolls(false);
   };
   const handleVideosClick = () => {
+    setOpenGames(false);
     setOpenVideos(!openVideos);
+    setOpenPolls(false);
   };
   const handlePollsClick = () => {
+    setOpenGames(false);
+    setOpenVideos(false);
     setOpenPolls(!openPolls);
   };
 

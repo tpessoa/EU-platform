@@ -50,7 +50,7 @@ const Navbar = () => {
             </NavItem>
             {localStorage.getItem("token") && (
               <NavItem>
-                <NavLink to="/admin">ADMIN</NavLink>
+                <NavLink to="/admin/content">Admin</NavLink>
               </NavItem>
             )}
           </NavMenu>

@@ -30,12 +30,10 @@ const useStyles = makeStyles((theme) => ({
 
 const emptyQuestion = {
   question: "",
-  answers: {
-    answer1: "",
-    answer2: "",
-    answer3: "",
-    answer4: "",
-  },
+  answer1: "",
+  answer2: "",
+  answer3: "",
+  answer4: "",
   right_answer: "",
   justification: "",
 };

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { Link, Redirect } from "react-router-dom";
+import { Link, useLocation, useRouteMatch } from "react-router-dom";
 
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
@@ -10,15 +10,24 @@ import PhoneIcon from "@material-ui/icons/Phone";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import PersonPinIcon from "@material-ui/icons/PersonPin";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import BarChartIcon from "@material-ui/icons/BarChart";
 
-const Navbar = (props) => {
-  const { setTab } = props;
-  const [value, setValue] = React.useState(0);
+const Navbar = () => {
+  const { path, url } = useRouteMatch();
+  const location = useLocation();
+  const tabName = location.pathname.split("/")[2];
+  let tabVal;
+  if (tabName === "content") {
+    tabVal = 0;
+  } else if (tabName === "statistics") {
+    tabVal = 1;
+  } else if (tabName === "perfil") {
+    tabVal = 2;
+  }
+  const [value, setValue] = React.useState(tabVal);
 
   const handleChange = (event, newValue) => {
-    console.log(newValue);
     setValue(newValue);
-    setTab(newValue);
   };
 
   return (
@@ -33,15 +42,21 @@ const Navbar = (props) => {
         >
           <Tab
             icon={<DashboardIcon />}
-            label="Dashboard"
+            label="Conteúdo"
             component={Link}
-            to={"/admin"}
+            to={`${url}/content`}
+          />
+          <Tab
+            icon={<BarChartIcon />}
+            label="Estatísticas"
+            component={Link}
+            to={`${url}/statistics`}
           />
           <Tab
             icon={<PersonPinIcon />}
             label="Perfil"
             component={Link}
-            to={"/admin/perfil"}
+            to={`${url}/perfil`}
           />
           <Tab
             icon={<ExitToAppIcon />}

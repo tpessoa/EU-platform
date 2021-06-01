@@ -1,24 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-
-import Navbar from "./Navbar";
 import Menu from "./Menu";
-import Perfil from "./Perfil";
+import { Route, useRouteMatch } from "react-router-dom";
+import Navbar from "./Navbar";
 
 const Dashboard = () => {
-  const [currentTab, setCurrentTab] = useState(0);
-
-  let displayTabContent = "";
-  if (currentTab === 0) {
-    displayTabContent = <Menu />;
-  } else if (currentTab === 1) {
-    displayTabContent = <Perfil />;
-  }
-
+  const { path, url } = useRouteMatch();
   return (
     <Container>
-      <Navbar setTab={setCurrentTab} />
-      {displayTabContent}
+      <Navbar />
+      <Route path={`${url}/:tab`} component={() => <Menu />} />
     </Container>
   );
 };

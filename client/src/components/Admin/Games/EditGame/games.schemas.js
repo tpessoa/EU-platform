@@ -104,15 +104,10 @@ export const schemaQuiz = yup.object().shape({
       .of(
         yup.object().shape({
           question: yup.string().required(),
-          answers: yup
-            .object()
-            .shape({
-              answer1: yup.string().required(answerRequiredMsg),
-              answer2: yup.string().required(answerRequiredMsg),
-              answer3: yup.string().required(answerRequiredMsg),
-              answer4: yup.string().required(answerRequiredMsg),
-            })
-            .required(),
+          answer1: yup.string().required(answerRequiredMsg),
+          answer2: yup.string().required(answerRequiredMsg),
+          answer3: yup.string().required(answerRequiredMsg),
+          answer4: yup.string().required(answerRequiredMsg),
           right_answer: yup.number().required(),
           justification: yup.string().required(),
         })

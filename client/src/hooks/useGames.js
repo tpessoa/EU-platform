@@ -21,3 +21,24 @@ export const useGame = (gameId, flag) => {
     enabled: flag,
   });
 };
+
+const getGamesStatistics = async () => {
+  const { data } = await axios.get(`/api/games/all-statistics`);
+  return data;
+};
+export const useGamesStats = () => {
+  return useQuery(["gamesStats"], () => getGamesStatistics(), {
+    refetchOnWindowFocus: false,
+  });
+};
+
+const getGameStatistic = async (gameId) => {
+  const { data } = await axios.get(`/api/games/statistics/game/${gameId}`);
+  return data;
+};
+export const useGameStats = (gameId, flag) => {
+  return useQuery(["gameStats", gameId], () => getGameStatistic(gameId), {
+    refetchOnWindowFocus: false,
+    enabled: flag,
+  });
+};

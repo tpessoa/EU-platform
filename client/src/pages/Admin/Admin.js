@@ -33,23 +33,26 @@ const Admin = () => {
     <ThemeProvider theme={theme}>
       <Switch>
         <Route
-          path="/admin/poll/categories/edit/:id"
+          path="/admin/content/poll/categories/edit/:id"
           component={() => <EditPoll />}
         />
         <Route
-          path="/admin/poll/works/edit/:id"
+          path="/admin/content/poll/works/edit/:id"
           component={() => <EditWork />}
         />
         <Route
-          path="/admin/videos/categories/edit/:id"
+          path="/admin/content/videos/categories/edit/:id"
           component={() => <EditVideoCategory />}
         />
-        <Route path="/admin/videos/edit/:id" component={() => <EditVideo />} />
         <Route
-          path="/admin/games/:type/edit/:id"
+          path="/admin/content/videos/edit/:id"
+          component={() => <EditVideo />}
+        />
+        <Route
+          path="/admin/content/games/:type/edit/:id"
           component={() => <EditGame />}
         />
-        <Route path="/admin" component={Dashboard} />
+        <Route path="/admin" component={() => <Dashboard />} />
       </Switch>
     </ThemeProvider>
   );
