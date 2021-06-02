@@ -68,6 +68,7 @@ export const getDefValues = (game, fields) => {
       description: description,
       config: {
         destroy_card: config.destroy_card,
+        turn_speed: config.turn_speed,
         timer: config.timer,
         time_to_complete: config.time_to_complete,
         max_attempts: config.max_attempts,

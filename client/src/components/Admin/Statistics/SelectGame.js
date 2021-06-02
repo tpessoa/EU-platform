@@ -5,8 +5,8 @@ import { useParams, Link, useRouteMatch, useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+    margin: theme.spacing(2),
+    minWidth: 300,
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
@@ -14,13 +14,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SelectGame = (props) => {
-  const { gamesId, gameId } = props;
+  const { allQuizes, gameId } = props;
   const { path, url } = useRouteMatch();
   const classes = useStyles();
   const [gameValue, setGameValue] = useState("");
 
   useEffect(() => {
-    const gameIdIndex = gamesId.findIndex((elem) => elem.game_id === gameId);
+    const gameIdIndex = allQuizes.findIndex((elem) => elem._id === gameId);
     setGameValue(gameIdIndex);
   }, [gameId]);
 
@@ -38,14 +38,14 @@ const SelectGame = (props) => {
         onChange={handleChange}
         label="Id do jogo"
       >
-        {gamesId.map((elem, index) => (
+        {allQuizes.map((quiz, index) => (
           <MenuItem
             key={index}
             value={index}
             component={Link}
-            to={`${url}/${elem.game_id}`}
+            to={`${url}/${quiz._id}`}
           >
-            {elem.game_id}
+            {quiz.title}
           </MenuItem>
         ))}
       </Select>

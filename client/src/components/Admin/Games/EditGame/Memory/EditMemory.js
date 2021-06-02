@@ -9,6 +9,7 @@ import Select from "../../../../Form/SelectInput";
 import UploadImage from "../../../../Form/UploadImage";
 import FrontCards from "./FrontCards";
 
+const turn_speed_arr = ["Lento", "Normal", "Rápido", "Muito Rápido"];
 const totalImagesArr = [3, 6, 8, 10];
 const emptyImage = {
   id: "defaultImage",
@@ -122,6 +123,26 @@ const EditMemory = (props) => {
         error={!!errors.config?.max_attempts}
         helperText={errors?.config?.max_attempts?.message}
         disabled={timer}
+      />
+      <Controller
+        name="config.turn_speed"
+        control={control}
+        defaultValue={false}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <Select
+            label="Velocidade de virar a carta"
+            {...field}
+            error={!!errors.config?.turn_speed}
+            helper={"Velocidade de virar a carta é obrigatória"}
+          >
+            {turn_speed_arr.map((speed, index) => (
+              <MenuItem key={index} value={index}>
+                {speed}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
       />
       <Controller
         name="config.destroy_card"

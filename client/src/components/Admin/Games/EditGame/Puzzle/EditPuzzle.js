@@ -5,6 +5,10 @@ import UploadImage from "../../../../Form/UploadImage";
 import Checkbox from "../../../../Form/Checkbox";
 import Input from "../../../../Form/Input";
 import { puzzleObj } from "../games.data";
+import Select from "../../../../Form/SelectInput";
+import { MenuItem } from "@material-ui/core";
+
+const pieces_sizes_arr = ["Muito Pequeno", "Pequeno", "Médio", "Grande"];
 
 const EditPuzzle = (props) => {
   const { createNew, errors, register, control, watch, obj, uploading } = props;
@@ -19,14 +23,34 @@ const EditPuzzle = (props) => {
 
   return (
     <>
-      <Input
+      <Controller
+        name="config.pieces_size"
+        control={control}
+        defaultValue={false}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <Select
+            label="Tamanho das Peças"
+            {...field}
+            error={!!errors.config?.pieces_size}
+            helper={"Tamanho das Peças é obrigatória"}
+          >
+            {pieces_sizes_arr.map((size, index) => (
+              <MenuItem key={index} value={index}>
+                {size}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
+      />
+      {/* <Input
         {...register("config.pieces_size")}
         name="config.pieces_size"
         type="number"
         label="Tamanho das peças"
         error={!!errors.config?.pieces_size}
         helperText={errors?.config?.pieces_size?.message}
-      />
+      /> */}
       <Controller
         name="config.timer"
         control={control}

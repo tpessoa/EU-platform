@@ -164,7 +164,9 @@ class playGame extends Phaser.Scene {
     const assets = response.data.assets;
 
     DB_game_colors = formatColorsCode(config.colors);
-    lineLimitColorUser = config.sensibility;
+
+    var sensibility_arr = [50, 100, 150];
+    lineLimitColorUser = sensibility_arr[config.sensibility];
 
     DB_src_original = assets.colored_img.path + assets.colored_img.server_path;
     DB_image_ref_original = assets.colored_img.id;

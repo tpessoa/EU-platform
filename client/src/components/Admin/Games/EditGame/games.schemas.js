@@ -136,6 +136,7 @@ export const schemaMemory = yup.object().shape({
     destroy_card: yup.bool(),
     max_attempts: yup.number(),
     total_images: yup.number(),
+    turn_speed: yup.number(),
     timer: yup.boolean(),
     time_to_complete: yup.number().when("timer", {
       is: true,

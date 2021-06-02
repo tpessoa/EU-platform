@@ -79,6 +79,7 @@ export const memoryObj = {
   game_ref_name: "memory",
   config: {
     destroy_card: false,
+    turn_speed: 0,
     timer: false,
     time_to_complete: 0,
     max_attempts: 0,

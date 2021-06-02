@@ -82,7 +82,7 @@ const Login = (props) => {
           {...register("password")}
           name="password"
           type="password"
-          label="Password Nova"
+          label="Password"
           error={!!errors.password}
           helperText={errors?.password?.message}
         />

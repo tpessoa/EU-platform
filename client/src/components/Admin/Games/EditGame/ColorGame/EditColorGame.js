@@ -1,17 +1,37 @@
 import React from "react";
 import { colorGameObj } from "../games.data";
 import { makeStyles } from "@material-ui/core/styles";
-import { useFieldArray } from "react-hook-form";
-import { Button, Paper, Typography } from "@material-ui/core";
+import { Controller, useFieldArray } from "react-hook-form";
+import {
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 import ButtonForm from "../../../../Form/ButtonForm";
 import UploadImage from "../../../../Form/UploadImage";
 import Input from "../../../../Form/InputNotPaper";
 import ColorSelector from "./ColorSelector";
 import ColorsDisplay from "./ColorsDisplay";
+import Select from "../../../../Form/SelectInput";
+import HelpIcon from "@material-ui/icons/Help";
+import Tooltip from "@material-ui/core/Tooltip";
+import Zoom from "@material-ui/core/Zoom";
+
+const helpSensibilityMessage = `Dica! Quando não dá para colorir uma cor clara sobre outra de tonalidade mais escura deve colocar o algoritmo com menor sensibilidade e testar novamente. 
+  \n
+  Atenção! Uma sensibilidade baixa pode levar a que os contornos da imagem sejam ignorados quando se tenta colorir uma secção`;
+
+const helpColorSelectMessage =
+  "Dica! Tente não escolher cores escuras que possam interferir com os contornos da imagem, pois o algoritmo não consegue distingir.";
 
 const emptyColor = {
   code: "ffff00",
 };
+
+const sensibility_arr = ["Baixa", "Média", "Alta"];
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -87,19 +107,59 @@ const EditColorGame = (props) => {
       <Paper className={classes.paper}>
         <Typography variant="h6" gutterBottom align="center">
           Escolha das cores
+          <Tooltip
+            title={helpColorSelectMessage}
+            placement="top-start"
+            arrow
+            TransitionComponent={Zoom}
+          >
+            <IconButton aria-label="delete">
+              <HelpIcon />
+            </IconButton>
+          </Tooltip>
         </Typography>
         <div className={classes.colorSelector}>
           <ColorSelector addColor={append} errors={errors} />
           <div className={classes.colors}>{displayColors}</div>
         </div>
-        <Input
+        <Controller
+          name="config.sensibility"
+          control={control}
+          defaultValue={false}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <Select
+              label="Sensibildiade do algoritmo"
+              {...field}
+              error={!!errors.config?.sensibility}
+              helper={"Sensibildiade do algoritmo é obrigatória"}
+            >
+              {sensibility_arr.map((size, index) => (
+                <MenuItem key={index} value={index}>
+                  {size}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        />
+        <Tooltip
+          title={helpSensibilityMessage}
+          placement="top-start"
+          arrow
+          TransitionComponent={Zoom}
+        >
+          <IconButton aria-label="delete">
+            <HelpIcon />
+          </IconButton>
+        </Tooltip>
+        {/* <Input
           {...register("config.sensibility")}
           name="config.sensibility"
           type="number"
           label="Sensibildiade do algoritmo"
           error={!!errors.config?.sensibility}
           helperText={errors?.config?.sensibility?.message}
-        />
+        /> */}
       </Paper>
       <UploadImage
         {...register("assets.colored_img")}
