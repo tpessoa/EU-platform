@@ -30,15 +30,8 @@ import EditColorGame from "./ColorGame/EditColorGame";
 const EditForm = (props) => {
   const history = useHistory();
   const { fields, createNew, fetchQuery, game } = props;
-  const {
-    _id,
-    game_ref_name,
-    title,
-    description,
-    thumbnail,
-    config,
-    assets,
-  } = fields;
+  const { _id, game_ref_name, title, description, thumbnail, config, assets } =
+    fields;
 
   const [uploading, setUploading] = useState(false);
   setCreateNew(createNew);
@@ -76,6 +69,17 @@ const EditForm = (props) => {
         // console.log(result);
         history.goBack();
       },
+    }
+  );
+  const resetStats = useMutation(
+    async (obj) =>
+      await axios({
+        method: "post",
+        url: "/api/games/statistics-reset",
+        data: { gameId: obj },
+      }),
+    {
+      onSettled: () => queryClient.invalidateQueries(["gamesStats"]),
     }
   );
 
@@ -118,6 +122,9 @@ const EditForm = (props) => {
     }
 
     console.log(newUserInputUploaded);
+
+    // reset stats to avoid miss data
+    if (!createNew) resetStats.mutate(_id);
     mutation.mutate(newUserInputUploaded);
   };
 

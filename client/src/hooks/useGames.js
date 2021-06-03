@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient, useMutation } from "react-query";
 import axios from "axios";
 
 const getGames = async (gameType) => {
@@ -36,9 +36,23 @@ const getGameStatistic = async (gameId) => {
   const { data } = await axios.get(`/api/games/statistics/game/${gameId}`);
   return data;
 };
-export const useGameStats = (gameId, flag) => {
-  return useQuery(["gameStats", gameId], () => getGameStatistic(gameId), {
-    refetchOnWindowFocus: false,
-    enabled: flag,
-  });
-};
+// export const useGameStats = (gameId, flag) => {
+//   return useQuery(["gameStats", gameId], () => getGameStatistic(gameId), {
+//     refetchOnWindowFocus: false,
+//     enabled: flag,
+//   });
+// };
+
+// export const useGameStatsReset = (gameId) => {
+//   const queryClient = new useQueryClient();
+//   return useMutation(
+//     axios({
+//       method: "post",
+//       url: "/api/games/statistics-reset",
+//       data: { gameId: gameId },
+//     }),
+//     {
+//       onSettled: () => queryClient.invalidateQueries(["gameStats", gameId]),
+//     }
+//   );
+// };

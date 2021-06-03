@@ -31,6 +31,20 @@ router.post("/save-game", async (req, res) => {
       newGame.isNew = false;
     }
     await newGame.save();
+
+    // if new game create empty stats
+    if (!req.body._id) {
+      const newStats = new Statistics({
+        game_id: newGame._id,
+        game_ref_name: req.body.game_ref_name,
+        all_answers: [],
+        user_time_arr: [],
+        num_opened: 0,
+        num_finished: 0,
+        num_wins: 0,
+      });
+      await newStats.save();
+    }
     res.send(newGame);
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -54,62 +68,76 @@ router.delete("/delete-game/:id", async (req, res) => {
   }
 });
 
-router.post("/statistics", async (req, res) => {
+router.post("/statistics-quiz", async (req, res) => {
   try {
-    // console.log(req.body);
     const game = await Games.findById(req.body.gameId);
-    // console.log(game.config.questions);
-
-    // if exists statistics of the game
-    const gameStatistics = await Statistics.findOne({
+    const gameStats = await Statistics.findOne({
       game_id: req.body.gameId,
     });
-    // console.log(gameStatistics);
 
-    let newStats;
-    if (gameStatistics) {
-      // if time to resp question exists
+    console.log(req.body);
 
-      for (let i = 0; i < gameStatistics.total_answers.length; i++) {
-        gameStatistics.total_answers[i].right.push(
-          req.body.userAnswers[i].userIndex ===
-            req.body.userAnswers[i].rightIndex
-        );
-        gameStatistics.total_answers[i].time_resp.push(
-          game.config.time_to_resp_question - req.body.userTimes[i]
-        );
+    const user_answers = [];
+    if (game.config.timer) {
+      // put the right user time
+      for (const ans of req.body.answers) {
+        user_answers.push({
+          correct: ans.correct,
+          user_time: game.config.time_to_resp_question - ans.time_remaining,
+        });
       }
-
-      newStats = new Statistics(gameStatistics);
-      newStats.isNew = false;
+      gameStats.all_answers.push(user_answers);
     } else {
-      let userAnswersArr = [];
-      for (let i = 0; i < game.config.questions.length; i++) {
-        const newQuestionObj = {
-          question: game.config.questions[i].question,
-          right: [
-            req.body.userAnswers[i].userIndex ===
-              req.body.userAnswers[i].rightIndex,
-          ],
-          time_resp: [
-            game.config.time_to_resp_question - req.body.userTimes[i],
-          ],
-        };
-        userAnswersArr.push(newQuestionObj);
-      }
-
-      const gameStatsObj = {
-        game_id: req.body.gameId,
-        game_ref_name: game.game_ref_name,
-        total_answers: userAnswersArr,
-      };
-      newStats = new Statistics({
-        ...gameStatsObj,
-      });
+      gameStats.all_answers.push(req.body.answers);
     }
 
-    await newStats.save();
-    res.send(newStats);
+    gameStats.num_finished++;
+    await gameStats.save();
+
+    res.send(gameStats);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.post("/statistics-game-opened", async (req, res) => {
+  try {
+    const gameStats = await Statistics.findOne({
+      game_id: req.body.gameId,
+    });
+    gameStats.num_opened++;
+    await gameStats.save();
+    res.send(gameStats);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.post("/statistics-reset", async (req, res) => {
+  try {
+    console.log("reseting");
+    const gameStats = await Statistics.findOne({
+      game_id: req.body.gameId,
+    });
+    // reset obj
+    gameStats.all_answers = [];
+    gameStats.user_time_arr = [];
+    gameStats.num_opened = 0;
+    gameStats.num_finished = 0;
+    gameStats.num_wins = 0;
+
+    await gameStats.save();
+    res.send(gameStats);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.post("/statistics", async (req, res) => {
+  try {
+    console.log(req.body);
+    const game = await Games.findById(req.body.gameId);
+    res.send(game);
   } catch (e) {
     res.status(500).send({ message: e.message });
   }

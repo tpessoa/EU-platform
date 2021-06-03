@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useQueryClient, useMutation } from "react-query";
+import axios from "axios";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -12,6 +14,15 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import Zoom from "@material-ui/core/Zoom";
+import { Button, IconButton } from "@material-ui/core";
+import { useGame } from "../../../hooks/useGames";
+import Loading from "../../UI/Loading";
+import Error from "../../UI/Error";
+import HelpIcon from "@material-ui/icons/Help";
+
+const decimals = 2;
+const wrongStatsMessage =
+  "Se alterar as definições do quiz (adicionar pergunta, eliminar, colocar perguntas com tempo, etc) recomenda-se que dê reset às estatísitcas, pois estas correm o risco de estarem mal caculadas por terem os dados antigos!";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,60 +47,78 @@ const createData = (name, num_right, num_wrong, perc_right, mean_time_resp) => {
   return { name, num_right, num_wrong, perc_right, mean_time_resp };
 };
 
-const answersCounter = (arr, flag) => {
-  let counter = 0;
-  for (const elem of arr) {
-    if (elem === flag) counter++;
-  }
-  return counter;
-};
-
-const rightAnswersPerc = (arr) => {
-  let counter = 0;
-  for (const elem of arr) {
-    if (elem === true) counter++;
-  }
-
-  return (counter / arr.length) * 100;
-};
-
-const getMeanTime = (arr) => {
-  return arr.reduce((a, b) => a + b) / arr.length;
-};
-
 const TableStats = (props) => {
   const { setGame, gameStats } = props;
   const classes = useStyles();
   const { gameId } = useParams();
+  const gameInfo = useGame(gameId, gameId ? true : false);
+
+  const queryClient = new useQueryClient();
+  const resetStats = useMutation(
+    (obj) =>
+      axios({
+        method: "post",
+        url: "/api/games/statistics-reset",
+        data: { gameId: obj },
+      }),
+    {
+      onSettled: () => queryClient.invalidateQueries(["gamesStats"]),
+    }
+  );
 
   useEffect(() => {
     setGame(gameId);
   }, [gameId]);
 
+  if (gameInfo.isLoading) return <Loading />;
+  if (gameInfo.isError) return <Error error={gameInfo.error} />;
+
   const rows = [];
-  let total_right_ans = 0,
-    total_wrong_ans = 0,
-    total_right_perc = 0,
-    total_time = 0,
-    total_games = gameStats ? gameStats.total_answers.length : 1;
+  const gameConfig = gameInfo.data.config;
+  let total_right_ans = 0;
+  let total_wrong_ans = 0;
+  let total_right_ans_perc = 0;
+  let total_mean_resp_time = 0;
+  let total_games = 1;
+  let total_questions = 1;
+
+  // verify length questions != length all answers
+
+  console.log(gameStats);
+
   if (gameStats) {
-    for (const r of gameStats.total_answers) {
-      const right_answers = answersCounter(r.right, true);
-      total_right_ans += right_answers;
-      const wrong_answers = answersCounter(r.right, false);
-      total_wrong_ans += wrong_answers;
-      const right_answers_perc = rightAnswersPerc(r.right);
-      total_right_perc += right_answers_perc;
-      const mean_time = getMeanTime(r.time_resp);
-      total_time += mean_time;
+    total_games = gameStats.all_answers.length;
+    total_questions = gameConfig.questions.length;
+
+    for (let i = 0; i < total_questions; i++) {
+      let question_right_answers = 0;
+      let question_wrong_answers = 0;
+      let question_right_answers_perc = 0;
+      let total_answers_time = 0;
+      for (const game of gameStats.all_answers) {
+        game[i].correct ? question_right_answers++ : question_wrong_answers++;
+        game[i].user_time
+          ? (total_answers_time += game[i].user_time)
+          : (total_answers_time += 0);
+      }
+      total_right_ans += question_right_answers;
+      total_wrong_ans += question_wrong_answers;
+
+      question_right_answers_perc +=
+        (question_right_answers / total_games) * 100;
+
+      total_right_ans_perc += question_right_answers / total_games;
+
+      total_answers_time = total_answers_time / gameStats.all_answers.length;
+      total_mean_resp_time += total_answers_time;
 
       rows.push(
         createData(
-          r.question,
-          right_answers,
-          wrong_answers,
-          right_answers_perc,
-          mean_time
+          gameConfig.questions[i].question,
+          question_right_answers,
+          question_wrong_answers,
+          question_right_answers_perc,
+          gameConfig.timer ? total_answers_time : 0
         )
       );
     }
@@ -99,7 +128,18 @@ const TableStats = (props) => {
     <>
       <Typography variant="h5" component="h2">
         Estatísticas do Quiz
+        {/* <Tooltip
+          title={wrongStatsMessage}
+          placement="top-start"
+          arrow
+          TransitionComponent={Zoom}
+        >
+          <IconButton aria-label="delete">
+            <HelpIcon />
+          </IconButton>
+        </Tooltip> */}
       </Typography>
+
       <TableContainer component={Paper} className={classes.root}>
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
@@ -149,40 +189,55 @@ const TableStats = (props) => {
               </Tooltip>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.name}>
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="center">{row.num_right}</TableCell>
-                <TableCell align="center">{row.num_wrong}</TableCell>
-                <TableCell align="center">{`${row.perc_right}%`}</TableCell>
-                <TableCell align="center">{`${row.mean_time_resp} s`}</TableCell>
-              </TableRow>
-            ))}
+          {gameStats && (
+            <TableBody>
+              {rows.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell component="th" scope="row">
+                    {row.name}
+                  </TableCell>
+                  <TableCell align="center">{row.num_right}</TableCell>
+                  <TableCell align="center">{row.num_wrong}</TableCell>
+                  <TableCell align="center">{`${row.perc_right.toFixed(
+                    decimals
+                  )}%`}</TableCell>
+                  <TableCell align="center">{`${row.mean_time_resp.toFixed(
+                    decimals
+                  )} s`}</TableCell>
+                </TableRow>
+              ))}
 
-            <TableRow className={classes.totalRow}>
-              <Tooltip
-                title="Total de todas as respostas deste jogo"
-                placement="bottom-end"
-                arrow
-                TransitionComponent={Zoom}
-              >
-                <TableCell align="right">Total</TableCell>
-              </Tooltip>
-              <TableCell align="center">{total_right_ans}</TableCell>
-              <TableCell align="center">{total_wrong_ans}</TableCell>
-              <TableCell align="center">
-                {`${total_right_perc / total_games}%`}
-              </TableCell>
-              <TableCell align="center">{`${
-                total_time / total_games
-              } s`}</TableCell>
-            </TableRow>
-          </TableBody>
+              <TableRow className={classes.totalRow}>
+                <Tooltip
+                  title="Total de todas as respostas deste jogo"
+                  placement="bottom-end"
+                  arrow
+                  TransitionComponent={Zoom}
+                >
+                  <TableCell align="right">Total</TableCell>
+                </Tooltip>
+                <TableCell align="center">{total_right_ans}</TableCell>
+                <TableCell align="center">{total_wrong_ans}</TableCell>
+                <TableCell align="center">
+                  {`${((total_right_ans_perc / total_questions) * 100).toFixed(
+                    decimals
+                  )}%`}
+                </TableCell>
+                <TableCell align="center">{`${(
+                  total_mean_resp_time / total_questions
+                ).toFixed(decimals)} s`}</TableCell>
+              </TableRow>
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => resetStats.mutate(gameId)}
+      >
+        Reset Estatísitcas
+      </Button>
     </>
   );
 };
