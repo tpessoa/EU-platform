@@ -80,8 +80,6 @@ const TableStatsQuiz = (props) => {
 
   // verify length questions != length all answers
 
-  console.log(gameData);
-
   if (gameData) {
     total_games = gameData.all_answers.length;
     total_questions = gameConfig.questions.length;
@@ -135,12 +133,12 @@ const TableStatsQuiz = (props) => {
           </IconButton>
         </Tooltip> */}
       </Typography>
-
       <TableContainer component={Paper} className={classes.root}>
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow className={classes.headerRow}>
               <TableCell className={classes.whiteText}>Questões</TableCell>
+
               <Tooltip
                 title="Número de respostas certas recolhidas"
                 placement="top-start"
@@ -227,6 +225,9 @@ const TableStatsQuiz = (props) => {
           )}
         </Table>
       </TableContainer>
+      <p>Número de jogos abertos {gameData.num_opened}</p>
+      <p>Número de jogos finalizados {gameData.num_finished}</p>
+      <br></br>
       <Button
         variant="contained"
         color="primary"
