@@ -14,13 +14,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SelectGame = (props) => {
-  const { allQuizes, gameId } = props;
+  const { allGames, gameId } = props;
   const { path, url } = useRouteMatch();
   const classes = useStyles();
   const [gameValue, setGameValue] = useState("");
 
   useEffect(() => {
-    const gameIdIndex = allQuizes.findIndex((elem) => elem._id === gameId);
+    const gameIdIndex = allGames.findIndex((elem) => elem._id === gameId);
     setGameValue(gameIdIndex);
   }, [gameId]);
 
@@ -38,14 +38,14 @@ const SelectGame = (props) => {
         onChange={handleChange}
         label="Id do jogo"
       >
-        {allQuizes.map((quiz, index) => (
+        {allGames.map((game, index) => (
           <MenuItem
             key={index}
             value={index}
             component={Link}
-            to={`${url}/${quiz._id}`}
+            to={`${url}/${game.game_ref_name}/${game._id}`}
           >
-            {quiz.title}
+            {`${game.game_ref_name} - ${game.title}`}
           </MenuItem>
         ))}
       </Select>

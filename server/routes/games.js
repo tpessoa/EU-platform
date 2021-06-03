@@ -3,6 +3,15 @@ const router = require("express").Router();
 const Games = require("../models/games.model");
 const Statistics = require("../models/statistics.model");
 
+router.get("/all-games", async (req, res) => {
+  try {
+    const games = await Games.find();
+    res.send(games);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
 router.get("/type/:ref", async (req, res) => {
   try {
     const games = await Games.find({ game_ref_name: req.params.ref });
@@ -106,6 +115,22 @@ router.post("/statistics-game-opened", async (req, res) => {
       game_id: req.body.gameId,
     });
     gameStats.num_opened++;
+    await gameStats.save();
+    res.send(gameStats);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+router.post("/statistics-game-finished", async (req, res) => {
+  try {
+    const gameStats = await Statistics.findOne({
+      game_id: req.body.gameId,
+    });
+    gameStats.num_finished++;
+    if (req.body.win) gameStats.num_wins++;
+    if (req.body.timer) gameStats.user_time_arr.push(req.body.timer);
+
     await gameStats.save();
     res.send(gameStats);
   } catch (e) {

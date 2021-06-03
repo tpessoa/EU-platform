@@ -1,6 +1,16 @@
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import axios from "axios";
 
+const getAllGames = async () => {
+  const { data } = await axios.get(`/api/games/all-games`);
+  return data;
+};
+export const useAllGames = (gameType) => {
+  return useQuery(["allGames"], () => getAllGames(), {
+    refetchOnWindowFocus: false,
+  });
+};
+
 const getGames = async (gameType) => {
   const { data } = await axios.get(`/api/games/type/${gameType}`);
   return data;
