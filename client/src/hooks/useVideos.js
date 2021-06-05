@@ -50,3 +50,13 @@ export const useVideo = (videoId, flag) => {
     enabled: flag,
   });
 };
+
+const getVideos = async () => {
+  const { data } = await axios.get(`/api/videos/all-videos`);
+  return data;
+};
+export const useVideos = () => {
+  return useQuery(["videos"], () => getVideos(), {
+    refetchOnWindowFocus: false,
+  });
+};

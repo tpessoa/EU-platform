@@ -15,6 +15,11 @@ const theme = createMuiTheme({
       mainGradient: "linear-gradient(to right,  #2a5298, #1e3c72)",
       mainGradient: "-webkit-linear-gradient(to right,  #2a5298, #1e3c72)",
     },
+    secondary: {
+      main: "#fbb034",
+      mainGradient: "linear-gradient(315deg, #fbb034 0%, #ffdd00 74%);",
+      mainGradient: "-webkit-linear-gradient(315deg, #fbb034 0%, #ffdd00 74%)",
+    },
   },
   ptPT,
 });

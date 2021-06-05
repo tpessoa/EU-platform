@@ -15,6 +15,19 @@ router.get("/all-categories", async (req, res) => {
 });
 
 /**
+ * get all videos
+ */
+router.get("/all-videos", async (req, res) => {
+  console.log("hey");
+  try {
+    const videos = await Videos.find({});
+    res.send(videos);
+  } catch (e) {
+    res.status(500).send({ message: e.message });
+  }
+});
+
+/**
  * Get specific category by id
  */
 router.get("/category/:id", async (req, res) => {

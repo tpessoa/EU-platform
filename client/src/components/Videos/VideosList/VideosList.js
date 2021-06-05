@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 import VideoCard from "../VideoCard";
 import Image from "../../UI/Image";
-import PlayVideo from "../PlayVideo";
 
 import {
   Container,
@@ -18,15 +18,10 @@ import {
   BtnWrapper,
   ShowMore,
 } from "./VideosList.elements";
+import { Button } from "@material-ui/core";
 
 const VideosList = (props) => {
-  const {
-    categoryData,
-    categoryVideos,
-    reverse,
-    playVideo,
-    scrollCatId,
-  } = props;
+  const { categoryData, categoryVideos } = props;
   const { title, thumbnail } = categoryData;
 
   const dir_r = -1,
@@ -67,71 +62,52 @@ const VideosList = (props) => {
 
   return (
     <>
-      <div id={"catId_" + categoryData._id}>
-        <Container lightBg={reverse} reverse={reverse}>
-          <InfoWrapper>
-            <Title>
-              <h1>{title}</h1>
-            </Title>
-            <ImgWrapper>
-              <Image imgObj={thumbnail} />
-            </ImgWrapper>
-          </InfoWrapper>
-          <ScrollContainer>
-            <Slide>
-              {reverse ? (
-                <DisableArrow disableArrow={disableArrowRight}>
-                  <FaChevronRight onClick={() => handleClick(dir_r)} />
-                </DisableArrow>
-              ) : (
-                <DisableArrow disableArrow={disableArrowLeft}>
-                  <FaChevronLeft onClick={() => handleClick(dir_l)} />
-                </DisableArrow>
-              )}
-            </Slide>
-            <VideosWrapper reverse={reverse}>
-              {categoryVideos.map((video, index) => {
-                return (
-                  <VideoCard
-                    key={index}
-                    src={video.url}
-                    category={video.category_id}
-                    left={left}
-                    gallery={false}
-                  />
-                );
-              })}
-            </VideosWrapper>
-            <Slide>
-              {reverse ? (
-                <DisableArrow disableArrow={disableArrowLeft}>
-                  <FaChevronLeft onClick={() => handleClick(dir_l)} />
-                </DisableArrow>
-              ) : (
-                <DisableArrow disableArrow={disableArrowRight}>
-                  <FaChevronRight onClick={() => handleClick(dir_r)} />
-                </DisableArrow>
-              )}
-            </Slide>
-          </ScrollContainer>
-          <BtnWrapper>
-            <ShowMore
-              to={{
-                pathname: `/videos/category`,
-                search: `?id=${categoryData._id}`,
-              }}
-              // id={"scrollToVideoPlayer_" + categoryData._id}
-            >
-              Ver Todos
-            </ShowMore>
-          </BtnWrapper>
-        </Container>
-        {playVideo && (
-          <VideoWrapper>
-            <PlayVideo videoURL={playVideo.url} />
-          </VideoWrapper>
-        )}
-      </div>
+      <Container>
+        <InfoWrapper>
+          <Title>
+            <h1>{title}</h1>
+          </Title>
+          <ImgWrapper>
+            <Image imgObj={thumbnail} />
+          </ImgWrapper>
+        </InfoWrapper>
+        <ScrollContainer>
+          <Slide>
+            <DisableArrow disableArrow={disableArrowLeft}>
+              <FaChevronLeft onClick={() => handleClick(dir_l)} />
+            </DisableArrow>
+          </Slide>
+          <VideosWrapper>
+            {categoryVideos.map((video, index) => (
+              <VideoCard
+                key={index}
+                videoObj={video}
+                left={left}
+                gallery={false}
+              />
+            ))}
+          </VideosWrapper>
+          <Slide>
+            <DisableArrow disableArrow={disableArrowRight}>
+              <FaChevronRight onClick={() => handleClick(dir_r)} />
+            </DisableArrow>
+          </Slide>
+        </ScrollContainer>
+        <BtnWrapper>
+          <Button
+            style={{ color: "white" }}
+            variant="contained"
+            color="secondary"
+            component={Link}
+            to={{
+              pathname: `/videos/category`,
+              search: `?id=${categoryData._id}`,
+            }}
+          >
+            Ver Todos
+          </Button>
+        </BtnWrapper>
+      </Container>
     </>
   );
 };

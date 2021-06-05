@@ -19,56 +19,60 @@ import {
   VideosWrapper,
 } from "./VideoGallery.elements";
 import PlayVideo from "../PlayVideo";
+import { useCategory, useCategoryVideos } from "../../../hooks/useVideos";
 
 const VideoGallery = ({ props }) => {
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const catId = query.get("id");
-  const videoId = query.get("videoId");
+  const videoYtId = query.get("videoId");
 
   const [playVideo, setPlayVideo] = useState(null);
 
-  const {
-    isLoading: isLoadingVideos,
-    error: errorVideos,
-    data: dataVideos,
-  } = useQuery("videos", () => axios(`/api/videos/${catId}`));
-  const {
-    isLoading: isLoadingCat,
-    error: errorCat,
-    data: dataCat,
-  } = useQuery("category", () => axios(`/api/videos/categories/${catId}`));
+  useEffect(() => {
+    setPlayVideo(videoYtId);
+  }, [videoYtId]);
 
-  if (isLoadingVideos || isLoadingCat) return <Loading />;
-  if (errorVideos || errorCat) return <Error error={errorCat} />;
+  const categoryInfo = useCategory(catId, true);
+  const videosInCat = useCategoryVideos(catId, true);
+
+  if (categoryInfo.isLoading || videosInCat.isLoading) return <Loading />;
+  if (categoryInfo.isError || videosInCat.isError)
+    return <Error error={categoryInfo.error} />;
+
+  let videoObj = null;
+  if (playVideo) {
+    for (const video of videosInCat.data) {
+      if (video.url.includes(videoYtId)) {
+        videoObj = video;
+      }
+    }
+  }
 
   return (
     <>
       <InfoWrapper>
-        <Title>{dataCat.data.title}</Title>
-        <Description>{dataCat.data.description}</Description>
+        <Title>{categoryInfo.data.title}</Title>
+        <Description>{categoryInfo.data.description}</Description>
         <ImgWrapper>
-          <Image imgObj={dataCat.data.thumbnail} />
+          <Image imgObj={categoryInfo.data.thumbnail} />
         </ImgWrapper>
       </InfoWrapper>
       <VideosContainer>
         <VideosWrapper>
-          {dataVideos.data.map((video, index) => {
+          {videosInCat.data.map((video, index) => {
             return (
               <VideoCard
                 key={index}
-                src={video.url}
+                videoObj={video}
                 left={false}
-                category={video.category_id}
                 gallery={true}
-                setVideo={setPlayVideo}
               />
             );
           })}
         </VideosWrapper>
       </VideosContainer>
-      {playVideo && <PlayVideo videoURL={playVideo} />}
-      <div id={"scrollToVideoPlayer_" + catId}></div>
+      {videoObj && <PlayVideo videoURL={videoObj.url} />}
     </>
   );
 };

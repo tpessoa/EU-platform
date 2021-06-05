@@ -5,8 +5,10 @@ import { getVideoIDByURL } from "../../../globalFuncUtils";
 import { FaYoutube } from "react-icons/fa";
 import { Container, ImgWrapper, YoutubeIcon, Img } from "./VideoCard.elements";
 
-const VideoCard = ({ src, left, category, gallery, setVideo }) => {
-  const video_id = getVideoIDByURL(src);
+const VideoCard = (props) => {
+  const { videoObj, left, gallery, setVideo } = props;
+  const { src, url, category_id } = videoObj;
+  const video_id = getVideoIDByURL(url);
   const video_thumbnail_url = `https://img.youtube.com/vi/${video_id}/sddefault.jpg`;
 
   const [hover, setHover] = useState(false);
@@ -19,10 +21,9 @@ const VideoCard = ({ src, left, category, gallery, setVideo }) => {
   if (gallery) {
     typeOfPage = (
       <YoutubeIcon
-        onClick={() => setVideo(src)}
         to={{
           pathname: `/videos/category`,
-          search: `?id=${category}&videoId=${video_id}`,
+          search: `?id=${category_id}&videoId=${video_id}`,
         }}
       >
         <FaYoutube />
@@ -33,7 +34,7 @@ const VideoCard = ({ src, left, category, gallery, setVideo }) => {
       <YoutubeIcon
         to={{
           pathname: `/videos`,
-          search: `?catId=${category}&videoId=${video_id}`,
+          search: `videoId=${video_id}`,
         }}
       >
         <FaYoutube />
@@ -42,33 +43,26 @@ const VideoCard = ({ src, left, category, gallery, setVideo }) => {
   }
 
   return (
-    <>
+    <LinkScroll
+      to="scrollToFooter"
+      smooth={true}
+      delay={0}
+      duration={2000}
+      offset={-80}
+    >
       {video_id && (
-        <LinkScroll
-          // to={"categoryVideoPlayer_" + category}
-          to={"catId_" + category}
-          smooth={true}
-          // delay={100}
-          // duration={1000}
-          // offset={-420}
+        <Container
+          left={left}
+          onMouseEnter={hoverActiveHandler}
+          onMouseLeave={hoverActiveHandler}
         >
-          <Container
-            left={left}
-            onMouseEnter={hoverActiveHandler}
-            onMouseLeave={hoverActiveHandler}
-          >
-            <ImgWrapper>
-              <Img
-                src={video_thumbnail_url}
-                activeFlag={hover}
-                alt={video_id}
-              />
-            </ImgWrapper>
-            {hover && typeOfPage}
-          </Container>
-        </LinkScroll>
+          <ImgWrapper>
+            <Img src={video_thumbnail_url} activeFlag={hover} alt={video_id} />
+          </ImgWrapper>
+          {hover && typeOfPage}
+        </Container>
       )}
-    </>
+    </LinkScroll>
   );
 };
 

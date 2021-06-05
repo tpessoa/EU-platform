@@ -2,8 +2,12 @@ export const getVideoIDByURL = (videoURL) => {
   const splitLinkArr = videoURL.split("/");
   if (splitLinkArr.length === 4) {
     const watch = splitLinkArr[3].split("?v=");
-    const id = watch[1];
-
+    let id = watch[1];
+    // verify if URL has time
+    const time = id.split("&t=");
+    if (time.length > 1) {
+      id = time[0];
+    }
     return id;
   }
   return null;

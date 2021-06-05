@@ -5,47 +5,59 @@ import styled from "styled-components";
 import { getEmbedURL, getVideoIDByURL } from "../../../globalFuncUtils";
 
 import VideosList from "../VideosList";
+import PlayVideo from "../PlayVideo";
+import { useVideo, useVideos } from "../../../hooks/useVideos";
+import Loading from "../../UI/Loading";
+import Error from "../../UI/Error";
 
 const VideosGenerator = (props) => {
   const { categoriesData } = props;
+  const allVideos = useVideos();
+
   const { search } = useLocation();
   const query = new URLSearchParams(search);
-  const catId = query.get("catId");
-  const videoId = query.get("videoId");
-
-  const [selectedVideo, setSelectedVideo] = useState(null);
+  const videoYtId = query.get("videoId");
+  const [selectedVideo, setSelectedVideo] = useState(videoYtId);
 
   useEffect(() => {
-    setSelectedVideo({ catId: catId, videoId: videoId });
-  }, [catId && videoId]);
+    setSelectedVideo(videoYtId);
+  }, [videoYtId != null]);
+
+  if (allVideos.isLoading) return <Loading />;
+  if (allVideos.error) return <Error error={allVideos.error} />;
+
+  let videoObj = null;
+  if (selectedVideo) {
+    for (const video of allVideos.data) {
+      if (video.url.includes(videoYtId)) {
+        videoObj = video;
+      }
+    }
+  }
 
   return (
     <>
-      {categoriesData.map((cat, index) => {
-        let videoPlayInfo = null;
-        if (selectedVideo && selectedVideo.catId === cat.categoryData._id) {
-          videoPlayInfo = cat.categoryVideos.find(
-            (video) => getVideoIDByURL(video.url) === selectedVideo.videoId
-          );
-        }
-
-        return (
-          // <div id={"scrollToVideoCategory_" + cat.categoryData._id}>
-          <VideosList
-            key={index}
-            categoryData={cat.categoryData}
-            categoryVideos={cat.categoryVideos}
-            // reverse={index % 2 !== 0}
-            reverse={false}
-            playVideo={videoPlayInfo}
-            scrollCatId={index}
-            // nextCategoryScrollId
-          />
-          // </div>
-        );
-      })}
+      {categoriesData.map((cat, index) => (
+        <VideosList
+          key={index}
+          categoryData={cat.categoryData}
+          categoryVideos={cat.categoryVideos}
+        />
+      ))}
+      {videoObj && (
+        <VideoWrapper>
+          <PlayVideo videoURL={videoObj.url} />
+        </VideoWrapper>
+      )}
     </>
   );
 };
 
 export default VideosGenerator;
+
+const VideoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+`;
