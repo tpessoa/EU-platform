@@ -35,6 +35,13 @@ const FeedbackAnswer = (props) => {
   console.log(userCountry);
   console.log(rightCountry);
 
+  let errorMessage = "";
+  if (userCountry === "outside") {
+    errorMessage = `Errado! Clicaste num país fora da União Europeia`;
+  } else {
+    errorMessage = `Errado! Clicaste em ${userCountry}`;
+  }
+
   return (
     <div className={classes.root}>
       {/* <Button variant="outlined" onClick={handleClick}>
@@ -43,11 +50,11 @@ const FeedbackAnswer = (props) => {
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         {userAnswer === true ? (
           <Alert onClose={handleClose} severity="success">
-            This is a success message!
+            Parabéns! Clicaste no país correto
           </Alert>
         ) : (
           <Alert onClose={handleClose} severity="error">
-            This is an error message!
+            {errorMessage}
           </Alert>
         )}
       </Snackbar>

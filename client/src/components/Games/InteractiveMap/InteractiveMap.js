@@ -71,15 +71,13 @@ const Container = styled.div`
   justify-content: center;
   flex-direction: column;
   position: relative;
-  margin: 2rem 0 2rem 0;
 `;
 
 const SelectQuestionWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: -2.5rem;
+  margin: 2rem;
 `;
 
 const MainGameWrapper = styled.div`
@@ -114,8 +112,7 @@ const QuestionWrapper = styled.div`
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 5rem;
-  left: 1rem;
+  top: 7rem;
 `;
 
 const FeedbackWrapper = styled.div`

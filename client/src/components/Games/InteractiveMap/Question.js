@@ -6,6 +6,8 @@ import FaceIcon from "@material-ui/icons/Face";
 import DoneIcon from "@material-ui/icons/Done";
 import NotListedLocationIcon from "@material-ui/icons/NotListedLocation";
 import Paper from "@material-ui/core/Paper";
+import MouseIcon from "@material-ui/icons/Mouse";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,9 +18,13 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(0.5),
     },
   },
-  question: {
+  container: {
     padding: theme.spacing(2),
     background: "#cad470",
+    textAlign: "center",
+  },
+  countryClick: {
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -28,14 +34,24 @@ const Question = (props) => {
 
   return (
     <>
-      {/* <Chip
-        icon={<NotListedLocationIcon />}
-        label={question}
-        clickable
-        color="primary"
-        variant="outlined"
-      /> */}
-      <Paper className={classes.question}>{question}</Paper>
+      <Paper className={classes.container}>
+        <Typography
+          className={classes.question}
+          variant="h5"
+          component="h2"
+          color="primary"
+        >
+          {question}
+        </Typography>
+        <Chip
+          className={classes.countryClick}
+          icon={<MouseIcon />}
+          label="Clica no país"
+          variant="outlined"
+          color="primary"
+          deleteIcon={<DoneIcon />}
+        />
+      </Paper>
     </>
   );
 };

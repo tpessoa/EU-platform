@@ -1,3 +1,4 @@
+import { Paper } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import {
   ComposableMap,
