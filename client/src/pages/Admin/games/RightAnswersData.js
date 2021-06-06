@@ -9,7 +9,7 @@ const CountriesArr = [
   "Estónia",
   "Finlândia",
   "França",
-  "Aleamanha",
+  "Alemanha",
   "Grécia",
   "Hungria",
   "Irlanda",

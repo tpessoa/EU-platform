@@ -6,7 +6,7 @@ import { FaYoutube } from "react-icons/fa";
 import { Container, ImgWrapper, YoutubeIcon, Img } from "./VideoCard.elements";
 
 const VideoCard = (props) => {
-  const { videoObj, left, gallery, setVideo } = props;
+  const { videoObj, left, gallery } = props;
   const { src, url, category_id } = videoObj;
   const video_id = getVideoIDByURL(url);
   const video_thumbnail_url = `https://img.youtube.com/vi/${video_id}/sddefault.jpg`;

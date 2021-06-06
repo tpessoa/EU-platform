@@ -8,6 +8,7 @@ import {
 import styled from "styled-components";
 
 import { countriesData } from "../../../pages/Admin/games/RightAnswersData";
+import FeedbackAnswer from "./FeedbackAnswer";
 
 const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
@@ -72,14 +73,25 @@ const colorPickingCountry = {
 };
 
 const MapChart = (props) => {
-  const { setCountry, currQuestion } = props;
+  const { currQuestion } = props;
   let mapState;
 
-  const [userPickedCountry, setUserPickedCountry] = useState(null);
-  const [userRight, setUserRight] = useState(null);
+  // const [userPickedCountry, setUserPickedCountry] = useState(null);
+  // const [userRight, setUserRight] = useState(null);
+  // const [country, setCountry] = useState(null);
+
+  const [userData, setUserData] = useState({
+    pickedCountryCode: null,
+    countryName: null,
+    userRight: null,
+  });
+
   useEffect(() => {
-    setUserPickedCountry(null);
-    setUserRight(null);
+    setUserData({
+      pickedCountryCode: null,
+      countryName: null,
+      userRight: null,
+    });
   }, [currQuestion]);
 
   const userPickHandler = (country) => {
@@ -89,21 +101,25 @@ const MapChart = (props) => {
     );
     // check if the country belongs to EU
     if (!userCountryNamePT) {
-      setUserPickedCountry(country);
-      setCountry("outside");
-      setUserRight(false);
+      setUserData({
+        pickedCountryCode: country,
+        countryName: "outside",
+        userRight: false,
+      });
       return;
     }
 
-    setUserPickedCountry(country);
-    setCountry(userCountryNamePT.country);
-
+    let userRightFlag = false;
     // verify answer
     if (rightAnswerObj.code === country) {
-      setUserRight(true);
-    } else {
-      setUserRight(false);
+      userRightFlag = true;
     }
+    setUserData({
+      pickedCountryCode: country,
+      countryName: userCountryNamePT.country,
+      userRight: userRightFlag,
+    });
+
     // paint the countires by user's pick
   };
 
@@ -125,12 +141,12 @@ const MapChart = (props) => {
               // user needs to activate the game by pressing the button random question
               if (currQuestion) {
                 // when the game is active
-                if (!userPickedCountry) {
+                if (!userData.pickedCountryCode) {
                   mapState = colorPickingCountry;
                 }
                 // verify if the country picked by the use is this obj "geo"
-                else if (userPickedCountry === ISO_A3) {
-                  if (userRight) {
+                else if (userData.pickedCountryCode === ISO_A3) {
+                  if (userData.userRight) {
                     mapState = colorRightAnswer;
                   } else {
                     mapState = colorWrongAnswer;
@@ -158,7 +174,7 @@ const MapChart = (props) => {
                   // onMouseLeave={() => {}}
                   onMouseDown={() => {
                     // if there's already a question picked by the user
-                    if (currQuestion && !userPickedCountry) {
+                    if (currQuestion && !userData.pickedCountryCode) {
                       userPickHandler(ISO_A3);
                     }
                   }}
@@ -169,6 +185,16 @@ const MapChart = (props) => {
           }
         </Geographies>
       </ComposableMap>
+      <FeedbackWrapper>
+        {userData.userRight != null && (
+          <FeedbackAnswer
+            userAnswer={userData.userRight}
+            question={currQuestion}
+            userCountry={userData.countryName}
+            rightCountry={countriesData[currQuestion.right_answer].country}
+          />
+        )}
+      </FeedbackWrapper>
     </Container>
   );
 };
@@ -182,4 +208,10 @@ const Container = styled.div`
   flex-direction: column;
   width: 100%;
   margin: 0.5rem;
+  position: relative;
+`;
+
+const FeedbackWrapper = styled.div`
+  position: absolute;
+  bottom: 0;
 `;
