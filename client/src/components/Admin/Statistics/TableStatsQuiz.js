@@ -225,8 +225,8 @@ const TableStatsQuiz = (props) => {
           )}
         </Table>
       </TableContainer>
-      <p>Número de jogos abertos {gameData.num_opened}</p>
-      <p>Número de jogos finalizados {gameData.num_finished}</p>
+      <p>Número de jogos abertos: {gameData?.num_opened}</p>
+      <p>Número de jogos finalizados: {gameData?.num_finished}</p>
       <br></br>
       <Button
         variant="contained"

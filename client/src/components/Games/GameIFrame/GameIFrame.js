@@ -8,7 +8,10 @@ import CrossWords from "../CrossWords";
 
 import "./game.css";
 
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
+import { useGame } from "../../../hooks/useGames";
+import Loading from "../../UI/Loading";
+import Error from "../../UI/Error";
 
 const GameIFrame = () => {
   const { game } = useParams();
@@ -16,15 +19,12 @@ const GameIFrame = () => {
   const query = new URLSearchParams(search);
   const gameId = query.get("id");
   const dir = "games";
-
   const [gameLink, setGameLink] = useState(null);
   const handle = useFullScreenHandle();
 
   useEffect(() => {
     setGameLink(`/api/${dir}/${game}/game.html?id=${gameId}`);
   }, [gameId || game]);
-
-  // console.log(gameLink);
 
   if (game === "interactiveMaps") {
     return <InteractiveMap />;
@@ -45,17 +45,34 @@ const GameIFrame = () => {
     );
   }
 
+  // let displayDifficulty = "Difícil";
+  // if (gameInfo.data.difficulty === 0) {
+  //   displayDifficulty = "Fácil";
+  // } else if (gameInfo.data.difficulty === 1) {
+  //   displayDifficulty = "Média";
+  // }
+
   return (
-    <GameContainer>
-      <FullScreenWrapper>
-        <Button variant="contained" color="secondary" onClick={handle.enter}>
-          Ecrã Inteiro
-        </Button>
-      </FullScreenWrapper>
-      <GameWrapper>
-        <FullScreen handle={handle}>{displayGame}</FullScreen>
-      </GameWrapper>
-    </GameContainer>
+    <>
+      <GameContainer>
+        <FullScreenWrapper>
+          <Button variant="contained" color="secondary" onClick={handle.enter}>
+            Ecrã Inteiro
+          </Button>
+        </FullScreenWrapper>
+        <GameWrapper>
+          <FullScreen handle={handle}>{displayGame}</FullScreen>
+        </GameWrapper>
+      </GameContainer>
+      {/* <InfoWrapper>
+        <Typography variant="subtitle1" gutterBottom>
+          Descrição: {gameInfo.data.description}
+        </Typography>
+        <Typography variant="subtitle1" gutterBottom>
+          Dificuldade: {displayDifficulty}
+        </Typography>
+      </InfoWrapper> */}
+    </>
   );
 };
 
@@ -94,6 +111,14 @@ const GameContainer = styled.div`
   justify-content: center;
   flex-direction: column;
   background: #fff;
-  height: 60vh;
+  height: 80vh;
   width: 100%;
+`;
+
+const InfoWrapper = styled.div`
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-left: 1rem;
 `;

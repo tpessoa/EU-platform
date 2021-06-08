@@ -1,6 +1,7 @@
 export const gameObj = {
   title: "",
   description: "",
+  difficulty: 0,
   thumbnail: {
     id: "defaultImage",
     path: "",
@@ -13,7 +14,7 @@ export const gameObj = {
 export const puzzleObj = {
   game_ref_name: "puzzle",
   config: {
-    pieces_size: "",
+    pieces_size: 0,
     background_puzzle_image: true,
     piece_position_helper: true,
     move_pieces_freely: true,
@@ -33,7 +34,7 @@ export const colorGameObj = {
   game_ref_name: "colorGame",
   config: {
     colors: [],
-    sensibility: 50,
+    sensibility: 0,
   },
   assets: {
     colored_img: {

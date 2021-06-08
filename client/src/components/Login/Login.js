@@ -59,7 +59,7 @@ const Login = (props) => {
     const res = mutation.data.data;
     if (res.token) {
       localStorage.setItem("token", res.token);
-      return <Redirect to="/admin" />;
+      return <Redirect to="/admin/content" />;
     }
     displaySave = <p>{res.message}</p>;
   }

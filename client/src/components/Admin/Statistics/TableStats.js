@@ -77,8 +77,12 @@ const TableStats = (props) => {
   const rows = [];
 
   if (gameData) {
-    const wins_perc = gameData.num_wins / gameData.num_finished;
     const defeat = gameData.num_finished - gameData.num_wins;
+    const wins_perc = gameData.num_wins / gameData.num_finished;
+    const mean_time =
+      gameData.user_time_arr.reduce((p, c) => parseInt(p) + parseInt(c), 0) /
+      gameData.user_time_arr.length;
+
     rows.push(
       createData(
         gameData.num_opened,
@@ -86,8 +90,7 @@ const TableStats = (props) => {
         gameData.num_wins,
         defeat,
         wins_perc,
-        gameData.user_time_arr.reduce((p, c) => p + c, 0) /
-          gameData.user_time_arr.length
+        mean_time
       )
     );
   }

@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const fs = require("fs");
 let Work = require("../models/work.model");
 let Poll = require("../models/poll.model");
 const bcrypt = require("bcryptjs");
@@ -7,6 +8,18 @@ const saltRounds = 10;
 router.route("/").get((req, res) => {
   res.send("JOGOS");
 });
+
+const deleteFile = (path) => {
+  // check if file exists
+  fs.access(path, (err) => {
+    if (!err) {
+      fs.unlinkSync(path);
+      console.log("image deleted");
+      return true;
+    }
+    return false;
+  });
+};
 
 /**
  * POLLS
@@ -59,15 +72,18 @@ router.post("/save-poll", async (req, res) => {
 router.delete("/delete-poll/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    Poll.findOneAndDelete({ _id: id }, function (err, result) {
+
+    Poll.findById(id, async function (err, result) {
       if (err) {
         res.send(err);
       } else {
-        res.send(result);
+        // delete poll thumbnail
+        deleteFile(result.thumbnail.server_path);
+
+        await Poll.findOneAndDelete({ _id: result._id });
+        res.send("Categoria eliminado com sucesso");
       }
     });
-    // delete works
-    // delete image in server
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
@@ -136,14 +152,17 @@ router.delete("/delete-work/:id", async (req, res) => {
   try {
     const { id } = req.params;
     console.log(id);
-    Work.findOneAndDelete({ _id: id }, function (err, result) {
+
+    Work.findById(id, async function (err, result) {
       if (err) {
         res.send(err);
       } else {
-        res.send(result);
+        // delete image
+        deleteFile(result.photo.server_path);
+        await Work.findOneAndDelete({ _id: result._id });
+        res.send("trabalho eliminado com sucesso");
       }
     });
-    // delete image
   } catch (e) {
     res.status(500).send({ message: e.message });
   }

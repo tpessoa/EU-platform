@@ -10,12 +10,13 @@ import {
 } from "./games.schemas";
 
 export const getDefValues = (game, fields) => {
-  const { title, description, config, assets } = fields;
+  const { title, description, difficulty, config, assets } = fields;
   let defValues = {};
   if (game === "puzzle") {
     defValues = {
       title: title,
       description: description,
+      difficulty: difficulty,
       config: {
         timer: config.timer,
         time_to_complete: config.time_to_complete,
@@ -30,6 +31,7 @@ export const getDefValues = (game, fields) => {
     defValues = {
       title: title,
       description: description,
+      difficulty: difficulty,
       config: {
         colors: config.colors,
         sensibility: config.sensibility,
@@ -43,6 +45,7 @@ export const getDefValues = (game, fields) => {
     defValues = {
       title: title,
       description: description,
+      difficulty: difficulty,
       config: {
         words: config.words,
         directions: config.directions,
@@ -56,6 +59,7 @@ export const getDefValues = (game, fields) => {
     defValues = {
       title: title,
       description: description,
+      difficulty: difficulty,
       config: {
         questions: config.questions,
         timer: config.timer,
@@ -66,6 +70,7 @@ export const getDefValues = (game, fields) => {
     defValues = {
       title: title,
       description: description,
+      difficulty: difficulty,
       config: {
         destroy_card: config.destroy_card,
         turn_speed: config.turn_speed,
@@ -82,6 +87,7 @@ export const getDefValues = (game, fields) => {
     defValues = {
       title: title,
       description: description,
+      difficulty: difficulty,
       config: {
         questions: config.questions,
       },
@@ -90,6 +96,7 @@ export const getDefValues = (game, fields) => {
     defValues = {
       title: title,
       description: description,
+      difficulty: difficulty,
       config: {
         crossword_data: {
           across: config.crossword_data.across,

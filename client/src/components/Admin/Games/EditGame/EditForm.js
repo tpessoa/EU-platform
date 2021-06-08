@@ -17,6 +17,7 @@ import MainContainer from "../../../Form/MainContainer";
 import Input from "../../../Form/Input";
 import UploadImage from "../../../Form/UploadImage";
 import SaveButton from "../../../Form/PrimaryButton";
+import Select from "../../../Form/SelectInput";
 import { Typography, MenuItem } from "@material-ui/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -26,6 +27,8 @@ import { getDefValues, getSchemas } from "./games.getData";
 import EditInteractiveMaps from "./InteractiveMaps/EditInteractiveMaps";
 import EditCrossWords from "./CrossWords/EditCrossWords";
 import EditColorGame from "./ColorGame/EditColorGame";
+
+const difficulty_arr = ["Fácil", "Médio", "Difícil"];
 
 const EditForm = (props) => {
   const history = useHistory();
@@ -250,6 +253,26 @@ const EditForm = (props) => {
           multiline
           error={!!errors.description}
           helperText={errors?.description?.message}
+        />
+        <Controller
+          name="difficulty"
+          control={control}
+          defaultValue={false}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <Select
+              label="Dificuldade"
+              {...field}
+              error={!!errors.config?.pieces_size}
+              helper={"Este campo é obrigatório"}
+            >
+              {difficulty_arr.map((size, index) => (
+                <MenuItem key={index} value={index}>
+                  {size}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
         />
         <UploadImage
           {...register("thumbnail")}

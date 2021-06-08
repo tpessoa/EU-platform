@@ -1,18 +1,33 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
+
+import { makeStyles } from "@material-ui/core/styles";
 
 import Button from "@material-ui/core/Button";
 
+const useStyles = makeStyles((theme) => ({
+  add: {
+    background: theme.palette.success.dark,
+    color: "#fff",
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(4),
+
+    "&:hover": {
+      background: theme.palette.success.main,
+    },
+  },
+}));
+
 const Add = (props) => {
   const { url, objId, search } = props;
+  const classes = useStyles();
 
   let displayBtn = "";
   if (search) {
     displayBtn = (
-      <AddButton
+      <Button
         variant="contained"
-        color="primary"
+        className={classes.add}
         component={Link}
         to={{
           pathname: url,
@@ -20,18 +35,18 @@ const Add = (props) => {
         }}
       >
         {props.children}
-      </AddButton>
+      </Button>
     );
   } else {
     displayBtn = (
-      <AddButton
+      <Button
         variant="contained"
-        color="primary"
+        className={classes.add}
         component={Link}
         to={`${url}/${objId}`}
       >
         {props.children}
-      </AddButton>
+      </Button>
     );
   }
 
@@ -39,15 +54,3 @@ const Add = (props) => {
 };
 
 export default Add;
-
-const AddButton = styled(Button)`
-  && {
-    font-size: 0.75rem;
-    background-color: #00a531;
-    margin: 2rem;
-
-    &:hover {
-      background-color: #045222;
-    }
-  }
-`;

@@ -19,6 +19,7 @@ export const setCreateNew = (value) => (createNew = value);
 export const schemaPuzzle = yup.object().shape({
   title: yup.string().required(),
   description: yup.string().required(),
+  difficulty: yup.number().required(),
   thumbnail: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
   config: yup.object().shape({
     pieces_size: yup.number().required(),
@@ -45,6 +46,7 @@ export const schemaPuzzle = yup.object().shape({
 export const schemaColorGame = yup.object().shape({
   title: yup.string().required(),
   description: yup.string().required(),
+  difficulty: yup.number().required(),
   thumbnail: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
   config: yup.object().shape({
     colors: yup
@@ -67,6 +69,7 @@ export const schemaColorGame = yup.object().shape({
 export const schemaWordSearch = yup.object().shape({
   title: yup.string().required(),
   description: yup.string().required(),
+  difficulty: yup.number().required(),
   thumbnail: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
   config: yup.object().shape({
     words: yup
@@ -97,6 +100,7 @@ export const schemaWordSearch = yup.object().shape({
 export const schemaQuiz = yup.object().shape({
   title: yup.string().required(),
   description: yup.string().required(),
+  difficulty: yup.number().required(),
   thumbnail: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
   config: yup.object().shape({
     questions: yup
@@ -131,6 +135,7 @@ export const schemaQuiz = yup.object().shape({
 export const schemaMemory = yup.object().shape({
   title: yup.string().required(),
   description: yup.string().required(),
+  difficulty: yup.number().required(),
   thumbnail: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
   config: yup.object().shape({
     destroy_card: yup.bool(),
@@ -157,6 +162,7 @@ export const schemaMemory = yup.object().shape({
 export const schemaInteractiveMaps = yup.object().shape({
   title: yup.string().required(),
   description: yup.string().required(),
+  difficulty: yup.number().required(),
   thumbnail: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
   config: yup.object().shape({
     questions: yup
@@ -176,6 +182,7 @@ export const schemaInteractiveMaps = yup.object().shape({
 export const schemaCrossWords = yup.object().shape({
   title: yup.string().required(),
   description: yup.string().required(),
+  difficulty: yup.number().required(),
   thumbnail: createNew ? getRequiredFileSchema() : getOptionalFileSchema(),
   config: yup.object().shape({
     crossword_data: yup.object().shape({

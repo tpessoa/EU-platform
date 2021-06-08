@@ -2,6 +2,19 @@ const router = require("express").Router();
 
 const Games = require("../models/games.model");
 const Statistics = require("../models/statistics.model");
+const fs = require("fs");
+
+const deleteFile = (path) => {
+  // check if file exists
+  fs.access(path, (err) => {
+    if (!err) {
+      fs.unlinkSync(path);
+      console.log("image deleted");
+      return true;
+    }
+    return false;
+  });
+};
 
 router.get("/all-games", async (req, res) => {
   try {
@@ -63,15 +76,34 @@ router.post("/save-game", async (req, res) => {
 router.delete("/delete-game/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    Games.findOneAndDelete({ _id: id }, function (err, result) {
+    Games.findById(id, async function (err, result) {
       if (err) {
         res.send(err);
       } else {
-        res.send(result);
+        // delete game thumbnail
+        deleteFile(result.thumbnail.server_path);
+
+        // image logic
+        if (result.game_ref_name === "memory") {
+          // delete back card
+          deleteFile(result.assets.back_card.server_path);
+          // iterate pairs
+          for (const [key, value] of Object.entries(
+            result.assets.front_cards
+          )) {
+            deleteFile(value.pair.server_path);
+          }
+        } else {
+          // iterate assets
+          for (const [key, value] of Object.entries(result.assets)) {
+            deleteFile(value.server_path);
+          }
+        }
+
+        await Games.findOneAndDelete({ _id: result._id });
+        res.send("Jogo eliminado com sucesso");
       }
     });
-    // delete works
-    // delete image in server
   } catch (e) {
     res.status(500).send({ message: e.message });
   }

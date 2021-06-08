@@ -26,7 +26,7 @@ export const Img = styled.img`
 
 export const ContentWrapper = styled.div`
   text-decoration: none;
-  color: #fff;
+  color: #ffffff;
   text-align: center;
   font-size: 1.2rem;
 `;
@@ -38,12 +38,9 @@ export const ContentTop = styled.div`
   width: 100%;
   height: 3rem;
 
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
-
-  transition: all 0.5s;
-  -webkit-transition: all 0.5s;
 `;
 
 export const ContentBottom = styled.div`
@@ -123,11 +120,14 @@ export const Card = styled(Link)`
   flex-direction: column;
   position: relative;
 
-  background: #fff;
+  background: ${(props) => props.color};
   width: 300px;
   height: 220px;
 
   border-radius: 5px;
+  border: 2px solid;
+  border-color: ${(props) => props.color};
+
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);
 
   transition: all 0.5s;
@@ -144,6 +144,7 @@ export const Card = styled(Link)`
   }
 
   &:hover ${ContentTop} {
+    display: flex;
     top: 0;
     transition: all 0.5s;
     -webkit-transition: all 0.5s;

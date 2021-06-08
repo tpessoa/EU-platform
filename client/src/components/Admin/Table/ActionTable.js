@@ -17,15 +17,8 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
 const ActionTable = (props) => {
-  const {
-    rows,
-    cols,
-    editURL,
-    deleteURL,
-    fetchQuery,
-    onlineImage,
-    video,
-  } = props;
+  const { rows, cols, editURL, deleteURL, fetchQuery, onlineImage, video } =
+    props;
 
   return (
     <Container>
@@ -111,7 +104,7 @@ const Container = styled.div`
 
 const TableCustom = styled(Table)`
   && {
-    width: 80%;
+    width: 100%;
     margin: 1rem;
   }
 `;
