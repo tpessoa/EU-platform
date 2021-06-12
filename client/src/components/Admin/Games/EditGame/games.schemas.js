@@ -192,7 +192,10 @@ export const schemaCrossWords = yup.object().shape({
           yup.object().shape({
             num: yup.number().min(0, "deve ser um número positivo").required(),
             clue: yup.string().required(),
-            answer: yup.string().required(),
+            answer: yup
+              .string()
+              .uppercase("A resposta deverá ser em letras maiúsculas")
+              .required(),
             row: yup.number().min(0).required(),
             col: yup.number().min(0).required(),
           })
@@ -205,7 +208,10 @@ export const schemaCrossWords = yup.object().shape({
           yup.object().shape({
             num: yup.number().min(0, "deve ser um número positivo").required(),
             clue: yup.string().required(),
-            answer: yup.string().required(),
+            answer: yup
+              .string()
+              .uppercase("A resposta deverá ser em letras maiúsculas")
+              .required(),
             row: yup.number().min(0).required(),
             col: yup.number().min(0).required(),
           })

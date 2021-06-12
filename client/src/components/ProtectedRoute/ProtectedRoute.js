@@ -17,9 +17,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       }),
-    {
-      refetchOnWindowFocus: false,
-    }
+    { retry: false }
   );
   if (isLoading) return <Loading />;
   if (isError) return <Redirect to="/" />;

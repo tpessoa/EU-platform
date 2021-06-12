@@ -27,7 +27,9 @@ router.get("/all-games", async (req, res) => {
 
 router.get("/type/:ref", async (req, res) => {
   try {
-    const games = await Games.find({ game_ref_name: req.params.ref });
+    const games = await Games.find({ game_ref_name: req.params.ref }).sort({
+      difficulty: 1,
+    });
     res.send(games);
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -95,8 +97,10 @@ router.delete("/delete-game/:id", async (req, res) => {
           }
         } else {
           // iterate assets
-          for (const [key, value] of Object.entries(result.assets)) {
-            deleteFile(value.server_path);
+          if (result.assets) {
+            for (const [key, value] of Object.entries(result.assets)) {
+              deleteFile(value.server_path);
+            }
           }
         }
 

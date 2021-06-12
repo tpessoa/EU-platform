@@ -102,7 +102,7 @@ const EditCrossWords = (props) => {
     <>
       {displayAcross}
       <ButtonForm
-        onClick={() => across_append(emptyWord)}
+        onClick={() => across_append({ ...emptyWord })}
         error={errors?.config?.crossword_data?.across}
         helpertext={errors?.config?.crossword_data?.across?.message}
       >
@@ -110,7 +110,7 @@ const EditCrossWords = (props) => {
       </ButtonForm>
       {displayDown}
       <ButtonForm
-        onClick={() => across_append(emptyWord)}
+        onClick={() => down_append({ ...emptyWord })}
         error={errors?.config?.crossword_data?.down}
         helpertext={errors?.config?.crossword_data?.down?.message}
       >

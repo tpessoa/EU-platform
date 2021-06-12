@@ -47,7 +47,7 @@ const CrossWord = (props) => {
       </Typography>
       <Input
         {...register(`config.crossword_data.${direction}.${index}.num`)}
-        defaultValue={`${item.num}`} // make sure to set up defaultValue
+        defaultValue={`${item.num}`}
         type="number"
         label="Número da questão"
         error={!!error?.num}
@@ -55,7 +55,7 @@ const CrossWord = (props) => {
       />
       <Input
         {...register(`config.crossword_data.${direction}.${index}.clue`)}
-        defaultValue={`${item.clue}`} // make sure to set up defaultValue
+        defaultValue={`${item.clue}`}
         type="text"
         label="Pista"
         error={!!error?.clue}
@@ -63,7 +63,7 @@ const CrossWord = (props) => {
       />
       <Input
         {...register(`config.crossword_data.${direction}.${index}.answer`)}
-        defaultValue={`${item.answer}`} // make sure to set up defaultValue
+        defaultValue={`${item.answer}`}
         type="text"
         label="Resposta"
         error={!!error?.answer}
@@ -71,7 +71,7 @@ const CrossWord = (props) => {
       />
       <Input
         {...register(`config.crossword_data.${direction}.${index}.row`)}
-        defaultValue={`${item.row}`} // make sure to set up defaultValue
+        defaultValue={`${item.row}`}
         type="number"
         label="Número da linha"
         error={!!error?.row}
@@ -79,7 +79,7 @@ const CrossWord = (props) => {
       />
       <Input
         {...register(`config.crossword_data.${direction}.${index}.col`)}
-        defaultValue={`${item.col}`} // make sure to set up defaultValue
+        defaultValue={`${item.col}`}
         type="number"
         label="Número da Coluna"
         error={!!error?.col}

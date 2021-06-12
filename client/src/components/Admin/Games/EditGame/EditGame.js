@@ -24,6 +24,8 @@ const EditGame = () => {
   const fetchDataFlag = id.toString() !== "createNew";
   const game = useGame(id, fetchDataFlag);
 
+  console.log(game.data);
+
   if (game.isLoading) return <Loading />;
   if (game.isError) return <Error error={game.error} />;
 

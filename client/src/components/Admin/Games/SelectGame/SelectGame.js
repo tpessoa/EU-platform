@@ -18,6 +18,8 @@ const SelectGameType = () => {
   if (games.isLoading) return <Loading />;
   if (games.isError) return <Error error={games.error} />;
   const rows = generateRows(games.data);
+
+  console.log(games.data);
   return (
     <Container>
       <Table

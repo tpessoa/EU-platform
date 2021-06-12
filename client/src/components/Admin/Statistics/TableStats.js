@@ -206,7 +206,7 @@ const TableStats = (props) => {
         color="primary"
         onClick={() => resetStats.mutate(gameId)}
       >
-        Reset Estatísitcas
+        Reset Estatísticas
       </Button>
     </>
   );
