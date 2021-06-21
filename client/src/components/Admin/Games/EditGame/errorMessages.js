@@ -6,3 +6,7 @@ export const wordSearchWordsRequiredMsg =
 
 export const colorRequiredMsg = "Deverá escolher uma cor";
 export const colorsRequiredMsg = "Deverá inserir pelo menos 7 cores";
+
+export const geralNotEmpty = "Deve preencher este campo";
+export const geralNumCellsWordSearch =
+  "Deve inserir um número positivo entre 5 e 30";

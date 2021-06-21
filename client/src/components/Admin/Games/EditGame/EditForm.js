@@ -27,6 +27,7 @@ import { getDefValues, getSchemas } from "./games.getData";
 import EditInteractiveMaps from "./InteractiveMaps/EditInteractiveMaps";
 import EditCrossWords from "./CrossWords/EditCrossWords";
 import EditColorGame from "./ColorGame/EditColorGame";
+import { getRequiredFileSchema } from "../../../Form/data.schemas";
 
 const difficulty_arr = ["Fácil", "Médio", "Difícil"];
 
@@ -37,12 +38,8 @@ const EditForm = (props) => {
     fields;
 
   const [uploading, setUploading] = useState(false);
-  setCreateNew(createNew);
   let defVals = getDefValues(game, fields);
-  let gameSchema = getSchemas(game);
-
-  // console.log(defVals);
-  // console.log(config);
+  let gameSchema = getSchemas(createNew, game);
 
   const {
     register,
@@ -88,7 +85,6 @@ const EditForm = (props) => {
 
   const onSubmit = async (userInput) => {
     setUploading(true);
-    console.log(userInput.config.colors);
     let newUserInput = { ...userInput, game_ref_name: game_ref_name };
     if (!createNew) {
       newUserInput = {

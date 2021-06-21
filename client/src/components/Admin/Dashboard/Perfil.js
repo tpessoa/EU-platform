@@ -19,28 +19,28 @@ import * as yup from "yup";
 const Perfil = () => {
   const schema = yup.object().shape({
     username: yup.string().required("Username é obrigatório"),
-    old_password: yup
-      .string("Confirmação da Password antiga é obrigatória")
-      .test(
-        "password_async_validation",
-        "Password incorreta",
-        async (value) => {
-          let flag = false;
-          await axios({
-            method: "post",
-            url: "/api/user/user-verification",
-            data: { userId: userId, password: value },
-          }).then(
-            (res) => {
-              flag = res.data.message;
-            },
-            (error) => {
-              console.log(error);
-            }
-          );
-          return flag;
-        }
-      ),
+    // old_password: yup
+    //   .string("Confirmação da Password antiga é obrigatória")
+    //   .test(
+    //     "password_async_validation",
+    //     "Password incorreta",
+    //     async (value) => {
+    //       let flag = false;
+    //       await axios({
+    //         method: "post",
+    //         url: "/api/user/user-verification",
+    //         data: { userId: userId, password: value },
+    //       }).then(
+    //         (res) => {
+    //           flag = res.data.message;
+    //         },
+    //         (error) => {
+    //           console.log(error);
+    //         }
+    //       );
+    //       return flag;
+    //     }
+    //   ),
     new_password: yup.string().required("Password é obrigatória"),
     confir_new_password: yup
       .string()
@@ -83,7 +83,12 @@ const Perfil = () => {
 
   const userId = user?.data.id;
 
-  const { isIdle, data: userData, isSuccess, isError } = useQuery(
+  const {
+    isIdle,
+    data: userData,
+    isSuccess,
+    isError,
+  } = useQuery(
     "getUserData",
     () =>
       axios({
@@ -132,14 +137,14 @@ const Perfil = () => {
           error={!!errors.username}
           helperText={errors?.username?.message}
         />
-        <Input
+        {/* <Input
           {...register("old_password")}
           name="old_password"
           type="password"
-          label="Password Antiga"
+          label="Password Antiga" 
           error={!!errors.old_password}
           helperText={errors?.old_password?.message}
-        />
+        /> */}
         <Input
           {...register("new_password")}
           name="new_password"

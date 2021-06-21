@@ -1,12 +1,11 @@
 import {
-  setCreateNew,
-  schemaPuzzle,
-  schemaColorGame,
-  schemaWordSearch,
-  schemaQuiz,
-  schemaMemory,
-  schemaInteractiveMaps,
-  schemaCrossWords,
+  getSchemaPuzzle,
+  getSchemaColorGame,
+  getSchemaWordSearch,
+  getSchemaQuiz,
+  getSchemaMemory,
+  getSchemaInteractiveMaps,
+  getSchemaCrossWords,
 } from "./games.schemas";
 
 export const getDefValues = (game, fields) => {
@@ -108,22 +107,22 @@ export const getDefValues = (game, fields) => {
   return defValues;
 };
 
-export const getSchemas = (game) => {
+export const getSchemas = (createNew, game) => {
   let gameSchema;
   if (game === "puzzle") {
-    gameSchema = schemaPuzzle;
+    gameSchema = getSchemaPuzzle(createNew);
   } else if (game === "colorGame") {
-    gameSchema = schemaColorGame;
+    gameSchema = getSchemaColorGame(createNew);
   } else if (game === "wordSearch") {
-    gameSchema = schemaWordSearch;
+    gameSchema = getSchemaWordSearch(createNew);
   } else if (game === "quiz") {
-    gameSchema = schemaQuiz;
+    gameSchema = getSchemaQuiz(createNew);
   } else if (game === "memory") {
-    gameSchema = schemaMemory;
+    gameSchema = getSchemaMemory(createNew);
   } else if (game === "interactiveMaps") {
-    gameSchema = schemaInteractiveMaps;
+    gameSchema = getSchemaInteractiveMaps(createNew);
   } else if (game === "crossWords") {
-    gameSchema = schemaCrossWords;
+    gameSchema = getSchemaCrossWords(createNew);
   }
   return gameSchema;
 };

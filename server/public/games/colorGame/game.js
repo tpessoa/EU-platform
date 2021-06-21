@@ -96,7 +96,7 @@ class playGame extends Phaser.Scene {
   }
 
   async preload() {
-    this.load.svg("redo", "/api/games/colorGame/assets/images/redo-solid.svg", {
+    this.load.svg("undo", "/api/games/colorGame/assets/images/undo-solid.svg", {
       width: 50,
       height: 50,
     });
@@ -192,15 +192,15 @@ class playGame extends Phaser.Scene {
      * TOP BAR
      *
      * */
-    var redo = this.add
-      .image(0, 0, "redo")
+    var undo = this.add
+      .image(0, 0, "undo")
       .setInteractive({ pixelPerfect: true })
       .setTintFill(0xffc425);
-    redo.setPosition(redo.width / 2 + spaceBetweenIcons * 2, bar_size / 2);
-    redo.on("pointerdown", (pointer) => this.redoHandler(pointer));
+    undo.setPosition(undo.width / 2 + spaceBetweenIcons * 2, bar_size / 2);
+    undo.on("pointerdown", (pointer) => this.redoHandler(pointer));
 
     var container_top_bar = this.add.container(0, 0);
-    container_top_bar.add(redo);
+    container_top_bar.add(undo);
 
     /**
      *
@@ -324,17 +324,17 @@ class playGame extends Phaser.Scene {
     }
 
     // ARROWS
-    // align with redo icon
+    // align with undo icon
     var arrow_left = this.add
       .image(0, 0, "carret")
       .setInteractive({ pixelPerfect: true })
       .setTintFill(0xffc425)
-      .setPosition(redo.x, color_bar_y);
+      .setPosition(undo.x, color_bar_y);
     var arrow_right = this.add
       .image(0, 0, "carret")
       .setInteractive({ pixelPerfect: true })
       .setTintFill(0xffc425)
-      .setPosition(s_width - redo.x, color_bar_y)
+      .setPosition(s_width - undo.x, color_bar_y)
       .setScale(-1, 1);
 
     arrow_left.on("pointerdown", (pointer) =>
