@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"eu-platform-db.color_game"}],"uuid":"86a7c9609ad841769199fb8cd2249014"}

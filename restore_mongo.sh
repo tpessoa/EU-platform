@@ -16,7 +16,7 @@ if [ "$(docker ps -q -f name=mongodb)" ]
     then
         echo "Restoring mongodb ${BACKUP_DATE}..."
         #docker exec mongodb mongorestore --db ${DATABASE_NAME} --drop /${BACKUP_DIR}/${BACKUP_DATE} 
-        docker exec -it mongodb mongorestore --drop /${BACKUP_DIR_INSIDE}/${BACKUP_DATE}
+        docker exec -it mongo mongorestore --drop /${BACKUP_DIR_INSIDE}/${BACKUP_DATE}
         echo "Mongodb restore done!"
     else
 		echo "Containers NOT running!"

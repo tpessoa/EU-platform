@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"eu-platform-db.users"}],"uuid":"8a1b3d2269174e7ea99f83d016b8476f"}

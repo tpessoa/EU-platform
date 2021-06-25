@@ -2,12 +2,14 @@ version: "3"
 
 services:
   client:
+    container_name: client
     build:
       context: ./client
     environment:
       EXPRESS_HOST: server
 
   server:
+    container_name: server
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -21,6 +23,7 @@ services:
       - mongo
 
   mongo:
+    container_name: mongo
     image: mongo:4.2
     ports:
       - "127.0.0.1:27017:27017"
