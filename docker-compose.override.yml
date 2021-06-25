@@ -1,0 +1,35 @@
+services:
+  client:
+    build:
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./client:/usr/src/client
+      - /client/node_modules
+    # Due to stupid react-scripts bug still present in v3.4.3
+    # https://github.com/facebook/create-react-app/issues/8688
+    stdin_open: true
+
+  server:
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./server:/usr/src/server
+      - /server/node_modules
+
+  proxy:
+    container_name: proxy
+    image: nginx:stable-alpine
+    ports:
+      - ${HTTP_PORT}:${HTTP_PORT}
+      - ${HTTPS_PORT}:${HTTPS_PORT}
+    volumes:
+      - ./proxy/:/etc/nginx/conf.d/
+    depends_on:
+      - client
+      - server

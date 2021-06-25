@@ -8,8 +8,9 @@ require("dotenv").config();
 
 // App Config
 const app = express();
-const port = process.env.PORT || 3000;
-const connection_url = "mongodb://db:27017/eu-platform-db";
+
+const connection_url = `mongodb://mongo:27017/eu-platform-db`;
+console.log(connection_url);
 
 // Middlewares
 // app.use(bodyParser.urlencoded({ extended: false }));
@@ -48,6 +49,6 @@ app.use("/polls", pollsRouter);
 app.use("/user", userRouter);
 
 // Listener
-app.listen(port, () => {
-  console.log("Server running on port " + port);
+app.listen(5000, () => {
+  console.log("Server listening on port 5000");
 });
