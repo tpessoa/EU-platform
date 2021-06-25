@@ -22,7 +22,7 @@ services:
   node:
     container_name: node
     restart: always
-    build: ./server/
+    build: ./server
     environment:
      CHOKIDAR_USEPOLLING: "true"
     volumes:
