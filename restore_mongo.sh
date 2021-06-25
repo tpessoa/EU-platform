@@ -12,7 +12,7 @@ if [ ! -d "./${BACKUP_DIR}/${BACKUP_DATE}"  ]
         exit 1
 fi
 
-if [ "$(docker ps -q -f name=mongodb)" ]
+if [ "$(docker ps -q -f name=mongo)" ]
     then
         echo "Restoring mongodb ${BACKUP_DATE}..."
         #docker exec mongodb mongorestore --db ${DATABASE_NAME} --drop /${BACKUP_DIR}/${BACKUP_DATE} 
