@@ -140,7 +140,7 @@ const EditWordSearch = (props) => {
         {...register("config.num_vertical_cells")}
         name="config.num_vertical_cells"
         type="number"
-        label="Número de células Horizontais"
+        label="Número de células Verticais"
         error={!!errors.config?.num_vertical_cells}
         helperText={errors?.config?.num_vertical_cells?.message}
       />
