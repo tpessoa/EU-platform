@@ -3,7 +3,7 @@ services:
     build:
       dockerfile: ./Dockerfile.prod
     ports:
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:80:8080"
     environment:
       NODE_ENV: production
     depends_on:
@@ -14,15 +14,3 @@ services:
       dockerfile: ./Dockerfile.prod
     environment:
       NODE_ENV: production
-
-  proxy:
-    container_name: proxy
-    image: nginx:stable-alpine
-    ports:
-      - ${HTTP_PORT}:${HTTP_PORT}
-      - ${HTTPS_PORT}:${HTTPS_PORT}
-    volumes:
-      - ./proxy/:/etc/nginx/conf.d/
-    depends_on:
-      - client
-      - server
