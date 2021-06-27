@@ -26,6 +26,12 @@ foo@bar:~/EU-platform $ cd server
 foo@bar:~/EU-platform/server $ npm install
 ```
 
+In the server create a .env file with the following:
+
+```console
+SECRET_KEY=[YOUR_SECRET_KEY]
+```
+
 3. Run the Docker Containers
 
 ```console
