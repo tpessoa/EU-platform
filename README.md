@@ -19,7 +19,9 @@ foo@bar:~/EU-platform $ docker-compose build
 ```console
 foo@bar:~/EU-platform $ cd client
 foo@bar:~/EU-platform/client $ npm install
+```
 
+```console
 foo@bar:~/EU-platform $ cd server
 foo@bar:~/EU-platform/server $ npm install
 ```
