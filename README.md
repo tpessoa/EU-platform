@@ -71,3 +71,9 @@ foo@bar:~/EU-platform $ docker-compose -f docker-compose.yml -f docker-compose.o
 ```
 
 3. Open your browser at http://localhost (or the remote machine URL).
+
+---
+
+### Some credits
+
+Sound effects used in games obtained from https://www.zapsplat.com
