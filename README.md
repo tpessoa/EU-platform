@@ -74,6 +74,6 @@ foo@bar:~/EU-platform $ docker-compose -f docker-compose.yml -f docker-compose.o
 
 ---
 
-### Some credits
+### Assets credits
 
 Sound effects used in games obtained from https://www.zapsplat.com
