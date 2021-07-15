@@ -2,9 +2,31 @@
 
 Platform for hosting European Union (EU) activities. Supported by _Centro de Excelência Jean Monnet da Universidade de Coimbra_.
 
+ ## Context
+The objective of my dissertation in my Master’s degree in Software Engineering at University of Coimbra was to develop a software with the intention to provide knowledge about Europe and the European Union by exhibiting the activities of the [Center of Excellence](https://coe.uc.pt/sobre/) to kids between 6 and 9 years old.
+                                                     
+That software was created on a web platform format that combines a set of games and leisure activities. Both the platform and games were developed from scratch. Within the leisure activities, were included didactic videos with the European Union theme and a children’s story book, both produced by external teams. It also can host works that can be submitted to online votes from the audience, promoting competitions. In order to manage and update at any time the content inside the platform, it was created an administration page. This page can also give insight about metrics gathered anonymously from games, providing the possibility to study the effectiveness of those games.
+
+All the engineering processes to develop this software were documented in my dissertation. But, briefly, in the beginning there was a stage where a study was performed about similar software's. Then, a requirements gathering process was performed followed by selecting the technologies and drawing the software architecture. 
+The methodology used to develop the software was Agile with the framework SCRUM. Frequent meetings with the product owners were realized to ensure that the final product was developed with their feedback and needs. 
+Furthermore, several risks that could affect the project's success were analysed and mitigation plans to reduce their impact were done.
+
+
+## Demo
+The software is deployed at: http://uniaoeuropeia.dei.uc.pt/
+ 
+ ## Technologies 
+ Technologies used to develop the software:
+* React
+* Node
+* Express
+* MongoDB
+* Docker
+
+## Tutorial Guide
 > This guide presents the instructions to put the platform up and running in a Docker environment.
 
-## Development environment
+### Development environment
 
 To build the services for the development environment run the following commands:
 
@@ -52,7 +74,7 @@ foo@bar:~/EU-platform $ ./restore_mongo init-platform-data
 
 ---
 
-## Production environment
+### Production environment
 
 After building the development environment, you're ready to create the services for the production environment. Run the following commands:
 
