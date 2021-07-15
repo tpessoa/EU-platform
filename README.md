@@ -3,7 +3,7 @@
 Platform for hosting European Union (EU) activities. Supported by _Centro de Excelência Jean Monnet da Universidade de Coimbra_.
 
  ## Context
-The objective of my dissertation in my Master’s degree in Software Engineering at University of Coimbra was to develop a software with the intention to provide knowledge about Europe and the European Union by exhibiting the activities of the [Center of Excellence](https://coe.uc.pt/sobre/) to kids between 6 and 9 years old.
+The objective of my dissertation in my Master’s degree in Software Engineering at University of Coimbra was to develop a software with the intention to provide knowledge about Europe and the European Union by exhibiting the activities of the [Center of Excellence Jean Monnet UC](https://coe.uc.pt/sobre/) to kids between 6 and 9 years old.
                                                      
 That software was created on a web platform format that combines a set of games and leisure activities. Both the platform and games were developed from scratch. Within the leisure activities, were included didactic videos with the European Union theme and a children’s story book, both produced by external teams. It also can host works that can be submitted to online votes from the audience, promoting competitions. In order to manage and update at any time the content inside the platform, it was created an administration page. This page can also give insight about metrics gathered anonymously from games, providing the possibility to study the effectiveness of those games.
 
